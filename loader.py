@@ -10,7 +10,7 @@ from neo4j.exceptions import AuthError
 
 from icdc_schema import ICDC_Schema
 from props import Props
-from bento.common.utils import get_logger, removeTrailingSlash, check_schema_files, UPSERT_MODE, NEW_MODE, DELETE_MODE, \
+from bento.common.utils import get_logger, get_raw_logger, removeTrailingSlash, check_schema_files, UPSERT_MODE, NEW_MODE, DELETE_MODE, \
     get_log_file, LOG_PREFIX, APP_NAME, load_plugin, print_config
 
 if LOG_PREFIX not in os.environ:
@@ -19,7 +19,7 @@ if LOG_PREFIX not in os.environ:
 os.environ[APP_NAME] = 'Data_Loader'
 
 from config import BentoConfig
-from data_loader import DataLoader
+from data_loader import DataLoader, VALIDATION_ERROR, VALIDATION_DELIMITER
 from bento.common.s3 import S3Bucket
 
 
@@ -29,6 +29,7 @@ def parse_arguments():
     parser.add_argument('-u', '--user', help='Neo4j user')
     parser.add_argument('-p', '--password', help='Neo4j password')
     parser.add_argument('-s', '--schema', help='Schema files', action='append')
+    parser.add_argument('--data-model-version', help='Version for data model files')
     parser.add_argument('--prop-file', help='Property file, example is in config/props.example.yml')
     parser.add_argument('--backup-folder', help='Location to store database backup')
     parser.add_argument('config_file', help='Configuration file, example is in config/data-loader-config.example.yml',
@@ -79,6 +80,13 @@ def process_arguments(args, log):
         log.error('No schema file specified! ' +
                   'Please specify at least one schema file in config file or with CLI argument --schema')
         sys.exit(1)
+
+    if args.data_model_version:
+        config.data_model_version = args.data_model_version
+    if not config.data_model_version:
+        log.error('No data model version suppplied. ' +
+                  'Please specify the version for the supplied data model files in the config file ' +
+                  'or with CLI argument --data-model-version')
 
     if config.PSWD_ENV in os.environ and not config.neo4j_password:
         config.neo4j_password = os.environ[config.PSWD_ENV]
@@ -186,6 +194,7 @@ def prepare_plugin(config, schema):
 def main():
     log = get_logger('Loader')
     log_file = get_log_file()
+    validation_logger, validation_log_file = get_raw_logger('Data Loader Validation', log_level=VALIDATION_ERROR, log_folder='tmp_validation', log_prefix='inventory_validation')
     config = process_arguments(parse_arguments(), log)
     print_config(log, config)
 
@@ -224,7 +233,12 @@ def main():
             if len(config.plugins) > 0:
                 for plugin_config in config.plugins:
                     plugins.append(prepare_plugin(plugin_config, schema))
-            loader = DataLoader(driver, schema, plugins)
+
+            validation_logger.log(VALIDATION_ERROR, ",".join([f"DataModelVersion: {config.data_model_version}"]))
+            validation_logger.log(VALIDATION_ERROR, "BatchFilenames")
+            validation_logger.log(VALIDATION_ERROR, "\n".join(file_list))  # have a column per file, I think this is easier to use in Excel            
+            validation_logger.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join(["Filename","LineNumber","OffendingColumn","OffendingValue","OffendingReason"]))
+            loader = DataLoader(driver, schema, validation_logger, plugins)
 
             load_result = loader.load(file_list, config.cheat_mode, config.dry_run, config.loading_mode, config.wipe_db,
                         config.max_violations, split=config.split_transactions,
@@ -255,8 +269,10 @@ def main():
         if restore_cmd:
             log.info(restore_cmd)
 
+    # make one of these for validation log
     if config.s3_bucket and config.s3_folder:
-        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
+        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', validation_log_file)
+        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
         else:

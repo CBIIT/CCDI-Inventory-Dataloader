@@ -16,6 +16,9 @@ class BentoConfig:
         self.PSWD_ENV = 'NEO_PASSWORD'
 
         if config_file is None:
+            # Metadata related
+            self.data_model_version = None
+
             # File-Loader related
             self.temp_folder = None
             self.queue_long_pull_time = None
@@ -47,6 +50,10 @@ class BentoConfig:
             if os.path.isfile(config_file):
                 with open(config_file) as c_file:
                     config = yaml.safe_load(c_file)['Config']
+
+                    #################################
+                    # Metadata
+                    self.data_model_version = config.get('data_model_version')
 
                     #################################
                     # Folders
