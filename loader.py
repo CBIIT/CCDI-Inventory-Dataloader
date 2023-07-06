@@ -271,17 +271,20 @@ def main(args=None):
         if restore_cmd:
             log.info(restore_cmd)
 
-    # make one of these for validation log
     if config.s3_bucket and config.s3_folder:
         result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', validation_log_file)
         if result:
             log.info(f'Uploading log file {validation_log_file} succeeded!')
+            if os.path.isfile(os.path.abspath(validation_log_file)):
+                os.remove(validation_log_file)
         else:
             log.error(f'Uploading log file {validation_log_file} failed!')
 
         result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
+            if os.path.isfile(os.path.abspath(log_file)):
+                os.remove(log_file)
         else:
             log.error(f'Uploading log file {log_file} failed!')
 
