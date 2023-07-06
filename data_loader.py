@@ -51,9 +51,8 @@ NODE_EXISTS = "Node exists."
 DUPLICATE_DATA = "Duplicate Data."
 INVALID_DATA = "Invalid Value."
 INVALID_RELATIONSHIP = "Invalid Relationship."
-RELATIONSHIP_EXISTS = "Relationship exists."
-MISSING_RELATIONSHIP = "Missing relationship."
-MISSING_PARENT = "Missing parent."
+RELATIONSHIP_EXISTS = "Relationship already exists."
+UNDEFINED_RELATIONSHIP = "Undefined relationship."
 
 
 def get_btree_indexes(session):
@@ -784,13 +783,13 @@ class DataLoader:
                 other_node, other_id = key.split('.')
                 relationship = self.schema.get_relationship(node_type, other_node)
                 if not isinstance(relationship, dict):
-                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, MISSING_RELATIONSHIP]))
+                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, UNDEFINED_RELATIONSHIP]))
                     self.log.error('Line: {}: Relationship not found!'.format(line_num))
                     raise Exception('Undefined relationship, abort loading!')
                 relationship_name = relationship[RELATIONSHIP_TYPE]
                 multiplier = relationship[MULTIPLIER]
                 if not relationship_name:
-                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, MISSING_RELATIONSHIP]))
+                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, UNDEFINED_RELATIONSHIP]))
                     self.log.error('Line: {}: Relationship not found!'.format(line_num))
                     raise Exception('Undefined relationship, abort loading!')
                 if not self.node_exists(session, other_node, other_id, value):
