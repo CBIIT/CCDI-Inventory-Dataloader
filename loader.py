@@ -23,7 +23,7 @@ from data_loader import DataLoader, VALIDATION_ERROR, VALIDATION_DELIMITER
 from bento.common.s3 import S3Bucket
 
 
-def parse_arguments():
+def parse_arguments(args=None):
     parser = argparse.ArgumentParser(description='Load TSV(TXT) files (from Pentaho) into Neo4j')
     parser.add_argument('-i', '--uri', help='Neo4j uri like bolt://12.34.56.78:7687')
     parser.add_argument('-u', '--user', help='Neo4j user')
@@ -48,7 +48,7 @@ def parse_arguments():
     parser.add_argument('--dataset', help='Dataset directory')
     parser.add_argument('--split-transactions', help='Creates a separate transaction for each file',
                         action='store_true')
-    return parser.parse_args()
+    return parser.parse_args() if args is None else parser.parse_args(args)
 
 
 def process_arguments(args, log):
@@ -191,11 +191,11 @@ def prepare_plugin(config, schema):
 # Data loader will try to load all TSV(.TXT) files from given directory into Neo4j
 # optional arguments includes:
 # -i or --uri followed by Neo4j server address and port in format like bolt://12.34.56.78:7687
-def main():
+def main(args=None):
     log = get_logger('Loader')
     log_file = get_log_file()
     validation_logger, validation_log_file = get_raw_logger('Data Loader Validation', log_level=VALIDATION_ERROR, log_folder='tmp_validation', log_prefix='inventory_validation')
-    config = process_arguments(parse_arguments(), log)
+    config = process_arguments(parse_arguments(args), log)
     print_config(log, config)
 
     if not check_schema_files(config.schema_files, log):
@@ -276,7 +276,7 @@ def main():
             log.info(f'Uploading log file {validation_log_file} succeeded!')
         else:
             log.error(f'Uploading log file {validation_log_file} failed!')
-            
+
         result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
