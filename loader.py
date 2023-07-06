@@ -250,6 +250,8 @@ def main(args=None):
             if load_result == False:
                 log.error('Data files upload failed')
                 sys.exit(1)
+            else:
+                validation_logger.log(VALIDATION_ERROR, "Done.")
         else:
             log.info('No files to load.')
 
