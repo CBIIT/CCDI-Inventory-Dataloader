@@ -272,7 +272,12 @@ def main():
     # make one of these for validation log
     if config.s3_bucket and config.s3_folder:
         result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', validation_log_file)
-        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', log_file)
+        if result:
+            log.info(f'Uploading log file {validation_log_file} succeeded!')
+        else:
+            log.error(f'Uploading log file {validation_log_file} failed!')
+            
+        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
         else:
