@@ -563,7 +563,7 @@ class DataLoader:
                                 f'Invalid data at line {line_num}: duplicate {id_field}: {node_id}, found in line: '
                                 f'{", ".join(ids[node_id]["lines"])}')
                             
-                            self.validation_log.log(VALIDATION_DELIMITER.join([file_name, f'{", ".join(ids[node_id]["lines"])}', id_field, node_id, DUPLICATE_ID]))
+                            self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, ",".join(ids[node_id]["lines"]), id_field, node_id, DUPLICATE_ID]))
                             ids[node_id]['lines'].append(str(line_num))
                         else:
                             # Same ID exists in same file, but properties are also same, probably it's pointing same
@@ -571,7 +571,7 @@ class DataLoader:
                             self.log.debug(
                                 f'Duplicated data at line {line_num}: duplicate {id_field}: {node_id}, found in line: '
                                 f'{", ".join(ids[node_id]["lines"])}')
-                            self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, f'{", ".join(ids[node_id]["lines"])}', id_field, node_id, DUPLICATE_DATA]))
+                            self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, ",".join(ids[node_id]["lines"]), id_field, node_id, DUPLICATE_DATA]))
                     else:
                         ids[node_id] = {'props': get_props_signature(props), 'lines': [str(line_num)]}
 
