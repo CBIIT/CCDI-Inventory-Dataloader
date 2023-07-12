@@ -143,24 +143,24 @@ def process_arguments(args, log):
             log.error('Download files from S3 bucket "{}" failed!'.format(config.s3_bucket))
             sys.exit(1)
 
-    if args.s3_bucket_logs:
-        config.s3_bucket_logs = args.s3_bucket_logs
+    if args.bucket_logs:
+        config.s3_bucket_logs = args.bucket_logs
     if args.s3_folder_logs:
         config.s3_folder_logs = args.s3_folder_logs
     if (config.s3_bucket_logs and not config.s3_folder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
         log.error("Must specify both bucket and folder for depositing logs, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
         sys.exit(1)
 
-    if args.s3_bucket_fail:
-        config.s3_bucket_fail = args.s3_bucket_fail
+    if args.bucket_fail:
+        config.s3_bucket_fail = args.bucket_fail
     if args.s3_folder_fail:
         config.s3_folder_fail = args.s3_folder_fail
     if (config.s3_bucket_fail and not config.s3_folder_fail) or (not config.s3_bucket_fail and config.s3_folder_fail):  # Python doesn't have an XOR for existence of value I don't think
         log.error("Must specify both bucket and folder for depositing data that failed to validate and load, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
         sys.exit(1)
 
-    if args.s3_bucket_success:
-        config.s3_bucket_success = args.s3_bucket_success
+    if args.bucket_success:
+        config.s3_bucket_success = args.bucket_success
     if args.s3_folder_success:
         config.s3_folder_success = args.s3_folder_success
     if (config.s3_bucket_success and not config.s3_folder_success) or (not config.s3_bucket_success and config.s3_folder_success):  # Python doesn't have an XOR for existence of value I don't think
