@@ -1,4 +1,9 @@
 PropDefinitions:
+  template_version:  # adeforge 07/10/2023
+    Desc: CCDI data model version.
+    Type: string
+    Req: false
+    Private: false
   #pathology_file
   magnification:
     Desc: The amount or degree of visual enlargement used during image acquisition.
@@ -46,7 +51,6 @@ PropDefinitions:
         Code: '12307007'
         Value: Age at Imaging
     Type: integer
-      - "null"
     Req: true
     Private: false  
   #radiology_file
@@ -221,7 +225,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2201918'
         Value: alcohol_history
-    Type: string
+    Type: 
+      value_type: string  # adeforge 07/10/2023
+      Enum:
         - "Yes"
         - "No"
         - "Unknown"
@@ -250,7 +256,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '1253'
         Value: asbestos_exposure
-    Enum:
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
         - "Yes"
         - "No"
         - "Unknown"
@@ -272,7 +280,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: 'NA'
         Value: coal_dust_exposure
-    Enum:
+    Type:
+      value_type: string   # adeforge 07/10/2023
+      Enum:
         - "Yes"
         - "No"
         - "Unknown"
@@ -285,11 +295,13 @@ PropDefinitions:
       - Origin: caDSR
         Code: 'NA'
         Value: environmental_tobacco_smoke_exposure
-    Enum:
-      - "Yes"
-      - "No"
-      - "Unknown"
-      - "Not Reported"
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
+        - "Yes"
+        - "No"
+        - "Unknown"
+        - "Not Reported"
     Req: false
     Private: false
   radon_exposure:
@@ -298,7 +310,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2816352'
         Value: radon_exposure
-    Enum:
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
         - "Yes"
         - "No"
         - "Unknown"
@@ -311,7 +325,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: 'NA'
         Value: respirable_crystalline_silica_exposure
-    Enum:
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
         - "Yes"
         - "No"
         - "Unknown"
@@ -800,7 +816,6 @@ PropDefinitions:
         Code: '6154727'
         Value: days_to_follow_up
     Type: integer
-      - "null"
     Req: true
     Private: false
   #follow_up
@@ -2593,10 +2608,11 @@ PropDefinitions:
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
-    Type: string
-    Enum:
-      - "Yes"
-      - "No"
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
+        - "Yes"
+        - "No"
     Req: true
     Private: false
   #pdx  
@@ -3894,8 +3910,7 @@ PropDefinitions:
         Code: 'C156420'
         Value: Age at Diagnosis 
     Type: integer
-        - "null"
-    Req: true
+    Req: false  # adeforge 07/10/2023 made false
     Private: false
   #diagnosis
   vital_status:
@@ -4132,7 +4147,6 @@ PropDefinitions:
         Code: 'C171276'
         Value: MD5 Checksum 
     Type: integer
-        - "null"
     Req: true
     Private: false
   #sequencing_file, imaging_file, clinical_measure_file
@@ -4220,11 +4234,13 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3794749'
         Value: Image Modality Type
-    Type: string
-      - "CT"
-      - "MRI"
-      - "PET"
-      - "X-ray"
+    Type: 
+      value_type: string  # adeforge 07/10/2023, should this be an array or single value string?
+      Enum:
+        - "CT"
+        - "MRI"
+        - "PET"
+        - "X-ray"
     Req: true
     Private: false
   # participant
@@ -4318,7 +4334,6 @@ PropDefinitions:
   consent_number:
     Desc: The numeric value of the consent group as designated by dbGaP full accession identifier, phs######.v#.p#.c#.
     Type: integer
-      - "null"
     Req: true
     Private: false     
   # sample
@@ -4350,6 +4365,7 @@ PropDefinitions:
         Code: '11341616'
         Value: Disease Primary Anatomic Site ICD-O-3 Code
     Enum:
+        - "NA"
         - "Abdomen, NOS"
         - "Abdominal esophagus"
         - "Accessory sinus, NOS"
@@ -4704,8 +4720,7 @@ PropDefinitions:
         Code: '10609539'
         Value: Subject Age at Diagnosis Integer
     Type: integer
-        - "null"
-    Req: true  
+    Req: false  # adeforge 07/10/2023 made false
     Private: false
   # sample
   tumor_grade:
@@ -4836,6 +4851,7 @@ PropDefinitions:
         Code: '12217251'
         Value: Disease Phase Timepoint Category
     Enum:
+        - "NA"
         - 'Initial Diagnosis'
         - 'Disease Progression'
         - 'Refractory'
@@ -4854,12 +4870,14 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12922545'
         Value: Tumor Classification Type
-    Type: string
-      - 'Primary'
-      - 'Regional'
-      - 'Metastatic'
-      - 'Unknown'
-      - 'Not Reported'
+    Type:
+      value_type: string  # adeforge 07/10/2023
+      Enum:
+        - 'Primary'
+        - 'Regional'
+        - 'Metastatic'
+        - 'Unknown'
+        - 'Not Reported'
     Req: true  
     Private: false
 #  tumor_incidence_type: # primary, metastatic, recurrence, progression
@@ -4926,6 +4944,7 @@ PropDefinitions:
         Code: '5432687'
         Value: Tissue Sample Description Category
     Enum:
+        - "NA"
         - 'Abnormal'
         - 'Non-neoplastic'
         - 'Normal'
@@ -5586,7 +5605,9 @@ PropDefinitions:
         Value: Prior Therapy Regimen Text
     Type:
       value_type: array
+      item_type: string
       Enum:
+          - "NA"
           - "10-Deacetyltaxol"
           - "11C Topotecan"
           - "11D10 AluGel Anti-Idiotype Monoclonal Antibody"
@@ -10200,8 +10221,7 @@ PropDefinitions:
         Code: '12304720'
         Value: AGE_AT_COURSE_START
     Type: integer
-        - "null"
-    Req: true
+    Req: false  # adeforge 07/10/2023 made false
     Private: false
   #therapeutic_procedure
   days_to_treatment_end:
@@ -10211,8 +10231,7 @@ PropDefinitions:
         Code: '12304723'
         Value: AGE_AT_COURSE_END
     Type: integer
-        - "null"
-    Req: true
+    Req: false  # adeforge 07/10/2023 made false
     Private: false  
   #therapeutic_procedure
   therapeutic_procedure_id: 

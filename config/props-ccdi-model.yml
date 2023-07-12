@@ -13,7 +13,6 @@ Properties:
     file: files
     genomic_info: genomic_info
 
-
   type_mapping:
     string: String
     number: Float
