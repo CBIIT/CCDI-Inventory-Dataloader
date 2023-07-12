@@ -314,7 +314,7 @@ def main(args=None):
                     log.info(f'Attempting to move success files into success location {config.s3_bucket_success}/{config.s3_folder_success}.')
                     for file in files:
                         result = upload_log_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
-                        if result:
+                        if result: 
                             log.info(f'Moving successful file {file} succeeded!')
                             if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
                                 os.remove(os.path.join(config.dataset,file))
