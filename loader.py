@@ -285,7 +285,7 @@ def main(args=None):
                     key = config.s3_folder_fail
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
                     for file in files:
-                        bucket.upload_file(key, file)
+                        bucket.upload_file(key, os.path.join(config.dataset,file))
                     log.info(f'Data files moved to {config.s3_bucket_fail}/{config.s3_folder_fail} due to failure.')
                 else:
                     log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
@@ -297,7 +297,7 @@ def main(args=None):
                     key = config.s3_folder_success
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
                     for file in files:
-                        bucket.upload_file(key, file)
+                        bucket.upload_file(key, os.path.join(config.dataset,file))
                     log.info(f'Data files moved to {config.s3_bucket_success}/{config.s3_folder_success} due to success.')
                 else:
                     log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
