@@ -42,6 +42,8 @@ class BentoConfig:
             self.max_violations = None
             self.s3_bucket = None
             self.s3_folder = None
+            self.s3_bucket_logs = None
+            self.s3_folder_logs = None
             self.loading_mode = None
             self.dataset = None
             self.no_parents = None
@@ -104,6 +106,8 @@ class BentoConfig:
                     self.max_violations = config.get('max_violations', 10)
                     self.s3_bucket = config.get('s3_bucket')
                     self.s3_folder = config.get('s3_folder')
+                    self.s3_bucket_logs = config.get('s3_bucket_logs')
+                    self.s3_folder_logs = config.get('s3_folder_logs')
                     self.loading_mode = config.get('loading_mode', 'UPSERT_MODE')
                     self.dataset = config.get('dataset')
                     self.no_parents = config.get('no_parents')

@@ -43,6 +43,8 @@ def parse_arguments(args=None):
     parser.add_argument('-M', '--max-violations', help='Max violations to display', nargs='?', type=int)
     parser.add_argument('-b', '--bucket', help='S3 bucket name')
     parser.add_argument('-f', '--s3-folder', help='S3 folder')
+    parser.add_argument('--bucket-logs', help='S3 bucket name for logs')
+    parser.add_argument('--s3-folder-logs', help='S3 folder for logs')
     parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE],
                         default=UPSERT_MODE)
     parser.add_argument('--dataset', help='Dataset directory')
@@ -136,6 +138,15 @@ def process_arguments(args, log):
         if not bucket.download_files_in_folder(config.s3_folder, config.dataset):
             log.error('Download files from S3 bucket "{}" failed!'.format(config.s3_bucket))
             sys.exit(1)
+
+    if args.s3_bucket_logs:
+        config.s3_bucket_logs = args.s3_bucket_logs
+    if args.s3_folder_logs:
+        config.s3_folder_los = args.s3_folder_logs
+    if (config.s3_bucket_logs and not config.s3_foflder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing logs, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+    
 
     # Optional Fields
     if args.uri:
@@ -271,8 +282,8 @@ def main(args=None):
         if restore_cmd:
             log.info(restore_cmd)
 
-    if config.s3_bucket and config.s3_folder:
-        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/validation_logs', validation_log_file)
+    if config.s3_bucket_logs and config.s3_folder_logs:
+        result = upload_log_file(config.s3_bucket_logs, f'{config.s3_folder_logs}/validation_logs', validation_log_file)
         if result:
             log.info(f'Uploading log file {validation_log_file} succeeded!')
             if os.path.isfile(os.path.abspath(validation_log_file)):
@@ -280,7 +291,7 @@ def main(args=None):
         else:
             log.error(f'Uploading log file {validation_log_file} failed!')
 
-        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
+        result = upload_log_file(config.s3_bucket_logs, f'{config.s3_folder_logs}/logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
             if os.path.isfile(os.path.abspath(log_file)):
