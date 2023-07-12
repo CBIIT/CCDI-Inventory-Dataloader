@@ -171,7 +171,7 @@ class ESLoader:
 
 
 
-def main():
+def main(args=None):
     parser = argparse.ArgumentParser(description='Load data from Neo4j to Elasticsearch')
     parser.add_argument('indices_file',
                         type=argparse.FileType('r'),
@@ -179,7 +179,7 @@ def main():
     parser.add_argument('config_file',
                         type=argparse.FileType('r'),
                         help='Configuration file, example is in config/es_loader.example.yml')
-    args = parser.parse_args()
+    args = parser.parse_args() if not args else parser.parse_args(args=args)
 
     config = yaml.safe_load(args.config_file)['Config']
     indices = yaml.safe_load(args.indices_file)['Indices']

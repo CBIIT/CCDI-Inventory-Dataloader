@@ -36,6 +36,24 @@ PROVIDED_PARENTS = 'provided_parents'
 RELATIONSHIP_PROPS = 'relationship_properties'
 BATCH_SIZE = 1000
 
+# the format for a validation error is as follows:
+#   [Filename, LineNumber(s), OffendingColumn, OffendingValue, OffendingReason]
+#   LineNumber(s) may be plural for duplicate IDs or duplicate data instead of having two separate columns
+#   this is supposed to be human readable
+VALIDATION_ERROR = 51  # custom log level to capture validation errors only, https://docs.python.org/3/library/logging.html#logging-levels
+VALIDATION_DELIMITER = "\t"
+MISSING = "!MISSING!"
+EMPTY = "!EMPTY!"
+DUPLICATE_ID = "Duplicate ID."
+MISSING_ID = "Missing ID."
+MISSING_ID_FIELD = "Missing ID field."
+NODE_EXISTS = "Node exists."
+DUPLICATE_DATA = "Duplicate Data."
+INVALID_DATA = "Invalid Value."
+INVALID_RELATIONSHIP = "Invalid Relationship."
+RELATIONSHIP_EXISTS = "Relationship already exists."
+UNDEFINED_RELATIONSHIP = "Undefined relationship."
+
 
 def get_btree_indexes(session):
     """
@@ -136,12 +154,13 @@ def get_props_signature(props):
 
 
 class DataLoader:
-    def __init__(self, driver, schema, plugins=None):
+    def __init__(self, driver, schema, validation_logger, plugins=None):
         if plugins is None:
             plugins = []
         if not schema or not isinstance(schema, ICDC_Schema):
             raise Exception('Invalid ICDC_Schema object')
         self.log = get_logger('Data Loader')
+        self.validation_log = validation_logger
         self.driver = driver
         self.schema = schema
         self.rel_prop_delimiter = self.schema.rel_prop_delimiter
@@ -201,6 +220,9 @@ class DataLoader:
         start = timer()
         if not self.validate_files(cheat_mode, file_list, max_violations):
             return False
+        self.validation_log.log(VALIDATION_ERROR, "################\n" +
+                                "# No file validation errors. Loading validation errors below.\n" +
+                                "################")
         if not no_backup and not dry_run:
             if not neo4j_uri:
                 self.log.error('No Neo4j URI specified for backup, abort loading!')
@@ -422,7 +444,7 @@ class DataLoader:
                                     line_num, CASE_NODE, CASE_ID, case_id))
                             validation_failed = True
                             violations += 1
-                            if violations >= max_violations:
+                            if max_violations and violations >= max_violations:
                                 return False
                 return not validation_failed
 
@@ -442,7 +464,7 @@ class DataLoader:
                 for org_obj in reader:
                     line_num += 1
                     obj = self.prepare_node(org_obj)
-                    results = self.collect_relationships(obj, session, False, line_num)
+                    results = self.collect_relationships(obj, session, False, line_num, file_name)
                     relationships = results[RELATIONSHIPS]
                     provided_parents = results[PROVIDED_PARENTS]
                     if provided_parents > 0:
@@ -450,7 +472,7 @@ class DataLoader:
                             self.log.error('Invalid data at line {}: No parents found!'.format(line_num))
                             validation_failed = True
                             violations += 1
-                            if violations >= max_violations:
+                            if max_violations and violations >= max_violations:
                                 return False
                     else:
                         self.log.info('Line: {} - No parents found'.format(line_num))
@@ -540,6 +562,8 @@ class DataLoader:
                             self.log.error(
                                 f'Invalid data at line {line_num}: duplicate {id_field}: {node_id}, found in line: '
                                 f'{", ".join(ids[node_id]["lines"])}')
+                            
+                            self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, ",".join(ids[node_id]["lines"]), id_field, node_id, DUPLICATE_ID]))
                             ids[node_id]['lines'].append(str(line_num))
                         else:
                             # Same ID exists in same file, but properties are also same, probably it's pointing same
@@ -547,6 +571,7 @@ class DataLoader:
                             self.log.debug(
                                 f'Duplicated data at line {line_num}: duplicate {id_field}: {node_id}, found in line: '
                                 f'{", ".join(ids[node_id]["lines"])}')
+                            self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, ",".join(ids[node_id]["lines"]), id_field, node_id, DUPLICATE_DATA]))
                     else:
                         ids[node_id] = {'props': get_props_signature(props), 'lines': [str(line_num)]}
 
@@ -554,13 +579,21 @@ class DataLoader:
                 if not validate_result['result'] and not validate_result['warning']:
                     for msg in validate_result['messages']:
                         self.log.error('Invalid data at line {}: "{}"!'.format(line_num, msg))
+                    for msg in validate_result['data_validation_messages']:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), VALIDATION_DELIMITER.join(msg), INVALID_DATA]))
+                    for msg in validate_result['relationship_validation_messages']:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), VALIDATION_DELIMITER.join(msg), INVALID_RELATIONSHIP]))
                     validation_failed = True
                     violations += 1
-                    if violations >= max_violations:
+                    if max_violations and violations >= max_violations:
                         return False
                 elif not validate_result['result'] and validate_result['warning']:
                     for msg in validate_result['messages']:
                         self.log.warning('Invalid data at line {}: "{}"!'.format(line_num, msg))
+                    for msg in validate_result['data_validation_messages']:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), VALIDATION_DELIMITER.join(msg), INVALID_DATA]))
+                    for msg in validate_result['relationship_validation_messages']:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), VALIDATION_DELIMITER.join(msg), INVALID_RELATIONSHIP]))
             return not validation_failed
 
     def get_new_statement(self, node_type, obj):
@@ -680,14 +713,21 @@ class DataLoader:
                 transaction_counter += 1
                 obj = self.prepare_node(org_obj)
                 node_type = obj[NODE_TYPE]
+
                 node_id = self.schema.get_id(obj)
                 if not node_id:
+                    id_field = self.schema.get_id_field(obj)  # this is specifically for validation logging
+                    if not id_field:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), MISSING, MISSING, MISSING_ID_FIELD]))
+                    else:
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), id_field, MISSING, MISSING_ID]))
                     raise Exception('Line:{}: No ids found!'.format(line_num))
                 id_field = self.schema.get_id_field(obj)
                 if loading_mode == UPSERT_MODE:
                     statement = self.get_upsert_statement(node_type, id_field, obj)
                 elif loading_mode == NEW_MODE:
                     if self.node_exists(tx, node_type, id_field, node_id):
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), id_field, node_id, NODE_EXISTS]))
                         raise Exception(
                             'Line: {}: Node (:{} {{ {}: {} }}) exists! Abort loading!'.format(line_num, node_type,
                                                                                               id_field, node_id))
@@ -730,24 +770,26 @@ class DataLoader:
             self.log.warning('More than one nodes found! ')
         return count >= 1
 
-    def collect_relationships(self, obj, session, create_intermediate_node, line_num):
+    def collect_relationships(self, obj, session, create_intermediate_node, line_num, file_name):
         node_type = obj[NODE_TYPE]
         relationships = []
         int_node_created = 0
         provided_parents = 0
         relationship_properties = {}
-        #print(obj.items())
+        
         for key, value in obj.items():
             if is_parent_pointer(key):
                 provided_parents += 1
                 other_node, other_id = key.split('.')
                 relationship = self.schema.get_relationship(node_type, other_node)
                 if not isinstance(relationship, dict):
+                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, UNDEFINED_RELATIONSHIP]))
                     self.log.error('Line: {}: Relationship not found!'.format(line_num))
                     raise Exception('Undefined relationship, abort loading!')
                 relationship_name = relationship[RELATIONSHIP_TYPE]
                 multiplier = relationship[MULTIPLIER]
                 if not relationship_name:
+                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), key, MISSING, UNDEFINED_RELATIONSHIP]))
                     self.log.error('Line: {}: Relationship not found!'.format(line_num))
                     raise Exception('Undefined relationship, abort loading!')
                 if not self.node_exists(session, other_node, other_id, value):
@@ -875,13 +917,15 @@ class DataLoader:
                 transaction_counter += 1
                 obj = self.prepare_node(org_obj)
                 node_type = obj[NODE_TYPE]
-                results = self.collect_relationships(obj, tx, True, line_num)
+                results = self.collect_relationships(obj, tx, True, line_num, file_name)
                 relationships = results[RELATIONSHIPS]
                 int_nodes_created += results[INT_NODE_CREATED]
                 provided_parents = results[PROVIDED_PARENTS]
                 relationship_props = results[RELATIONSHIP_PROPS]
                 if provided_parents > 0:
                     if len(relationships) == 0:
+                        # why would there be defined relationships without concrete ones; parent probably doesn't exist in the database
+                        self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), "!PARENT RELATIONSHIPS!", ",".join([obj[x] for x in obj.keys() if is_parent_pointer(x)]), f"{provided_parents} parent relationships should exist, none do."]))
                         raise Exception('Line: {}: No parents found, abort loading!'.format(line_num))
                     for relationship in relationships:
                         relationship_name = relationship[RELATIONSHIP_TYPE]
@@ -895,6 +939,7 @@ class DataLoader:
                                 self.remove_old_relationship(tx, node_type, obj, relationship)
                             elif loading_mode == NEW_MODE:
                                 if self.has_existing_relationship(tx, node_type, obj, relationship, True):
+                                    self.validation_log.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join([file_name, str(line_num), parent_id_field, parent_id, RELATIONSHIP_EXISTS]))
                                     raise Exception(
                                         'Line: {}: Relationship already exists, abort loading!'.format(line_num))
                             else:
