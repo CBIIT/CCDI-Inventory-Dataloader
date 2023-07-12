@@ -206,6 +206,11 @@ def process_arguments(args, log):
     return config
 
 
+def remove_file(bucket_name, folder, file_name):
+    s3 = S3Bucket(bucket_name)
+    key = f'{folder}/{file_name}'
+    return s3.delete_file(key)
+
 def upload_log_file(bucket_name, folder, file_path):
     base_name = os.path.basename(file_path)
     s3 = S3Bucket(bucket_name)
@@ -279,27 +284,51 @@ def main(args=None):
             if restore_cmd:
                 log.info(restore_cmd)
             if load_result == False:
-                log.error('Data files database load failed')
+                log.error('Data file contents not loaded into database.')
                 if config.s3_bucket_fail and config.s3_folder_fail:
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move failed files into fail location {config.s3_bucket_fail}/{config.s3_folder_fail}.')
                     for file in files:
-                        upload_log_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
-                    log.info(f'Data files moved to {config.s3_bucket_fail}/{config.s3_folder_fail} due to failure.')
+                        result = upload_log_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        if result:
+                            log.info(f'Moving failed file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving failed file {file} failed! File is still where this code ran and not in fail location.')
+                    log.info(f'Attempting to remove failed files from the source {config.bucket}/{config.s3_folder}.')
+                    for file in files:
+                        result = remove_file(config.bucket, config.s3_folder, file)
+                        if result:
+                            log.info(f'Removing fail file {file} succeeded!')
+                        else:
+                            log.error(f'Removing fail file {file} failed! File is still in source location {config.bucket}/{config.s3_folder}.')
                 else:
-                    log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper failure destination.')
                     
             else:
-                log.info('Data files database load success')
+                log.info('Data files successfully loaded into database.')
                 validation_logger.log(VALIDATION_ERROR, "Done.")
                 if config.s3_bucket_success and config.s3_folder_success:
-                    bucket = S3Bucket(config.s3_bucket_success)
-                    key = config.s3_folder_success
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move success files into success location {config.s3_bucket_success}/{config.s3_folder_success}.')
                     for file in files:
-                        upload_log_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
-                    log.info(f'Data files moved to {config.s3_bucket_success}/{config.s3_folder_success} due to success.')
+                        result = upload_log_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        if result:
+                            log.info(f'Moving successful file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving successful file {file} failed! File is still where this code ran and not in success location.')
+                    log.info(f'Attempting to remove successful files from the source {config.bucket}/{config.s3_folder}.')
+                    for file in files:
+                        result = remove_file(config.bucket, config.s3_folder, file)
+                        if result:
+                            log.info(f'Removing successful file {file} succeeded!')
+                        else:
+                            log.error(f'Removing successful file {file} failed! File is still in source location {config.bucket}/{config.s3_folder}.')
                 else:
-                    log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper success destination.')
         else:
             log.info('No files to load.')
 
