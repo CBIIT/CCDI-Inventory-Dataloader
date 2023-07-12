@@ -20,7 +20,7 @@ SRC = 'Src'
 DEST = 'Dst'
 VALUE_TYPE = 'value_type'
 ITEM_TYPE = 'item_type'
-LIST_DELIMITER = '*'
+LIST_DELIMITER = ';'
 LABEL_NEXT = 'next'
 NEXT_RELATIONSHIP = 'next'
 UNITS = 'units'
@@ -376,7 +376,7 @@ class ICDC_Schema:
     def validate_node(self, model_type, obj):
         if not model_type or model_type not in self.nodes:
             return {'result': False, 'messages': ['Node type: "{}" not found in data model'.format(model_type)],
-                    'data_validation_messages': [NODE_TYPE, model_type], 'relationship_validation_messages': [], 'warning': False}
+                    'data_validation_messages': [NODE_TYPE, str(model_type)], 'relationship_validation_messages': [], 'warning': False}
         if not obj:
             return {'result': False, 'messages': ['Node is empty!'],
                     'data_validation_messages': [], 'relationship_validation_messages': [], 'warning': False}
@@ -391,11 +391,11 @@ class ICDC_Schema:
             if prop not in obj:
                 result['result'] = False
                 result['messages'].append('Missing required property: "{}"!'.format(prop))
-                result['data_validation_messages'].append([prop, "!MISSING!"])
+                result['data_validation_messages'].append([str(prop), "!MISSING!"])
             elif not obj[prop]:
                 result['result'] = False
                 result['messages'].append('Required property: "{}" is empty!'.format(prop))
-                result['data_validation_messages'].append([prop, "!EMPTY!"])
+                result['data_validation_messages'].append([str(prop), "!EMPTY!"])
 
         properties = self.nodes[model_type][PROPERTIES]
         # Validate all properties in given object
@@ -409,12 +409,12 @@ class ICDC_Schema:
                 if rel_type not in self.relationship_props:
                     result['result'] = False
                     result['messages'].append(f'Relationship "{rel_type}" does NOT exist in data model!')
-                    result['relationship_validation_messages'].append([rel_type, rel_prop])
+                    result['relationship_validation_messages'].append([str(rel_type), str(rel_prop)])
                     continue
                 elif rel_prop not in self.relationship_props[rel_type][PROPERTIES]:
                     result['result'] = False
                     result['messages'].append(f'Property "{rel_prop}" does NOT exist in relationship "{rel_type}"!')
-                    result['relationship_validation_messages'].append([rel_type, rel_prop])
+                    result['relationship_validation_messages'].append([str(rel_type), str(rel_prop)])
                     continue
 
                 prop_type = self.relationship_props[rel_type][PROPERTIES][rel_prop]
@@ -422,18 +422,18 @@ class ICDC_Schema:
                     result['result'] = False
                     result['messages'].append(
                         'Property: "{}":"{}" is not a valid "{}" type!'.format(rel_prop, value, prop_type))
-                    result['relationship_validation_messages'].append([rel_prop, value])
+                    result['relationship_validation_messages'].append([str(rel_prop), str(value)])
 
             elif key not in properties:
                 self.log.debug('Property "{}" is not in data model!'.format(key))
-                result['data_validation_messages'].append([key, value])
+                result['data_validation_messages'].append([str(key), str(value)])
             else:
                 prop_type = properties[key]
                 if not self._validate_type(prop_type, value):
                     result['result'] = False
                     result['messages'].append(
                         'Property: "{}":"{}" is not a valid "{}" type!'.format(key, value, prop_type))
-                    result['data_validation_messages'].append([rel_prop, value])
+                    result['data_validation_messages'].append([str(key), str(value)])
 
         return result
 
@@ -543,6 +543,8 @@ class ICDC_Schema:
     # Get type info from description
     def map_type(self, type_name):
         mapping = self.props.type_mapping
+        print("MAPPING")
+        print(mapping)
         result = DEFAULT_TYPE
 
         if type_name in mapping:
