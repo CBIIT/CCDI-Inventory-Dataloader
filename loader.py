@@ -45,6 +45,10 @@ def parse_arguments(args=None):
     parser.add_argument('-f', '--s3-folder', help='S3 folder')
     parser.add_argument('--bucket-logs', help='S3 bucket name for logs')
     parser.add_argument('--s3-folder-logs', help='S3 folder for logs')
+    parser.add_argument('--bucket-fail', help='S3 bucket name for data that failed to validate and load.')
+    parser.add_argument('--s3-folder-fail', help='S3 folder for data that failed to validate and load.')
+    parser.add_argument('--bucket-success', help='S3 bucket name for data that successfully loaded.')
+    parser.add_argument('--s3-folder-success', help='S3 folder for data that successfully loaded.')
     parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE],
                         default=UPSERT_MODE)
     parser.add_argument('--dataset', help='Dataset directory')
@@ -139,12 +143,28 @@ def process_arguments(args, log):
             log.error('Download files from S3 bucket "{}" failed!'.format(config.s3_bucket))
             sys.exit(1)
 
-    if args.s3_bucket_logs:
-        config.s3_bucket_logs = args.s3_bucket_logs
+    if args.bucket_logs:
+        config.s3_bucket_logs = args.bucket_logs
     if args.s3_folder_logs:
-        config.s3_folder_los = args.s3_folder_logs
-    if (config.s3_bucket_logs and not config.s3_foflder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
+        config.s3_folder_logs = args.s3_folder_logs
+    if (config.s3_bucket_logs and not config.s3_folder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
         log.error("Must specify both bucket and folder for depositing logs, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.bucket_fail:
+        config.s3_bucket_fail = args.bucket_fail
+    if args.s3_folder_fail:
+        config.s3_folder_fail = args.s3_folder_fail
+    if (config.s3_bucket_fail and not config.s3_folder_fail) or (not config.s3_bucket_fail and config.s3_folder_fail):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that failed to validate and load, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.bucket_success:
+        config.s3_bucket_success = args.bucket_success
+    if args.s3_folder_success:
+        config.s3_folder_success = args.s3_folder_success
+    if (config.s3_bucket_success and not config.s3_folder_success) or (not config.s3_bucket_success and config.s3_folder_success):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that successfully validated and loaded, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
         sys.exit(1)
     
 
@@ -185,6 +205,11 @@ def process_arguments(args, log):
 
     return config
 
+
+def remove_file(bucket_name, folder, file_name):
+    s3 = S3Bucket(bucket_name)
+    key = f'{folder}/{file_name}'
+    return s3.delete_file(key)
 
 def upload_log_file(bucket_name, folder, file_path):
     base_name = os.path.basename(file_path)
@@ -259,10 +284,51 @@ def main(args=None):
             if restore_cmd:
                 log.info(restore_cmd)
             if load_result == False:
-                log.error('Data files upload failed')
-                sys.exit(1)
+                log.error('Data file contents not loaded into database.')
+                if config.s3_bucket_fail and config.s3_folder_fail:
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move failed files into fail location {config.s3_bucket_fail}/{config.s3_folder_fail}.')
+                    for file in files:
+                        result = upload_log_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        if result:
+                            log.info(f'Moving failed file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving failed file {file} failed! File is still where this code ran and not in fail location.')
+                    log.info(f'Attempting to remove failed files from the source {config.s3_bucket}/{config.s3_folder}.')
+                    for file in files:
+                        result = remove_file(config.s3_bucket, config.s3_folder, file)
+                        if result:
+                            log.info(f'Removing fail file {file} succeeded!')
+                        else:
+                            log.error(f'Removing fail file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
+                else:
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper failure destination.')
+                    
             else:
+                log.info('Data files successfully loaded into database.')
                 validation_logger.log(VALIDATION_ERROR, "Done.")
+                if config.s3_bucket_success and config.s3_folder_success:
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move success files into success location {config.s3_bucket_success}/{config.s3_folder_success}.')
+                    for file in files:
+                        result = upload_log_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        if result: 
+                            log.info(f'Moving successful file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving successful file {file} failed! File is still where this code ran and not in success location.')
+                    log.info(f'Attempting to remove successful files from the source {config.s3_bucket}/{config.s3_folder}.')
+                    for file in files:
+                        result = remove_file(config.s3_bucket, config.s3_folder, file)
+                        if result:
+                            log.info(f'Removing successful file {file} succeeded!')
+                        else:
+                            log.error(f'Removing successful file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
+                else:
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper success destination.')
         else:
             log.info('No files to load.')
 
@@ -298,6 +364,8 @@ def main(args=None):
                 os.remove(log_file)
         else:
             log.error(f'Uploading log file {log_file} failed!')
+
+    
 
 
 def confirm_deletion(message):
