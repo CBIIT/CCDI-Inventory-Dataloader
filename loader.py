@@ -45,6 +45,10 @@ def parse_arguments(args=None):
     parser.add_argument('-f', '--s3-folder', help='S3 folder')
     parser.add_argument('--bucket-logs', help='S3 bucket name for logs')
     parser.add_argument('--s3-folder-logs', help='S3 folder for logs')
+    parser.add_argument('--bucket-fail', help='S3 bucket name for data that failed to validate and load.')
+    parser.add_argument('--s3-folder-fail', help='S3 folder for data that failed to validate and load.')
+    parser.add_argument('--bucket-success', help='S3 bucket name for data that successfully loaded.')
+    parser.add_argument('--s3-folder-success', help='S3 folder for data that successfully loaded.')
     parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE],
                         default=UPSERT_MODE)
     parser.add_argument('--dataset', help='Dataset directory')
@@ -142,9 +146,25 @@ def process_arguments(args, log):
     if args.s3_bucket_logs:
         config.s3_bucket_logs = args.s3_bucket_logs
     if args.s3_folder_logs:
-        config.s3_folder_los = args.s3_folder_logs
-    if (config.s3_bucket_logs and not config.s3_foflder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
+        config.s3_folder_logs = args.s3_folder_logs
+    if (config.s3_bucket_logs and not config.s3_folder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
         log.error("Must specify both bucket and folder for depositing logs, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.s3_bucket_fail:
+        config.s3_bucket_fail = args.s3_bucket_fail
+    if args.s3_folder_fail:
+        config.s3_folder_fail = args.s3_folder_fail
+    if (config.s3_bucket_fail and not config.s3_folder_fail) or (not config.s3_bucket_fail and config.s3_folder_fail):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that failed to validate and load, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.s3_bucket_success:
+        config.s3_bucket_success = args.s3_bucket_success
+    if args.s3_folder_success:
+        config.s3_folder_success = args.s3_folder_success
+    if (config.s3_bucket_success and not config.s3_folder_success) or (not config.s3_bucket_success and config.s3_folder_success):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that successfully validated and loaded, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
         sys.exit(1)
     
 
@@ -260,9 +280,27 @@ def main(args=None):
                 log.info(restore_cmd)
             if load_result == False:
                 log.error('Data files upload failed')
-                sys.exit(1)
+                if config.s3_bucket_fail and config.s3_folder_fail:
+                    bucket = S3Bucket(config.s3_bucket_fail)
+                    key = config.s3_folder_fail
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    for file in files:
+                        bucket.upload_file(key, file)
+                    log.info(f'Data files moved to {config.s3_bucket_fail}/{config.s3_folder_fail} due to failure.')
+                else:
+                    log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
+                    
             else:
                 validation_logger.log(VALIDATION_ERROR, "Done.")
+                if config.s3_bucket_success and config.s3_folder_success:
+                    bucket = S3Bucket(config.s3_bucket_success)
+                    key = config.s3_folder_success
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    for file in files:
+                        bucket.upload_file(key, file)
+                    log.info(f'Data files moved to {config.s3_bucket_success}/{config.s3_folder_success} due to success.')
+                else:
+                    log.info(f'Data files not moved, still in directory {config.dataset} where this code ran, but was successful.')
         else:
             log.info('No files to load.')
 
@@ -298,6 +336,8 @@ def main(args=None):
                 os.remove(log_file)
         else:
             log.error(f'Uploading log file {log_file} failed!')
+
+    
 
 
 def confirm_deletion(message):

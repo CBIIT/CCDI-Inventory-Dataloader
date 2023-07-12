@@ -44,6 +44,10 @@ class BentoConfig:
             self.s3_folder = None
             self.s3_bucket_logs = None
             self.s3_folder_logs = None
+            self.s3_bucket_fail = None
+            self.s3_folder_fail = None
+            self.s3_bucket_success = None
+            self.s3_folder_success = None
             self.loading_mode = None
             self.dataset = None
             self.no_parents = None
@@ -108,6 +112,10 @@ class BentoConfig:
                     self.s3_folder = config.get('s3_folder')
                     self.s3_bucket_logs = config.get('s3_bucket_logs')
                     self.s3_folder_logs = config.get('s3_folder_logs')
+                    self.s3_bucket_fail = config.get('s3_bucket_fail')
+                    self.s3_folder_fail = config.get('s3_folder_fail')
+                    self.s3_bucket_success = config.get('s3_bucket_success')
+                    self.s3_folder_success = config.get('s3_folder_success')
                     self.loading_mode = config.get('loading_mode', 'UPSERT_MODE')
                     self.dataset = config.get('dataset')
                     self.no_parents = config.get('no_parents')
