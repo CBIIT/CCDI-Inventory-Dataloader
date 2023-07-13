@@ -211,6 +211,10 @@ def remove_file(bucket_name, folder, file_name):
     key = f'{folder}/{file_name}'
     return s3.delete_file(key)
 
+# a wrapper for 'upload_log_file' with a better name for use elsewhere
+def upload_file(bucket_name, folder, file_path):
+    return upload_log_file(bucket_name=bucket_name, folder=folder, file_path=file_path)
+
 def upload_log_file(bucket_name, folder, file_path):
     base_name = os.path.basename(file_path)
     s3 = S3Bucket(bucket_name)
@@ -289,7 +293,7 @@ def main(args=None):
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
                     log.info(f'Attempting to move failed files into fail location {config.s3_bucket_fail}/{config.s3_folder_fail}.')
                     for file in files:
-                        result = upload_log_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        result = upload_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # 'upload_file' is a wrapper for 'upload_log_file'
                         if result:
                             log.info(f'Moving failed file {file} succeeded!')
                             if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
@@ -313,7 +317,7 @@ def main(args=None):
                     files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
                     log.info(f'Attempting to move success files into success location {config.s3_bucket_success}/{config.s3_folder_success}.')
                     for file in files:
-                        result = upload_log_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # it says 'upload_log_file' but it's really just uploading a file
+                        result = upload_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # 'upload_file' is a wrapper for 'upload_log_file'
                         if result: 
                             log.info(f'Moving successful file {file} succeeded!')
                             if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
