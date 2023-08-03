@@ -32,7 +32,7 @@ Config:
   # Wipe out database before loading, you'll lose all data!
   wipe_db: true
   # Skip backup step
-  no_backup: true
+  no_backup: false
   # Automatically confirm deletion and database wiping (without asking user to confirm)
   no_confirmation: false
   # Max violations to display, default is 10, false means ignore
