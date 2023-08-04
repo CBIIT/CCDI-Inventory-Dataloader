@@ -1,6 +1,7 @@
 tmp/
 venv/
 env/
+data/
 venv3_new/
 .idea/
 Pentaho-scripts/
@@ -11,4 +12,6 @@ tests/temp
 config/data-loader.yml
 config/file-loader.yml
 config/es_loader_*
+config/config.yml
+config/es_loader.yml
 backup/
