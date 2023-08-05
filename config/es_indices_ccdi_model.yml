@@ -13,6 +13,8 @@ Indices:
         type: keyword
       alternate_participant_id:
         type: keyword
+      study_id:
+        type: keyword
       phs_accession:
         type: keyword
       study_acronym:
@@ -23,7 +25,7 @@ Indices:
         type: nested
         properties:
           age_at_diagnosis:
-            type: keyword
+            type: integer
           diagnosis_anatomic_site:
             type: keyword
           disease_phase:
@@ -35,7 +37,7 @@ Indices:
           sample_anatomic_site:
             type: keyword
           participant_age_at_collection:
-            type: keyword
+            type: integer
           sample_tumor_status:
             type: keyword
           tumor_classification:
@@ -53,7 +55,11 @@ Indices:
           sequencing_file:
             type: boolean
           file_type:
-            type: keyword
+            type: text
+            fields:
+              keyword:
+                type: keyword
+                ignore_above: 256
           grant_id:
             type: keyword
           institution:
@@ -87,6 +93,7 @@ Indices:
           p.gender as gender,
           p.ethnicity as ethnicity,
           p.alternate_participant_id as alternate_participant_id,
+          st.study_id as study_id,
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
@@ -150,7 +157,7 @@ Indices:
           sample_anatomic_site:
             type: keyword
           participant_age_at_collection:
-            type: keyword
+            type: integer
           sample_tumor_status:
             type: keyword
           tumor_classification:
@@ -261,59 +268,6 @@ Indices:
         type: integer
       num_of_files:
         type: integer
-      netsted_filters:
-        type: nested
-        properties:
-          participant_id:
-            type: keyword
-          race:
-            type: keyword
-          gender:
-            type: keyword
-          ethnicity:
-            type: keyword
-          grant_ids:
-            type: keyword
-          institution:
-            type: keyword
-          age_at_diagnosis:
-            type: keyword
-          diagnosis_anatomic_site:
-            type: keyword
-          disease_phase:
-            type: keyword
-          diagnosis_icd_o:
-            type: keyword
-          vital_status:
-            type: keyword
-          sample_anatomic_site:
-            type: keyword
-          participant_age_at_collection:
-            type: keyword
-          sample_tumor_status:
-            type: keyword
-          tumor_classification:
-            type: keyword
-          clinical_measure_file:
-            type: keyword
-          study_clinical_measure_file:
-            type: keyword
-          methylation_array_file:
-            type: keyword
-          pathology_file:
-            type: keyword
-          radiology_file:
-            type: keyword
-          single_cell_sequencing_file:
-            type: keyword
-          sequencing_file:
-            type: keyword
-          library_selection:
-            type: keyword
-          library_source:
-            type: keyword
-          library_strategy:
-            type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (st:study)
@@ -331,7 +285,7 @@ Indices:
         OPTIONAL MATCH (p)<-[:of_radiology_file]-(rf:radiology_file)
         OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
         OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH DISTINCT [cmf.file_type, cmfST.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, cmfST, fu, p, st, sf,sm,stf,stp, dg, pub
+        WITH rf, scsf, pf, maf, cmf, cmfST, fu, p, st, sf,sm,stf,stp, dg, pub
         RETURN DISTINCT
           st.study_id as study_id,
           COLLECT(DISTINCT pub.pubmed_id) as pubmed_ids,
@@ -342,34 +296,7 @@ Indices:
           COUNT(DISTINCT p.participant_id) as num_of_participants,
           COUNT(DISTINCT dg.diagnosis_id) as num_of_diagnosis,
           COUNT(DISTINCT sm.sample_id) as num_of_samples,
-          count(DISTINCT cmf.clinical_measure_file_id) + count(DISTINCT cmfST.clinical_measure_file_id) + count(DISTINCT maf.methylation_array_file_id) + count(DISTINCT pf.pathology_file_id) + count(DISTINCT rf.radiology_file_id) + count(DISTINCT scsf.single_cell_sequencing_file_id) + count(DISTINCT sf.sequencing_file_id) as num_of_files,
-          COLLECT(DISTINCT {
-              participant_id: p.participant_id,
-              race: p.race,
-              gender: p.gender,
-              ethnicity: p.ethnicity,
-              age_at_diagnosis: dg.age_at_diagnosis,
-              diagnosis_anatomic_site: dg.anatomic_site,
-              disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o,
-              vital_status: fu.vital_status,
-              sample_anatomic_site: sm.anatomic_site,
-              participant_age_at_collection: sm.participant_age_at_collection,
-              sample_tumor_status: sm.sample_tumor_status,
-              tumor_classification: sm.tumor_classification,
-              clinical_measure_file: cmf.file_type,
-              study_clinical_measure_file: cmfST.file_type,
-              methylation_array_file: maf.file_typ,
-              pathology_file: pf.file_typ,
-              radiology_file: rf.file_typ,
-              single_cell_sequencing_file: scsf.file_type,
-              sequencing_file: sf.file_type,
-              grant_id: stf.grant_id,
-              institution: stp.institution,
-              library_selection: sf.library_selection,
-              library_source: sf.library_source,
-              library_strategy: sf.library_strategy
-          }) AS netsted_filters
+          count(DISTINCT cmf.clinical_measure_file_id) + count(DISTINCT cmfST.clinical_measure_file_id) + count(DISTINCT maf.methylation_array_file_id) + count(DISTINCT pf.pathology_file_id) + count(DISTINCT rf.radiology_file_id) + count(DISTINCT scsf.single_cell_sequencing_file_id) + count(DISTINCT sf.sequencing_file_id) as num_of_files
        "
 
   - index_name: samples
@@ -403,7 +330,7 @@ Indices:
         type: nested
         properties:
           age_at_diagnosis:
-            type: keyword
+            type: integer
           diagnosis_anatomic_site:
             type: keyword
           disease_phase:
@@ -535,7 +462,7 @@ Indices:
         type: nested
         properties:
           age_at_diagnosis:
-            type: keyword
+            type: integer
           diagnosis_anatomic_site:
             type: keyword
           disease_phase:
