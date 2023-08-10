@@ -1,5 +1,5 @@
 Properties:
-  domain: cds.cancer.gov
+  domain: ccdi.cancer.gov
   rel_prop_delimiter: "$"
 
   plurals:

@@ -128,13 +128,12 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         OPTIONAL MATCH (p)-[:of_clinical_measure_file_participant]-(cmf:clinical_measure_file)
-        OPTIONAL MATCH (st)<-[:of_clinical_measure_file]-(cmfST:clinical_measure_file)
         OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(maf:methylation_array_file)
         OPTIONAL MATCH (sm)<-[:of_pathology_file]-(pf:pathology_file)
         OPTIONAL MATCH (p)<-[:of_radiology_file]-(rf:radiology_file)
         OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
         OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH [cmf.file_type, cmfST.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, cmfST, fu, p, st, sf,sm,stf,stp, dg
+        WITH [cmf.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, fu, p, st, sf,sm,stf,stp, dg
         RETURN DISTINCT
           p.participant_id as participant_id,
           p.race as race,
@@ -147,7 +146,7 @@ Indices:
           st.study_short_title as study_short_title,
           COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
           COLLECT(DISTINCT cmf.dcf_indexd_guid) as cmf_uuid,
-          COLLECT(DISTINCT cmfST.dcf_indexd_guid) as cmfST_uuid,
+          [] as cmfST_uuid,
           COLLECT(DISTINCT maf.dcf_indexd_guid) as maf_uuid,
           COLLECT(DISTINCT pf.dcf_indexd_guid) as pf_uuid,
           COLLECT(DISTINCT rf.dcf_indexd_guid) as rf_uuid,
@@ -163,7 +162,7 @@ Indices:
               participant_age_at_collection: sm.participant_age_at_collection,
               sample_tumor_status: sm.sample_tumor_status,
               tumor_classification: sm.tumor_classification,
-              clinical_measure_file: exists((p)<-[:of_clinical_measure_file_participant]-(cmf)) OR exists((st)<-[:of_clinical_measure_file]-(cmfST)),
+              clinical_measure_file: exists((p)<-[:of_clinical_measure_file_participant]-(cmf)),
               methylation_array_file: exists((p)<-[:of_sample]-(sm)<-[:of_methylation_array_file]-(maf)),
               pathology_file: exists((p)<-[:of_sample]-(sm)<-[:of_pathology_file]-(pf)),
               radiology_file: exists((p)<-[:of_radiology_file]-(rf)),
@@ -586,7 +585,7 @@ Indices:
   - index_name: files
     type: neo4j
     mapping:
-      guid:
+      file_id:
         type: keyword
       file_name:
         type: keyword
@@ -662,7 +661,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
           file.file_type AS file_type,
@@ -703,7 +702,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Methylation array' AS file_category,
           file.file_type AS file_type,
@@ -744,7 +743,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Pathology imaging' AS file_category,
           file.file_type AS file_type,
@@ -785,7 +784,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Radiology imaging' AS file_category,
           file.file_type AS file_type,
@@ -826,7 +825,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Single Cell Sequencing' AS file_category,
           file.file_type AS file_type,
@@ -867,7 +866,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS guid,
+          file.dcf_indexd_guid AS file_id,
           file.file_name AS file_name,
           'Sequencing' AS file_category,
           file.file_type AS file_type,
