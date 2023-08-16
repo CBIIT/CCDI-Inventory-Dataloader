@@ -21,48 +21,11 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
-      cmf_uuid:
+      files:
         type: text
         fields:
           keyword:
             type: keyword
-            ignore_above: 256
-      cmfST_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      maf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      pf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      rf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      scsf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      sf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
       nested_filters:
         type: nested
         properties:
@@ -84,24 +47,10 @@ Indices:
             type: keyword
           tumor_classification:
             type: keyword
-          clinical_measure_file:
-            type: boolean
-          methylation_array_file:
-            type: boolean
-          pathology_file:
-            type: boolean
-          radiology_file:
-            type: boolean
-          single_cell_sequencing_file:
-            type: boolean
-          sequencing_file:
-            type: boolean
+          assay_method:
+            type: keyword
           file_type:
-            type: text
-            fields:
-              keyword:
-                type: keyword
-                ignore_above: 256
+            type: keyword
           grant_id:
             type: keyword
           institution:
@@ -115,19 +64,16 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (p:participant)
+        MATCH (file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (p)<-[*..2]-(file)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        OPTIONAL MATCH (p)-[:of_clinical_measure_file_participant]-(cmf:clinical_measure_file)
-        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(maf:methylation_array_file)
-        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(pf:pathology_file)
-        OPTIONAL MATCH (p)<-[:of_radiology_file]-(rf:radiology_file)
-        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
-        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH [cmf.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, fu, p, st, sf,sm,stf,stp, dg
+        WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           p.participant_id as participant_id,
           p.race as race,
@@ -138,13 +84,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT cmf.dcf_indexd_guid) as cmf_uuid,
-          [] as cmfST_uuid,
-          COLLECT(DISTINCT maf.dcf_indexd_guid) as maf_uuid,
-          COLLECT(DISTINCT pf.dcf_indexd_guid) as pf_uuid,
-          COLLECT(DISTINCT rf.dcf_indexd_guid) as rf_uuid,
-          COLLECT(DISTINCT scsf.dcf_indexd_guid) as scsf_uuid,
-          COLLECT(DISTINCT sf.dcf_indexd_guid) as sf_uuid,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
@@ -155,18 +95,25 @@ Indices:
               participant_age_at_collection: sm.participant_age_at_collection,
               sample_tumor_status: sm.sample_tumor_status,
               tumor_classification: sm.tumor_classification,
-              clinical_measure_file: exists((p)<-[:of_clinical_measure_file_participant]-(cmf)),
-              methylation_array_file: exists((p)<-[:of_sample]-(sm)<-[:of_methylation_array_file]-(maf)),
-              pathology_file: exists((p)<-[:of_sample]-(sm)<-[:of_pathology_file]-(pf)),
-              radiology_file: exists((p)<-[:of_radiology_file]-(rf)),
-              single_cell_sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_single_cell_sequencing_file]-(scsf)),
-              sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_sequencing_file]-(sf)),
-              file_type: [ft in file_types where ft is not null],
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
               grant_id: stf.grant_id,
               institution: stp.institution,
-              library_selection: sf.library_selection,
-              library_source: sf.library_source,
-              library_strategy: sf.library_strategy
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
           }) AS nested_filters
       "
 
@@ -199,48 +146,11 @@ Indices:
         type: keyword
       last_vital_status:
         type: keyword
-      cmf_uuid:
+      files:
         type: text
         fields:
           keyword:
             type: keyword
-            ignore_above: 256
-      cmfST_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      maf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      pf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      rf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      scsf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      sf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
       nested_filters:
         type: nested
         properties:
@@ -254,24 +164,10 @@ Indices:
             type: keyword
           tumor_classification:
             type: keyword
-          clinical_measure_file:
-            type: boolean
-          methylation_array_file:
-            type: boolean
-          pathology_file:
-            type: boolean
-          radiology_file:
-            type: boolean
-          single_cell_sequencing_file:
-            type: boolean
-          sequencing_file:
-            type: boolean
+          assay_method:
+            type: keyword
           file_type:
-            type: text
-            fields:
-              keyword:
-                type: keyword
-                ignore_above: 256
+            type: keyword
           grant_id:
             type: keyword
           institution:
@@ -286,19 +182,16 @@ Indices:
     cypher_query: "
         MATCH (dg:diagnosis)
         MATCH (p:participant)<-[:of_diagnosis]-(dg)
+        MATCH (file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (p)<-[*..2]-(file)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        with dg, p, fu order by fu.age_at_follow_up desc
+        with dg, file, p, fu order by fu.age_at_follow_up desc
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        OPTIONAL MATCH (p)-[:of_clinical_measure_file_participant]-(cmf:clinical_measure_file)
-        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(maf:methylation_array_file)
-        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(pf:pathology_file)
-        OPTIONAL MATCH (p)<-[:of_radiology_file]-(rf:radiology_file)
-        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
-        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH [cmf.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, fu, p, st, sf, sm, stf, stp, dg
+        WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           dg.diagnosis_id as diagnosis_id,
           dg.diagnosis_icd_o as diagnosis_icd_o,
@@ -313,31 +206,32 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           head(collect(distinct fu.vital_status)) as last_vital_status,
-          COLLECT(DISTINCT cmf.dcf_indexd_guid) as cmf_uuid,
-          [] as cmfST_uuid,
-          COLLECT(DISTINCT maf.dcf_indexd_guid) as maf_uuid,
-          COLLECT(DISTINCT pf.dcf_indexd_guid) as pf_uuid,
-          COLLECT(DISTINCT rf.dcf_indexd_guid) as rf_uuid,
-          COLLECT(DISTINCT scsf.dcf_indexd_guid) as scsf_uuid,
-          COLLECT(DISTINCT sf.dcf_indexd_guid) as sf_uuid,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
           COLLECT(DISTINCT {
               vital_status: fu.vital_status,
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
               sample_tumor_status: sm.sample_tumor_status,
               tumor_classification: sm.tumor_classification,
-              clinical_measure_file: exists((p)<-[:of_clinical_measure_file_participant]-(cmf)),
-              methylation_array_file: exists((p)<-[:of_sample]-(sm)<-[:of_methylation_array_file]-(maf)),
-              pathology_file: exists((p)<-[:of_sample]-(sm)<-[:of_pathology_file]-(pf)),
-              radiology_file: exists((p)<-[:of_radiology_file]-(rf)),
-              single_cell_sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_single_cell_sequencing_file]-(scsf)),
-              sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_sequencing_file]-(sf)),
-              file_type: [ft in file_types where ft is not null],
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
               grant_id: stf.grant_id,
               institution: stp.institution,
-              library_selection: sf.library_selection,
-              library_source: sf.library_source,
-              library_strategy: sf.library_strategy
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
           }) AS nested_filters
        "
 
@@ -391,48 +285,11 @@ Indices:
         type: integer
       num_of_files:
         type: integer
-      cmf_uuid:
+      files:
         type: text
         fields:
           keyword:
             type: keyword
-            ignore_above: 256
-      cmfST_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      maf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      pf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      rf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      scsf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      sf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (st:study)<-[:of_participant]-(p:participant)<-[r:of_diagnosis]-(dg:diagnosis)
@@ -443,25 +300,21 @@ Indices:
         with st, num_p, cancers, diag.anatomic_site as dg_sites, count(diag.anatomic_site) as num_sites
         ORDER BY toLower(dg_sites) asc
         with st, num_p, cancers, collect(dg_sites + ' (' + toString(num_sites) + ')') as sites
-        MATCH (dt)
-        WHERE (dt:clinical_measure_file OR dt: sequencing_file OR dt:pathology_file)
-        OPTIONAL MATCH (st)<-[*..3]-(dt)
-        with st, num_p, cancers, sites, dt.file_type as ft, count(dt.file_type) as num_ft
+        MATCH (fl)
+        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:rathology OR fl:methylation_array_file OR fl:single_cell_sequencing_file)
+        MATCH (st)<-[*..3]-(fl)
+        with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
         ORDER BY toLower(ft) asc
         with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
         MATCH (st)<-[:of_participant]-(part:participant)
+        MATCH (file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (st)<-[*..3]-(file)
         OPTIONAL MATCH (part)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        OPTIONAL MATCH (part)-[:of_clinical_measure_file_participant]-(cmf:clinical_measure_file)
-        OPTIONAL MATCH (st)-[:of_clinical_measure_file]-(cmfST:clinical_measure_file)
-        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(maf:methylation_array_file)
-        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(pf:pathology_file)
-        OPTIONAL MATCH (part)<-[:of_radiology_file]-(rf:radiology_file)
-        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
-        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH st, num_p, cancers, sites, file_types, num_files, part, sm, stf, stp, pub, cmf, cmfST, maf, pf, rf, scsf, sf
+        WITH st, num_p, cancers, sites, file_types, num_files, file, sm, stf, stp, pub
         RETURN DISTINCT
           st.study_id as study_id,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -476,13 +329,7 @@ Indices:
           file_types as file_types,
           COUNT(DISTINCT sm.sample_id) as num_of_samples,
           num_files as num_of_files,
-          COLLECT(DISTINCT cmf.dcf_indexd_guid) as cmf_uuid,
-          COLLECT(DISTINCT cmfST.dcf_indexd_guid) as cmfST_uuid,
-          COLLECT(DISTINCT maf.dcf_indexd_guid) as maf_uuid,
-          COLLECT(DISTINCT pf.dcf_indexd_guid) as pf_uuid,
-          COLLECT(DISTINCT rf.dcf_indexd_guid) as rf_uuid,
-          COLLECT(DISTINCT scsf.dcf_indexd_guid) as scsf_uuid,
-          COLLECT(DISTINCT sf.dcf_indexd_guid) as sf_uuid
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files
        "
 
   - index_name: samples
@@ -516,48 +363,11 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
-      cmf_uuid:
+      files:
         type: text
         fields:
           keyword:
             type: keyword
-            ignore_above: 256
-      cmfST_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      maf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      pf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      rf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      scsf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
-      sf_uuid:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
       nested_filters:
         type: nested
         properties:
@@ -571,24 +381,10 @@ Indices:
             type: keyword
           vital_status:
             type: keyword
-          clinical_measure_file:
-            type: boolean
-          methylation_array_file:
-            type: boolean
-          pathology_file:
-            type: boolean
-          radiology_file:
-            type: boolean
-          single_cell_sequencing_file:
-            type: boolean
-          sequencing_file:
-            type: boolean
+          assay_method:
+            type: keyword
           file_type:
-            type: text
-            fields:
-              keyword:
-                type: keyword
-                ignore_above: 256
+            type: keyword
           grant_id:
             type: keyword
           institution:
@@ -602,20 +398,16 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (sm:sample)
-        OPTIONAL MATCH (p:participant)<-[:of_sample]-(sm)
-        OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
-        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        MATCH (file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (sm)<-[*..1]-(file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        OPTIONAL MATCH (p)-[:of_clinical_measure_file_participant]-(cmf:clinical_measure_file)
-        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(maf:methylation_array_file)
-        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(pf:pathology_file)
-        OPTIONAL MATCH (p)<-[:of_radiology_file]-(rf:radiology_file)
-        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(scsf:single_cell_sequencing_file)
-        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(sf:sequencing_file)
-        WITH [cmf.file_type, maf.file_type, pf.file_type, rf.file_type, scsf.file_type, sf.file_type] as file_types, rf, scsf, pf, maf, cmf, fu, p, st, sf, sm, stf, stp, dg, pub
+        WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           sm.sample_id as sample_id,
           p.participant_id as participant_id,
@@ -631,31 +423,32 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT cmf.dcf_indexd_guid) as cmf_uuid,
-          [] as cmfST_uuid,
-          COLLECT(DISTINCT maf.dcf_indexd_guid) as maf_uuid,
-          COLLECT(DISTINCT pf.dcf_indexd_guid) as pf_uuid,
-          COLLECT(DISTINCT rf.dcf_indexd_guid) as rf_uuid,
-          COLLECT(DISTINCT scsf.dcf_indexd_guid) as scsf_uuid,
-          COLLECT(DISTINCT sf.dcf_indexd_guid) as sf_uuid,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_icd_o: dg.diagnosis_icd_o,
               vital_status: fu.vital_status,
-              clinical_measure_file: exists((p)<-[:of_clinical_measure_file_participant]-(cmf)),
-              methylation_array_file: exists((p)<-[:of_sample]-(sm)<-[:of_methylation_array_file]-(maf)),
-              pathology_file: exists((p)<-[:of_sample]-(sm)<-[:of_pathology_file]-(pf)),
-              radiology_file: exists((p)<-[:of_radiology_file]-(rf)),
-              single_cell_sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_single_cell_sequencing_file]-(scsf)),
-              sequencing_file: exists((p)<-[:of_sample]-(sm)<-[:of_sequencing_file]-(sf)),
-              file_type: [ft in file_types where ft is not null],
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
               grant_id: stf.grant_id,
               institution: stp.institution,
-              library_selection: sf.library_selection,
-              library_source: sf.library_source,
-              library_strategy: sf.library_strategy
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
           }) AS nested_filters
       "
 
