@@ -1,0 +1,838 @@
+# Indices settings
+Indices:
+  - index_name: participants
+    type: neo4j
+    mapping:
+      participant_id:
+        type: keyword
+      race:
+        type: keyword
+      gender:
+        type: keyword
+      ethnicity:
+        type: keyword
+      alternate_participant_id:
+        type: keyword
+      study_id:
+        type: keyword
+      phs_accession:
+        type: keyword
+      study_acronym:
+        type: keyword
+      study_short_title:
+        type: keyword
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      nested_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
+          vital_status:
+            type: keyword
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          grant_id:
+            type: keyword
+          institution:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (p:participant)
+        OPTIONAL MATCH (p)<-[*..2]-(file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        WITH file, fu, p, st, sm, stf, stp, dg
+        RETURN DISTINCT
+          p.participant_id as participant_id,
+          p.race as race,
+          p.gender as gender,
+          p.ethnicity as ethnicity,
+          p.alternate_participant_id as alternate_participant_id,
+          st.study_id as study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              grant_id: stf.grant_id,
+              institution: stp.institution,
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
+          }) AS nested_filters
+      "
+
+  - index_name: diagnosis
+    type: neo4j
+    mapping:
+      diagnosis_id:
+        type: keyword
+      participant_id:
+        type: keyword
+      diagnosis_icd_o:
+        type: keyword
+      disease_phase:
+        type: keyword
+      diagnosis_anatomic_site:
+        type: keyword
+      age_at_diagnosis:
+        type: integer
+      race:
+        type: keyword
+      gender:
+        type: keyword
+      ethnicity:
+        type: keyword
+      phs_accession:
+        type: keyword
+      study_acronym:
+        type: keyword
+      study_short_title:
+        type: keyword
+      last_vital_status:
+        type: keyword
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      nested_filters:
+        type: nested
+        properties:
+          vital_status:
+            type: keyword
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          grant_id:
+            type: keyword
+          institution:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (dg:diagnosis)
+        MATCH (p:participant)<-[:of_diagnosis]-(dg)
+        OPTIONAL MATCH (p)<-[*..2]-(file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        with dg, file, p, fu order by fu.age_at_follow_up desc
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        WITH file, fu, p, st, sm, stf, stp, dg
+        RETURN DISTINCT
+          dg.diagnosis_id as diagnosis_id,
+          dg.diagnosis_icd_o as diagnosis_icd_o,
+          dg.disease_phase as disease_phase,
+          dg.anatomic_site as diagnosis_anatomic_site,
+          dg.age_at_diagnosis as age_at_diagnosis,
+          p.participant_id as participant_id,
+          p.race as race,
+          p.gender as gender,
+          p.ethnicity as ethnicity,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          head(collect(distinct fu.vital_status)) as last_vital_status,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT {
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              grant_id: stf.grant_id,
+              institution: stp.institution,
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
+          }) AS nested_filters
+       "
+
+  - index_name: studies
+    type: neo4j
+    mapping:
+      study_id:
+        type: keyword
+      grant_id:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+            ignore_above: 256
+      pubmed_ids:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+            ignore_above: 256
+      phs_accession:
+        type: keyword
+      study_short_title:
+        type: keyword
+      study_acronym:
+        type: keyword
+      PIs:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+            ignore_above: 256
+      num_of_participants:
+        type: integer
+      diagnosis_cancer:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      diagnosis_anatomic_site:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      file_types:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      num_of_samples:
+        type: integer
+      num_of_files:
+        type: integer
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (st:study)<-[:of_participant]-(p:participant)
+        with st, count(p) as num_p
+        MATCH (st:study)<-[:of_participant]-(participant)<-[:of_diagnosis]-(dg:diagnosis)
+        with st, num_p, dg.diagnosis_icd_o as dg_cancers, count(dg.diagnosis_icd_o) as num_cancers
+        ORDER BY toLower(dg_cancers) asc
+        with st, num_p, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
+        MATCH (st)<-[:of_participant]-(pa:participant)<-[:of_diagnosis]-(diag:diagnosis)
+        with st, num_p, cancers, diag.anatomic_site as dg_sites, count(diag.anatomic_site) as num_sites
+        ORDER BY toLower(dg_sites) asc
+        with st, num_p, cancers, collect(dg_sites + ' (' + toString(num_sites) + ')') as sites
+        MATCH (st)<-[*..3]-(fl)
+        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:rathology OR fl:methylation_array_file OR fl:single_cell_sequencing_file)
+        with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
+        ORDER BY toLower(ft) asc
+        with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
+        MATCH (st)<-[:of_participant]-(participant)<-[:of_sample]-(sm:sample)
+        WITH st, num_p, cancers, sites, file_types, num_files, count(distinct sm.sample_id) as num_samples
+        MATCH (st)<-[*..3]-(file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        WITH st, num_p, cancers, sites, file_types, num_files, num_samples, file.dcf_indexd_guid as file_id, stf, stp, pub
+        RETURN DISTINCT
+          st.study_id as study_id,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT pub.pubmed_id) as pubmed_ids,
+          st.phs_accession as phs_accession,
+          st.study_short_title as study_short_title,
+          st.study_acronym as study_acronym,
+          COLLECT(DISTINCT stp.personnel_name) as PIs,
+          num_p as num_of_participants,
+          cancers as diagnosis_cancer,
+          sites as diagnosis_anatomic_site,
+          file_types as file_types,
+          num_samples as num_of_samples,
+          num_files as num_of_files,
+          COLLECT(file_id) as files
+       "
+
+  - index_name: samples
+    type: neo4j
+    mapping:
+      sample_id:
+        type: keyword
+      participant_id:
+        type: keyword
+      race:
+        type: keyword
+      gender:
+        type: keyword
+      ethnicity:
+        type: keyword
+      sample_anatomic_site:
+        type: keyword
+      sample_diagnosis_icd_o:
+        type: keyword
+      participant_age_at_collection:
+        type: integer
+      sample_tumor_status:
+        type: keyword
+      tumor_classification:
+        type: keyword
+      study_id:
+        type: keyword
+      phs_accession:
+        type: keyword
+      study_acronym:
+        type: keyword
+      study_short_title:
+        type: keyword
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      nested_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
+          vital_status:
+            type: keyword
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          grant_id:
+            type: keyword
+          institution:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (sm:sample)
+        OPTIONAL MATCH (sm)<-[*..1]-(file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        WITH file, fu, p, st, sm, stf, stp, dg
+        RETURN DISTINCT
+          sm.sample_id as sample_id,
+          p.participant_id as participant_id,
+          p.race as race,
+          p.gender as gender,
+          p.ethnicity as ethnicity,
+          sm.anatomic_site as sample_anatomic_site,
+          sm.diagnosis_icd_o as sample_diagnosis_icd_o,
+          sm.participant_age_at_collection as participant_age_at_collection,
+          sm.sample_tumor_status as sample_tumor_status,
+          sm.tumor_classification as tumor_classification,
+          st.study_id as study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              grant_id: stf.grant_id,
+              institution: stp.institution,
+              library_selection: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_selection
+                                        ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source
+                                        ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_strategy
+                                        ELSE null END
+          }) AS nested_filters
+      "
+
+  - index_name: files
+    type: neo4j
+    mapping:
+      file_id:
+        type: keyword
+      file_name:
+        type: keyword
+      file_category:
+        type: keyword
+      file_type:
+        type: keyword
+      file_description:
+        type: keyword
+      file_size:
+        type: keyword
+      md5sum:
+        type: keyword
+      study_id:
+        type: keyword
+      phs_accession:
+        type: keyword
+      study_acronym:
+        type: keyword
+      study_short_title:
+        type: keyword
+      participant_id:
+        type: keyword
+      link_study_id:
+        type: keyword
+      link_participant_id:
+        type: keyword
+      link_sample_id:
+        type: keyword
+      nested_filters:
+        type: nested
+        properties:
+          race:
+            type: keyword
+          gender:
+            type: keyword
+          ethnicity:
+            type: keyword
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
+          vital_status:
+            type: keyword
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+          grant_id:
+            type: keyword
+          institution:
+            type: keyword
+      library_selection:
+        type: keyword
+      library_source:
+        type: keyword
+      library_strategy:
+        type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (file:clinical_measure_file)
+        MATCH (p:participant)-[:of_clinical_measure_file_participant]-(file)
+        MATCH (st)<-[:of_participant]-(p)
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Clinical measure' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS link_study_id,
+          p.participant_id AS link_participant_id,
+          null AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:clinical_measure_file)
+        MATCH (st:study)<-[:of_clinical_measure_file]-(file)
+        OPTIONAL MATCH (st)<-[:of_participant]-(p)
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Clinical measure' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          null AS participant_id,
+          st.study_id AS link_study_id,
+          null AS link_participant_id,
+          null AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:methylation_array_file)
+        MATCH (sm:sample)<-[:of_methylation_array_file]-(file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Methylation array' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS link_study_id,
+          null AS link_participant_id,
+          sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:pathology_file)
+        MATCH (sm:sample)<-[:of_pathology_file]-(file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Pathology imaging' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS link_study_id,
+          null AS link_participant_id,
+          sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:radiology_file)
+        MATCH (p:participant)<-[:of_radiology_file]-(file)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Radiology imaging' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS link_study_id,
+          p.participant_id AS link_participant_id,
+          null AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:single_cell_sequencing_file)
+        MATCH (sm:sample)<-[:of_single_cell_sequencing_file]-(file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Single Cell Sequencing' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS link_study_id,
+          null AS link_participant_id,
+          sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+        UNION ALL
+        MATCH (file:sequencing_file)
+        MATCH (sm:sample)<-[:of_sequencing_file]-(file)
+        MATCH (p:participant)<-[:of_sample]-(sm)
+        MATCH (st:study)<-[:of_participant]-(p)
+        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        RETURN DISTINCT
+          file.dcf_indexd_guid AS file_id,
+          file.file_name AS file_name,
+          'Sequencing' AS file_category,
+          file.file_type AS file_type,
+          file.file_description AS file_description,
+          file.file_size AS file_size,
+          file.md5sum AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id as participant_id,
+          null AS link_study_id,
+          null AS link_participant_id,
+          sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT {
+              race: p.race,
+              gender: p.gender,
+              ethnicity: p.ethnicity,
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o,
+              vital_status: fu.vital_status,
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification,
+              grant_id: stf.grant_id,
+              institution: stp.institution
+          }) AS nested_filters,
+          file.library_selection AS library_selection,
+          file.library_source AS library_source,
+          file.library_strategy AS library_strategy
+      "

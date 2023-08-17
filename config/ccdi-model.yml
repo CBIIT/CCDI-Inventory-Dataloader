@@ -1,8 +1,11 @@
 Handle: CDA
 Nodes:
+  cell_line:
+    Props:
+      - cell_line_id
+      - source
   clinical_measure_file: # 09.20.22 pdunn
     Props:
-      - template_version
       - clinical_measure_file_id
       - file_name
       - file_type
@@ -17,7 +20,6 @@ Nodes:
       - participant_list
   diagnosis:
     Props:
-      - template_version
       - diagnosis_id
       - diagnosis_icd_o
       - diagnosis_icd_cm
@@ -25,12 +27,10 @@ Nodes:
       - disease_phase
       - anatomic_site
       - age_at_diagnosis
-      - vital_status
       - toronto_childhood_cancer_staging
-      - days_to_recurrence
+      - age_at_recurrence
       - last_known_disease_status
-      - days_to_last_known_disease_status
-      - days_to_last_followup
+      - age_at_last_known_disease_status
       - tumor_grade
       - tumor_stage_clinical_t
       - tumor_stage_clinical_n
@@ -40,11 +40,11 @@ Nodes:
      # - progression_or_recurrence
      # - tissue_or_organ_of_origin
      # - site_of_resection_or_biopsy
+    # - days_to_last_followup
   exposure:
     Props:
-      - template_version
       - exposure_id
-      - start_days_from_index
+      - age_at_exposure
       - pack_years_smoked
       - years_smoked
       - alcohol_days_per_week
@@ -66,16 +66,15 @@ Nodes:
       - type_of_tobacco_used
   family_relationship:
     Props:
-      - template_version
       - family_relationship_id
       - related_to_participant_id
       - relationship
       - family_id
   follow_up:
     Props:
-      - template_version
       - follow_up_id
-      - days_to_follow_up 
+      - vital_status
+      - age_at_follow_up 
       - follow_up_category
       - adverse_event
       - comorbidity
@@ -85,15 +84,13 @@ Nodes:
       - follow_up_other
   medical_history:
     Props:
-      - template_version
       - medical_history_id
       - medical_history_category
       - medical_history_condition
   molecular_test:
     Props:
-      - template_version
       - molecular_test_id
-      - start_days_from_index
+      - age_at_molecular_test
       - gene_symbol
       - molecular_analysis_method
       - test_result
@@ -130,7 +127,6 @@ Nodes:
       - zygosity  
   methylation_array_file: # 09.20.22 pd
     Props:
-      - template_version
       - methylation_array_file_id
       - file_name
       - file_type
@@ -144,7 +140,6 @@ Nodes:
       - reporter_label
   participant:
     Props:
-      - template_version
       - participant_id
       - race       
       - gender
@@ -153,7 +148,6 @@ Nodes:
       # - dbgap_subject_id : store in synonym
   pathology_file: 
     Props:
-      - template_version
       - pathology_file_id
       - file_name
       - file_type
@@ -168,8 +162,7 @@ Nodes:
       - deidentification_method
       - file_mapping_level
   pdx:
-    Props:
-      - template_version
+    Props: 
       - pdx_id
       - model_id
       - mouse_strain
@@ -182,12 +175,10 @@ Nodes:
       - tumor_not_mus_or_ebv_origin
   publication:
      Props:
-      - template_version
       - publication_id
       - pubmed_id
   radiology_file: 
     Props:
-      - template_version
       - radiology_file_id
       - file_name
       - file_type
@@ -203,7 +194,6 @@ Nodes:
       - file_mapping_level
   sample:
     Props:
-      - template_version
       - sample_id
       - anatomic_site
       - participant_age_at_collection # 28.02.22 pdunn
@@ -214,7 +204,7 @@ Nodes:
       - sample_description
       - alternate_sample_id
       - last_known_disease_status
-      - days_to_last_known_disease_status
+      - age_at_last_known_disease_status
       - toronto_childhood_cancer_staging
       - tumor_grade
       - tumor_stage_clinical_t
@@ -224,10 +214,8 @@ Nodes:
   #   - sample_type
   #   - biosample_accession captured in synonym 
   #   - disease_phase
-  #   - days_to_last_followup
   single_cell_sequencing_file:
     Props:
-      - template_version
       - single_cell_sequencing_file_id
       - file_name
       - file_type
@@ -279,7 +267,6 @@ Nodes:
       - UMI
   sequencing_file: # 01.03.22 pdunn
     Props:
-      - template_version
       - sequencing_file_id
       - file_name
       - file_type
@@ -308,7 +295,6 @@ Nodes:
       - sequence_alignment_software
   study:
     Props:
-      - template_version
       - study_id
       - phs_accession #dbGaP accession
       - acl
@@ -325,7 +311,6 @@ Nodes:
       # - bioproject_accession : store in synonym
   study_admin:
     Props:
-      - template_version
       - study_admin_id
       - organism_species
       - adult_or_childhood_study # adult, pediatric - needs review, there are many other facets of study type (interventional, longitudinal), should this be added after a query of study_subject.age
@@ -335,21 +320,18 @@ Nodes:
       - number_of_samples
   study_arm: # 09.21.22 pd
     Props:
-      - template_version
       - study_arm_id
       - clinical_trial_arm
       - clinical_trial_identifier
       - clinical_trial_repository
   study_funding: # 0 or many grant or contract IDs
-    Props:
-      - template_version
+    Props: 
       - study_funding_id
       - funding_agency # 0 or many per study
       - grant_id #grant or contract ID, NIH or other
       - funding_source_program_name
   study_personnel:
     Props:
-      - template_version
       - study_personnel_id  # 02/03/2022 adeforge, used to be 'study_personnel_ID'
       - personnel_name
       - personnel_type #enum: PI, Co-PI, Data Submitter, etc
@@ -357,19 +339,25 @@ Nodes:
       - institution
   synonym:  # 09.20.22 pd, nee alias
      Props:
-      - template_version
       - synonym_id #the alternate or alias id in another repo
       - repository_of_synonym_id #the name of the other repo
   therapeutic_procedure:
     Props:
-      - template_version
       - therapeutic_procedure_id
-      - days_to_treatment_start
-      - days_to_treatment_end
+      - age_at_treatment_start
+      - age_at_treatment_end
       - treatment_outcome
       - treatment_type
       - therapeutic_agents
 Relationships:
+  of_cell_line:
+    Props: null
+    Mul: many_to_one
+    Ends: 
+      - Src: cell_line
+        Dst: participant
+      - Src: cell_line
+        Dst: study   
   of_clinical_measure_file: # #09.20.22 pd
     Props: null
     Mul: many_to_one 
@@ -411,6 +399,10 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: pathology_file
+        Dst: cell_line
+      - Src: pathology_file
+        Dst: pdx
+      - Src: pathology_file
         Dst: sample
   of_medical_history:
     Props: null
@@ -422,6 +414,10 @@ Relationships:
     Props: null
     Mul: many_to_one
     Ends:
+      - Src: methylation_array_file
+        Dst: cell_line
+      - Src: methylation_array_file
+        Dst: pdx
       - Src: methylation_array_file
         Dst: sample
   of_molecular_test:
@@ -442,6 +438,8 @@ Relationships:
     Props: null
     Mul: many_to_one
     Ends:
+      - Src: pdx
+        Dst: study
       - Src: pdx
         Dst: sample
   of_publication: # 09.20.22 pd
@@ -467,14 +465,22 @@ Relationships:
   #of_sample_diagnosis: 
   of_sequencing_file: #09.20.22 pd
     Props: null
-    Mul: many_to_many  # changed this 'many_to_one' 05/22/2023 adeforge
+    Mul: many_to_one
     Ends:
+      - Src: sequencing_file
+        Dst: cell_line
+      - Src: sequencing_file
+        Dst: pdx
       - Src: sequencing_file
         Dst: sample
   of_single_cell_sequencing_file:
     Props: null
-    Mul: many_to_many  # changed this 'many_to_one' 05/22/2023 adeforge
+    Mul: many_to_one
     Ends:
+      - Src: single_cell_sequencing_file
+        Dst: cell_line
+      - Src: single_cell_sequencing_file
+        Dst: pdx
       - Src: single_cell_sequencing_file
         Dst: sample
   of_study_admin: 
