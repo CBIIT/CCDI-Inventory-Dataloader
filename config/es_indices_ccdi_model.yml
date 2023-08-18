@@ -83,7 +83,13 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN file.sequencing_file_id
+                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
+                        WHEN 'radiology_file' THEN file.radiology_file_id
+                        WHEN 'pathology_file' THEN file.pathology_file_id
+                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
+                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
@@ -204,7 +210,13 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           head(collect(distinct fu.vital_status)) as last_vital_status,
-          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN file.sequencing_file_id
+                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
+                        WHEN 'radiology_file' THEN file.radiology_file_id
+                        WHEN 'pathology_file' THEN file.pathology_file_id
+                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
+                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
           COLLECT(DISTINCT {
               vital_status: fu.vital_status,
               sample_anatomic_site: sm.anatomic_site,
@@ -312,7 +324,13 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH st, num_p, cancers, sites, file_types, num_files, num_samples, file.dcf_indexd_guid as file_id, stf, stp, pub
+        WITH st, num_p, cancers, sites, file_types, num_files, num_samples, CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN file.sequencing_file_id
+                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
+                        WHEN 'radiology_file' THEN file.radiology_file_id
+                        WHEN 'pathology_file' THEN file.pathology_file_id
+                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
+                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END as file_id, stf, stp, pub
         RETURN DISTINCT
           st.study_id as study_id,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -420,7 +438,13 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT file.dcf_indexd_guid) as files,
+          COLLECT(DISTINCT CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN file.sequencing_file_id
+                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
+                        WHEN 'radiology_file' THEN file.radiology_file_id
+                        WHEN 'pathology_file' THEN file.pathology_file_id
+                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
+                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
@@ -531,7 +555,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.clinical_measure_file_id AS file_id,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
           file.file_type AS file_type,
@@ -576,7 +600,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.clinical_measure_file_id AS file_id,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
           file.file_type AS file_type,
@@ -621,7 +645,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.methylation_array_file_id AS file_id,
           file.file_name AS file_name,
           'Methylation array' AS file_category,
           file.file_type AS file_type,
@@ -666,7 +690,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.pathology_file_id AS file_id,
           file.file_name AS file_name,
           'Pathology imaging' AS file_category,
           file.file_type AS file_type,
@@ -711,7 +735,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.radiology_file_id AS file_id,
           file.file_name AS file_name,
           'Radiology imaging' AS file_category,
           file.file_type AS file_type,
@@ -756,7 +780,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.single_cell_sequencing_file_id AS file_id,
           file.file_name AS file_name,
           'Single Cell Sequencing' AS file_category,
           file.file_type AS file_type,
@@ -801,7 +825,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
-          file.dcf_indexd_guid AS file_id,
+          file.sequencing_file_id AS file_id,
           file.file_name AS file_name,
           'Sequencing' AS file_category,
           file.file_type AS file_type,
