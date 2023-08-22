@@ -3,6 +3,8 @@ Indices:
   - index_name: participants
     type: neo4j
     mapping:
+      id:
+        type: keyword
       participant_id:
         type: keyword
       race:
@@ -74,6 +76,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
+          p.id as id,
           p.participant_id as participant_id,
           p.race as race,
           p.gender as gender,
@@ -83,13 +86,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN file.sequencing_file_id
-                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
-                        WHEN 'radiology_file' THEN file.radiology_file_id
-                        WHEN 'pathology_file' THEN file.pathology_file_id
-                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
-                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
@@ -125,6 +122,8 @@ Indices:
   - index_name: diagnosis
     type: neo4j
     mapping:
+      id:
+        type: keyword
       diagnosis_id:
         type: keyword
       participant_id:
@@ -197,6 +196,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
+          dg.id as id,
           dg.diagnosis_id as diagnosis_id,
           dg.diagnosis_icd_o as diagnosis_icd_o,
           dg.disease_phase as disease_phase,
@@ -210,13 +210,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           head(collect(distinct fu.vital_status)) as last_vital_status,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN file.sequencing_file_id
-                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
-                        WHEN 'radiology_file' THEN file.radiology_file_id
-                        WHEN 'pathology_file' THEN file.pathology_file_id
-                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
-                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               vital_status: fu.vital_status,
               sample_anatomic_site: sm.anatomic_site,
@@ -248,6 +242,8 @@ Indices:
   - index_name: studies
     type: neo4j
     mapping:
+      id:
+        type: keyword
       study_id:
         type: keyword
       grant_id:
@@ -324,14 +320,9 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH st, num_p, cancers, sites, file_types, num_files, num_samples, CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN file.sequencing_file_id
-                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
-                        WHEN 'radiology_file' THEN file.radiology_file_id
-                        WHEN 'pathology_file' THEN file.pathology_file_id
-                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
-                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END as file_id, stf, stp, pub
+        WITH st, num_p, cancers, sites, file_types, num_files, num_samples, file.id as file_id, stf, stp, pub
         RETURN DISTINCT
+          st.id as id,
           st.study_id as study_id,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT pub.pubmed_id) as pubmed_ids,
@@ -351,6 +342,8 @@ Indices:
   - index_name: samples
     type: neo4j
     mapping:
+      id:
+        type: keyword
       sample_id:
         type: keyword
       participant_id:
@@ -424,6 +417,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
+          sm.id as id,
           sm.sample_id as sample_id,
           p.participant_id as participant_id,
           p.race as race,
@@ -438,13 +432,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN file.sequencing_file_id
-                        WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
-                        WHEN 'radiology_file' THEN file.radiology_file_id
-                        WHEN 'pathology_file' THEN file.pathology_file_id
-                        WHEN 'methylation_array_file' THEN file.methylation_array_file_id
-                        WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id END) as files,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
@@ -476,6 +464,8 @@ Indices:
   - index_name: files
     type: neo4j
     mapping:
+      id:
+        type: keyword
       file_id:
         type: keyword
       file_name:
@@ -555,6 +545,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.clinical_measure_file_id AS file_id,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
@@ -600,6 +591,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.clinical_measure_file_id AS file_id,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
@@ -645,6 +637,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.methylation_array_file_id AS file_id,
           file.file_name AS file_name,
           'Methylation array' AS file_category,
@@ -690,6 +683,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.pathology_file_id AS file_id,
           file.file_name AS file_name,
           'Pathology imaging' AS file_category,
@@ -735,6 +729,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.radiology_file_id AS file_id,
           file.file_name AS file_name,
           'Radiology imaging' AS file_category,
@@ -780,6 +775,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.single_cell_sequencing_file_id AS file_id,
           file.file_name AS file_name,
           'Single Cell Sequencing' AS file_category,
@@ -825,6 +821,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         RETURN DISTINCT
+          file.id as id,
           file.sequencing_file_id AS file_id,
           file.file_name AS file_name,
           'Sequencing' AS file_category,
