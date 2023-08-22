@@ -543,8 +543,6 @@ class ICDC_Schema:
     # Get type info from description
     def map_type(self, type_name):
         mapping = self.props.type_mapping
-        print("MAPPING")
-        print(mapping)
         result = DEFAULT_TYPE
 
         if type_name in mapping:

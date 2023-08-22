@@ -3,15 +3,30 @@ Properties:
   rel_prop_delimiter: "$"
 
   plurals:
+    cell_line: cell_lines
+    clinical_measure_file: clinical_measure_files
+    diagnosis: diagnosises
+    exposure: exposures
+    family_relationship: family_relationships
+    follow_up: follow_ups
+    medical_history: medical_historys
+    molecular_test: molecular_tests
+    methylation_array_file: methylation_array_files
+    participant: participants
+    pathology_file: pathology_files
+    pdx: pdxs
+    publication: publications
+    radiology_file: radiology_files
+    sample: samples
+    single_cell_sequencing_file: single_cell_sequencing_files
+    sequencing_file: sequencing_files
     study: studies
     study_admin: study_admins
-    participant: participants
-    diagnosis: diagnoses
-    treatment: treatments
-    specimen: specimens
-    sample: samples
-    file: files
-    genomic_info: genomic_info
+    study_arm: study_arms
+    study_funding: study_fundings
+    study_personnel: study_personnels
+    synonym: synonyms
+    therapeutic_procedure: therapeutic_procedures
 
   type_mapping:
     string: String
@@ -25,26 +40,27 @@ Properties:
     TBD: String
 
   id_fields:
-    clinical_measure_file: clinical_measure_file_id
-    diagnosis: diagnosis_id
-    exposure: exposure_id
-    family_relationship: family_relationship_id
-    follow_up: follow_up_id
-    medical_history: medical_history_id
-    molecular_test: molecular_test_id
-    methylation_array_file: methylation_array_file_id
-    participant: participant_id
-    pathology_file: pathology_file_id
-    pdx: pdx_id
-    publication: publication_id
-    radiology_file: radiology_file_id
-    sample: sample_id
-    single_cell_sequencing_file: single_cell_sequencing_file_id
-    sequencing_file: sequencing_file_id
-    study: study_id
-    study_admin: study_admin_id
-    study_arm: study_arm_id
-    study_funding: study_funding_id
-    study_personnel: study_personnel_id
-    synonym: synonym_id
-    therapeutic_procedure: therapeutic_procedure_id 
+    cell_line: id
+    clinical_measure_file: id
+    diagnosis: id
+    exposure: id
+    family_relationship: id
+    follow_up: id
+    medical_history: id
+    molecular_test: id
+    methylation_array_file: id
+    participant: id
+    pathology_file: id
+    pdx: id
+    publication: id
+    radiology_file: id
+    sample: id
+    single_cell_sequencing_file: id
+    sequencing_file: id
+    study: id
+    study_admin: id
+    study_arm: id
+    study_funding: id
+    study_personnel: id
+    synonym: id
+    therapeutic_procedure: id
