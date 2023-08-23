@@ -49,8 +49,7 @@ def parse_arguments(args=None):
     parser.add_argument('--s3-folder-fail', help='S3 folder for data that failed to validate and load.')
     parser.add_argument('--bucket-success', help='S3 bucket name for data that successfully loaded.')
     parser.add_argument('--s3-folder-success', help='S3 folder for data that successfully loaded.')
-    parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE],
-                        default=UPSERT_MODE)
+    parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE])
     parser.add_argument('--dataset', help='Dataset directory')
     parser.add_argument('--split-transactions', help='Creates a separate transaction for each file',
                         action='store_true')
@@ -196,7 +195,7 @@ def process_arguments(args, log):
     if args.mode:
         config.loading_mode = args.mode
     if not config.loading_mode:
-        config.loading_mode = "UPSERT_MODE"
+        config.loading_mode = UPSERT_MODE
 
     if args.max_violations:
         config.max_violations = int(args.max_violations)

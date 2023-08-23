@@ -40,4 +40,27 @@ Properties:
     TBD: String
 
   id_fields:
-    tmp: id
+    cell_line: id
+    clinical_measure_file: id
+    diagnosis: id
+    exposure: id
+    family_relationship: id
+    follow_up: id
+    medical_history: id
+    molecular_test: id
+    methylation_array_file: id
+    participant: id
+    pathology_file: id
+    pdx: id
+    publication: id
+    radiology_file: id
+    sample: id
+    single_cell_sequencing_file: id
+    sequencing_file: id
+    study: id
+    study_admin: id
+    study_arm: id
+    study_funding: id
+    study_personnel: id
+    synonym: id
+    therapeutic_procedure: id
