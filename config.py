@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from bento.common.utils import get_logger
+from bento.common.utils import get_logger, UPSERT_MODE
 
 class PluginConfig:
     def __init__(self, config):
@@ -116,7 +116,7 @@ class BentoConfig:
                     self.s3_folder_fail = config.get('s3_folder_fail')
                     self.s3_bucket_success = config.get('s3_bucket_success')
                     self.s3_folder_success = config.get('s3_folder_success')
-                    self.loading_mode = config.get('loading_mode', 'UPSERT_MODE')
+                    self.loading_mode = config.get('loading_mode', UPSERT_MODE)
                     self.dataset = config.get('dataset')
                     self.no_parents = config.get('no_parents')
                     self.split_transactions = config.get('split_transactions')
