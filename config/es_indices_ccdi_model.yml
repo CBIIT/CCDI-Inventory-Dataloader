@@ -474,6 +474,8 @@ Indices:
         type: keyword
       file_id:
         type: keyword
+      guid:
+        type: keyword
       file_name:
         type: keyword
       file_category:
@@ -553,6 +555,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.clinical_measure_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
           file.file_type AS file_type,
@@ -599,6 +602,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.clinical_measure_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Clinical measure' AS file_category,
           file.file_type AS file_type,
@@ -645,6 +649,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.methylation_array_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Methylation array' AS file_category,
           file.file_type AS file_type,
@@ -691,6 +696,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.pathology_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Pathology imaging' AS file_category,
           file.file_type AS file_type,
@@ -737,6 +743,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.radiology_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Radiology imaging' AS file_category,
           file.file_type AS file_type,
@@ -783,6 +790,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.single_cell_sequencing_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Single Cell Sequencing' AS file_category,
           file.file_type AS file_type,
@@ -829,6 +837,7 @@ Indices:
         RETURN DISTINCT
           file.id as id,
           file.sequencing_file_id AS file_id,
+          file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
           'Sequencing' AS file_category,
           file.file_type AS file_type,
