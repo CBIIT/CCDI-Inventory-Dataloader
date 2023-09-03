@@ -253,17 +253,9 @@ Indices:
       study_id:
         type: keyword
       grant_id:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
+        type: keyword
       pubmed_ids:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
+        type: keyword
       phs_accession:
         type: keyword
       study_short_title:
@@ -271,11 +263,7 @@ Indices:
       study_acronym:
         type: keyword
       PIs:
-        type: text
-        fields:
-          keyword:
-            type: keyword
-            ignore_above: 256
+        type: keyword
       num_of_participants:
         type: integer
       diagnosis_cancer:
@@ -308,16 +296,16 @@ Indices:
         with st, count(p) as num_p
         MATCH (st:study)<-[:of_participant]-(participant)<-[:of_diagnosis]-(dg:diagnosis)
         with st, num_p, dg.diagnosis_icd_o as dg_cancers, count(dg.diagnosis_icd_o) as num_cancers
-        ORDER BY toLower(dg_cancers) asc
+        ORDER BY num_cancers desc
         with st, num_p, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
         MATCH (st)<-[:of_participant]-(pa:participant)<-[:of_diagnosis]-(diag:diagnosis)
         with st, num_p, cancers, diag.anatomic_site as dg_sites, count(diag.anatomic_site) as num_sites
-        ORDER BY toLower(dg_sites) asc
+        ORDER BY num_sites desc
         with st, num_p, cancers, collect(dg_sites + ' (' + toString(num_sites) + ')') as sites
         MATCH (st)<-[*..3]-(fl)
         WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:rathology OR fl:methylation_array_file OR fl:single_cell_sequencing_file)
         with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
-        ORDER BY toLower(ft) asc
+        ORDER BY num_ft desc
         with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
         MATCH (st)<-[:of_participant]-(participant)<-[:of_sample]-(sm:sample)
         WITH st, num_p, cancers, sites, file_types, num_files, count(distinct sm.sample_id) as num_samples
@@ -330,12 +318,12 @@ Indices:
         RETURN DISTINCT
           st.id as id,
           st.study_id as study_id,
-          COLLECT(DISTINCT stf.grant_id) as grant_id,
-          COLLECT(DISTINCT pub.pubmed_id) as pubmed_ids,
+          apoc.text.join(COLLECT(DISTINCT stf.grant_id), ';') as grant_id,
+          apoc.text.join(COLLECT(DISTINCT pub.pubmed_id), ';') as pubmed_ids,
           st.phs_accession as phs_accession,
           st.study_short_title as study_short_title,
           st.study_acronym as study_acronym,
-          COLLECT(DISTINCT stp.personnel_name) as PIs,
+          apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
           num_p as num_of_participants,
           cancers as diagnosis_cancer,
           sites as diagnosis_anatomic_site,
