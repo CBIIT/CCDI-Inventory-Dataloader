@@ -473,7 +473,7 @@ Indices:
       file_description:
         type: keyword
       file_size:
-        type: keyword
+        type: long
       md5sum:
         type: keyword
       study_id:
