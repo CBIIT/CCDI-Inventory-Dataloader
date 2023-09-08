@@ -323,13 +323,13 @@ def main(args=None):
                                 os.remove(os.path.join(config.dataset,file))
                         else:
                             log.error(f'Moving successful file {file} failed! File is still where this code ran and not in success location.')
-                    log.info(f'Attempting to remove successful files from the source {config.s3_bucket}/{config.s3_folder}.')
-                    for file in files:
-                        result = remove_file(config.s3_bucket, config.s3_folder, file)
-                        if result:
-                            log.info(f'Removing successful file {file} succeeded!')
-                        else:
-                            log.error(f'Removing successful file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
+                    #log.info(f'Attempting to remove successful files from the source {config.s3_bucket}/{config.s3_folder}.')
+                    #for file in files:
+                    #    result = remove_file(config.s3_bucket, config.s3_folder, file)
+                    #    if result:
+                    #        log.info(f'Removing successful file {file} succeeded!')
+                    #    else:
+                    #        log.error(f'Removing successful file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
                 else:
                     log.info(f'Data files not moved, still where this code ran and in source and not in proper success destination.')
         else:
