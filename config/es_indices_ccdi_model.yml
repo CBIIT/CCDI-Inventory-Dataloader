@@ -330,7 +330,7 @@ Indices:
           file_types as file_types,
           num_samples as num_of_samples,
           num_files as num_of_files,
-          COLLECT(file_id) as files
+          COLLECT(DISTINCT file_id) as files
        "
 
   - index_name: samples
