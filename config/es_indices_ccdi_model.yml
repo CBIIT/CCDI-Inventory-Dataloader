@@ -492,6 +492,11 @@ Indices:
         type: keyword
       link_sample_id:
         type: keyword
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
       nested_filters:
         type: nested
         properties:
@@ -558,6 +563,7 @@ Indices:
           null AS link_study_id,
           p.participant_id AS link_participant_id,
           null AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -605,6 +611,7 @@ Indices:
           st.study_id AS link_study_id,
           null AS link_participant_id,
           null AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -652,6 +659,7 @@ Indices:
           null AS link_study_id,
           null AS link_participant_id,
           sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -699,6 +707,7 @@ Indices:
           null AS link_study_id,
           null AS link_participant_id,
           sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -746,6 +755,7 @@ Indices:
           null AS link_study_id,
           p.participant_id AS link_participant_id,
           null AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -793,6 +803,7 @@ Indices:
           null AS link_study_id,
           null AS link_participant_id,
           sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
@@ -840,6 +851,7 @@ Indices:
           null AS link_study_id,
           null AS link_participant_id,
           sm.sample_id AS link_sample_id,
+          COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
               gender: p.gender,
