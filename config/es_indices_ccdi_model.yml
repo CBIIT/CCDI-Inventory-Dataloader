@@ -316,6 +316,7 @@ Indices:
         WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        WHERE stp.personnel_type = 'PI'
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         WITH st, num_p, cancers, sites, file_types, num_files, num_samples, file.id as file_id, stf, stp, pub
         RETURN DISTINCT
