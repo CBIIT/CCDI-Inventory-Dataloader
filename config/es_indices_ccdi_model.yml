@@ -27,6 +27,8 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
+      file_count:
+        type: integer
       files:
         type: text
         fields:
@@ -92,6 +94,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
+          COUNT(DISTINCT file.id) as file_count,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -366,6 +369,8 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
+      file_count:
+        type: integer
       files:
         type: text
         fields:
@@ -426,6 +431,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
+          COUNT(DISTINCT file.id) as file_count,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
