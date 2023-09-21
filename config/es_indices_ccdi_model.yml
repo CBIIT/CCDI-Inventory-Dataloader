@@ -493,11 +493,7 @@ Indices:
         type: keyword
       participant_id:
         type: keyword
-      link_study_id:
-        type: keyword
-      link_participant_id:
-        type: keyword
-      link_sample_id:
+      sample_id:
         type: keyword
       files:
         type: text
@@ -569,9 +565,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
-          null AS link_study_id,
-          p.participant_id AS link_participant_id,
-          null AS link_sample_id,
+          null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -618,9 +612,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           null AS participant_id,
-          st.study_id AS link_study_id,
-          null AS link_participant_id,
-          null AS link_sample_id,
+          null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -667,9 +659,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
-          null AS link_study_id,
-          null AS link_participant_id,
-          sm.sample_id AS link_sample_id,
+          sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -716,9 +706,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
-          null AS link_study_id,
-          null AS link_participant_id,
-          sm.sample_id AS link_sample_id,
+          sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -765,9 +753,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
-          null AS link_study_id,
-          p.participant_id AS link_participant_id,
-          null AS link_sample_id,
+          null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -814,9 +800,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
-          null AS link_study_id,
-          null AS link_participant_id,
-          sm.sample_id AS link_sample_id,
+          sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
@@ -863,9 +847,7 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id as participant_id,
-          null AS link_study_id,
-          null AS link_participant_id,
-          sm.sample_id AS link_sample_id,
+          sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
               participant_id: p.participant_id,
