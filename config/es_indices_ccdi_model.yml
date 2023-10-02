@@ -128,6 +128,8 @@ Indices:
     mapping:
       id:
         type: keyword
+      pid:
+        type: keyword
       diagnosis_id:
         type: keyword
       participant_id:
@@ -198,6 +200,7 @@ Indices:
         WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           dg.id as id,
+          p.id as pid,
           dg.diagnosis_id as diagnosis_id,
           dg.diagnosis_icd_o as diagnosis_icd_o,
           dg.disease_phase as disease_phase,
@@ -332,6 +335,8 @@ Indices:
     mapping:
       id:
         type: keyword
+      pid:
+        type: keyword
       sample_id:
         type: keyword
       participant_id:
@@ -405,6 +410,7 @@ Indices:
         WITH file, fu, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           sm.id as id,
+          p.id as pid,
           sm.sample_id as sample_id,
           p.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
@@ -451,6 +457,8 @@ Indices:
     type: neo4j
     mapping:
       id:
+        type: keyword
+      pid:
         type: keyword
       file_id:
         type: keyword
@@ -536,6 +544,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.clinical_measure_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -583,6 +592,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          null as pid,
           file.clinical_measure_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -630,6 +640,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.methylation_array_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -677,6 +688,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.pathology_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -724,6 +736,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.radiology_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -771,6 +784,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.single_cell_sequencing_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
@@ -818,6 +832,7 @@ Indices:
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
+          p.id as pid,
           file.sequencing_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
