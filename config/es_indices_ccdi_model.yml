@@ -1,9 +1,14 @@
 # Indices settings
 Indices:
+  # This indice was NOT used in inventory v1
   - index_name: studies_facet
     type: neo4j
     mapping:
       id:
+        type: keyword
+      pid:
+        type: keyword
+      participant_id:
         type: keyword
       phs_accession:
         type: keyword
@@ -61,26 +66,82 @@ Indices:
             type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
-        MATCH (st:study)
-        MATCH (st:study)<-[:of_participant]-(p)
-        MATCH (st)<-[*..3]-(file)
-
-        OPTIONAL MATCH (p)<-[:of_clinical_measure_file_participant]-(file2:clinical_measure_file)
-        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(file3:pathology_file)
-        OPTIONAL MATCH (p)<-[:of_radiology_file]-(file4:rathology)
-        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(file5:methylation_array_file)
-        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(file6:single_cell_sequencing_file)
-        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(file7:sequencing_file)
-        
-        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        MATCH (st:study)<-[:of_participant]-(p:participant)
+        MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(file1:pathology_file)
+        with st, COLLECT(DISTINCT file1.file_type) AS file1_types
+        UNWIND (case file1_types when [] then [null] else file1_types end) AS types_1
+        with st, CASE file1_types WHEN [] then [] else COLLECT(DISTINCT {
+          assay_method: "Pathology imaging",
+          file_type: types_1,
+          library_selection: null,
+          library_source: null,
+          library_strategy: null
+          }) end as file1_filters
+        MATCH (st)<-[:of_participant]-(p:participant)
+        OPTIONAL MATCH (p)<-[:of_radiology_file]-(file2:rathology)
+        with st, file1_filters, COLLECT(DISTINCT file2.file_type) AS file2_types
+        UNWIND (case file2_types when [] then [null] else file2_types end) AS types_2
+        with st, file1_filters, CASE file2_types WHEN [] then [] else COLLECT(DISTINCT {
+          assay_method: "Radiology imaging",
+          file_type: types_2,
+          library_selection: null,
+          library_source: null,
+          library_strategy: null
+          }) end as file2_filters
+        MATCH (st)<-[:of_participant]-(p:participant)
+        MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(file3:methylation_array_file)
+        with st, file1_filters, file2_filters, COLLECT(DISTINCT file3.file_type) AS file3_types
+        UNWIND (case file3_types when [] then [null] else file3_types end) AS types_3
+        with st, file1_filters, file2_filters, CASE file3_types WHEN [] then [] else COLLECT(DISTINCT {
+          assay_method: "Methylation array",
+          file_type: types_3,
+          library_selection: null,
+          library_source: null,
+          library_strategy: null
+          }) end as file3_filters
+        MATCH (st)<-[:of_participant]-(p:participant)
+        MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(file4:single_cell_sequencing_file)
+        with st, file1_filters, file2_filters, file3_filters, COLLECT(DISTINCT file4.file_type) AS file4_types
+        UNWIND (case file4_types when [] then [null] else file4_types end) AS types_4
+        with st, file1_filters, file2_filters, file3_filters, CASE file4_types WHEN [] then [] else COLLECT(DISTINCT {
+          assay_method: "Single Cell Sequencing",
+          file_type: types_4,
+          library_selection: null,
+          library_source: null,
+          library_strategy: null
+          }) end as file4_filters
+        OPTIONAL MATCH (st)<-[*..1]-(file5:clinical_measure_file)
+        with st, file1_filters, file2_filters, file3_filters, file4_filters, COLLECT(distinct file5.file_type) AS file5_types
+        UNWIND (case file5_types when [] then [null] else file5_types end)  AS types_5
+        with st, file1_filters, file2_filters, file3_filters, file4_filters, CASE file5_types WHEN [] then [] else COLLECT(DISTINCT {
+          assay_method: "Clinical measure",
+          file_type: types_5,
+          library_selection: null,
+          library_source: null,
+          library_strategy: null
+          }) end as file5_filters
+        OPTIONAL MATCH (st)<--(p:participant)<--(sm:sample)<-[:of_sequencing_file]-(file6:sequencing_file)
+        with st, file1_filters, file2_filters, file3_filters, file4_filters, file5_filters, COLLECT(DISTINCT {
+          assay_method: "Sequencing",
+          file_type: file6.file_type,
+          library_selection: file6.library_selection,
+          library_source: file6.library_source,
+          library_strategy: file6.library_strategy
+        }) AS file6_filters
+        MATCH (st)<-[:of_participant]-(p:participant)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH file, fu, p, st, sm, stf, stp, dg
+        WITH fu, p, st, sm, stf, stp, dg, file1_filters, file2_filters, file3_filters, file4_filters, file5_filters, file6_filters
         RETURN DISTINCT
           st.id as id,
+          COLLECT(DISTINCT p.id) as pid,
+          COLLECT(DISTINCT p.participant_id) as participant_id,
           st.phs_accession as phs_accession,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
@@ -104,25 +165,7 @@ Indices:
               sample_tumor_status: sm.sample_tumor_status,
               tumor_classification: sm.tumor_classification
           }) AS sample_filters,
-          COLLECT(DISTINCT {
-              assay_method: CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN 'Sequencing'
-                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
-                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                        WHEN 'pathology_file' THEN 'Pathology imaging'
-                        WHEN 'methylation_array_file' THEN 'Methylation array'
-                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
-              file_type: file.file_type,
-              library_selection: CASE LABELS(file)[0]
-                            WHEN 'sequencing_file' THEN file.library_selection
-                            ELSE null END,
-              library_source: CASE LABELS(file)[0]
-                            WHEN 'sequencing_file' THEN file.library_source
-                            ELSE null END,
-              library_strategy: CASE LABELS(file)[0]
-                            WHEN 'sequencing_file' THEN file.library_strategy
-                            ELSE null END
-          }) AS file_filters
+          file1_filters + file2_filters + file3_filters + file4_filters + file5_filters + file6_filters AS file_filters
       "
 
   - index_name: participants
