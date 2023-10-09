@@ -1,5 +1,130 @@
 # Indices settings
 Indices:
+  - index_name: studies_facet
+    type: neo4j
+    mapping:
+      id:
+        type: keyword
+      phs_accession:
+        type: keyword
+      grant_id:
+        type: keyword
+      institution:
+        type: keyword
+      study_acronym:
+        type: keyword
+      study_short_title:
+        type: keyword
+      participant_filters:
+        race:
+          type: keyword
+        gender:
+          type: keyword
+        ethnicity:
+          type: keyword
+      diagnosis_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
+      vital_status:
+        type: keyword
+      sample_filters:
+        type: nested
+        properties:
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+      file_filters:
+        type: nested
+        properties:
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (st:study)
+        MATCH (st:study)<-[:of_participant]-(p)
+        MATCH (st)<-[*..3]-(file)
+
+        OPTIONAL MATCH (p)<-[:of_clinical_measure_file_participant]-(file2:clinical_measure_file)
+        OPTIONAL MATCH (sm)<-[:of_pathology_file]-(file3:pathology_file)
+        OPTIONAL MATCH (p)<-[:of_radiology_file]-(file4:rathology)
+        OPTIONAL MATCH (sm)<-[:of_methylation_array_file]-(file5:methylation_array_file)
+        OPTIONAL MATCH (sm)<-[:of_single_cell_sequencing_file]-(file6:single_cell_sequencing_file)
+        OPTIONAL MATCH (sm)<-[:of_sequencing_file]-(file7:sequencing_file)
+        
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:rathology OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        WITH file, fu, p, st, sm, stf, stp, dg
+        RETURN DISTINCT
+          st.id as id,
+          st.phs_accession as phs_accession,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT stp.institution) as institution,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          COLLECT(DISTINCT {
+              race: apoc.text.split(p.race, ';'),
+              gender: p.gender,
+              ethnicity: apoc.text.split(p.ethnicity, ';')
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
+          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
+          COLLECT(DISTINCT {
+              assay_method: CASE LABELS(file)[0]
+                        WHEN 'sequencing_file' THEN 'Sequencing'
+                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                        WHEN 'radiology_file' THEN 'Radiology imaging'
+                        WHEN 'pathology_file' THEN 'Pathology imaging'
+                        WHEN 'methylation_array_file' THEN 'Methylation array'
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              library_selection: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_selection
+                            ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_source
+                            ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_strategy
+                            ELSE null END
+          }) AS file_filters
+      "
+
   - index_name: participants
     type: neo4j
     mapping:
@@ -19,28 +144,43 @@ Indices:
         type: keyword
       alternate_participant_id:
         type: keyword
-      age_at_diagnosis:
-        type: integer
-      diagnosis_anatomic_site:
-        type: keyword
-      disease_phase:
-        type: keyword
-      diagnosis_icd_o:
-        type: keyword
+      diagnosis_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
       vital_status:
         type: keyword
-      sample_anatomic_site:
-        type: keyword
-      participant_age_at_collection:
-        type: integer
-      sample_tumor_status:
-        type: keyword
-      tumor_classification:
-        type: keyword
-      assay_method:
-        type: keyword
-      file_type:
-        type: keyword
+      sample_filters:
+        type: nested
+        properties:
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+      file_filters:
+        type: nested
+        properties:
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
       study_id:
         type: keyword
       phs_accession:
@@ -52,12 +192,6 @@ Indices:
       study_acronym:
         type: keyword
       study_short_title:
-        type: keyword
-      library_selection:
-        type: keyword
-      library_source:
-        type: keyword
-      library_strategy:
         type: keyword
       file_count:
         type: integer
@@ -87,38 +221,44 @@ Indices:
           apoc.text.split(p.ethnicity, ';') as ethnicity,
           p.ethnicity as ethnicity_str,
           p.alternate_participant_id as alternate_participant_id,
-          st.study_id as study_id,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
+          COLLECT(DISTINCT {
+              assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
                         WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                         WHEN 'radiology_file' THEN 'Radiology imaging'
                         WHEN 'pathology_file' THEN 'Pathology imaging'
                         WHEN 'methylation_array_file' THEN 'Methylation array'
-                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END) as assay_method,
-          COLLECT(DISTINCT file.file_type) as file_type,
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              library_selection: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_selection
+                            ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_source
+                            ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_strategy
+                            ELSE null END
+          }) AS file_filters,
+          st.study_id as study_id,
           st.phs_accession as phs_accession,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_selection
-                                        ELSE null END) as library_selection,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_source
-                                        ELSE null END) as library_source,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_strategy
-                                        ELSE null END) as library_strategy,
           COUNT(DISTINCT file.id) as file_count,
           COLLECT(DISTINCT file.id) as files
       "
@@ -158,27 +298,33 @@ Indices:
         type: keyword
       vital_status:
         type: keyword
-      sample_anatomic_site:
-        type: keyword
-      participant_age_at_collection:
-        type: integer
-      sample_tumor_status:
-        type: keyword
-      tumor_classification:
-        type: keyword
-      assay_method:
-        type: keyword
-      file_type:
-        type: keyword
+      sample_filters:
+        type: nested
+        properties:
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+      file_filters:
+        type: nested
+        properties:
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
       grant_id:
         type: keyword
       institution:
-        type: keyword
-      library_selection:
-        type: keyword
-      library_source:
-        type: keyword
-      library_strategy:
         type: keyword
       files:
         type: text
@@ -215,29 +361,33 @@ Indices:
           st.study_short_title as study_short_title,
           head(collect(distinct fu.vital_status)) as last_vital_status,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
+          COLLECT(DISTINCT {
+              assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
                         WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                         WHEN 'radiology_file' THEN 'Radiology imaging'
                         WHEN 'pathology_file' THEN 'Pathology imaging'
                         WHEN 'methylation_array_file' THEN 'Methylation array'
-                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END) as assay_method,
-          COLLECT(DISTINCT file.file_type) as file_type,
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              library_selection: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_selection
+                            ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_source
+                            ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_strategy
+                            ELSE null END
+          }) AS file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_selection
-                                        ELSE null END) as library_selection,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_source
-                                        ELSE null END) as library_source,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_strategy
-                                        ELSE null END) as library_strategy,
           COLLECT(DISTINCT file.id) as files
        "
 
@@ -365,29 +515,35 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
-      age_at_diagnosis:
-        type: integer
-      diagnosis_anatomic_site:
-        type: keyword
-      disease_phase:
-        type: keyword
-      diagnosis_icd_o:
-        type: keyword
+      diagnosis_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
       vital_status:
         type: keyword
-      assay_method:
-        type: keyword
-      file_type:
-        type: keyword
+      file_filters:
+        type: nested
+        properties:
+          assay_method:
+            type: keyword
+          file_type:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_source:
+            type: keyword
+          library_strategy:
+            type: keyword
       grant_id:
         type: keyword
       institution:
-        type: keyword
-      library_selection:
-        type: keyword
-      library_source:
-        type: keyword
-      library_strategy:
         type: keyword
       file_count:
         type: integer
@@ -425,30 +581,34 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
+          COLLECT(DISTINCT {
+              assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
                         WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                         WHEN 'radiology_file' THEN 'Radiology imaging'
                         WHEN 'pathology_file' THEN 'Pathology imaging'
                         WHEN 'methylation_array_file' THEN 'Methylation array'
-                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END) as assay_method,
-          COLLECT(DISTINCT file.file_type) as file_type,
+                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+              file_type: file.file_type,
+              library_selection: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_selection
+                            ELSE null END,
+              library_source: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_source
+                            ELSE null END,
+              library_strategy: CASE LABELS(file)[0]
+                            WHEN 'sequencing_file' THEN file.library_strategy
+                            ELSE null END
+          }) AS file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_selection
-                                        ELSE null END) as library_selection,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_source
-                                        ELSE null END) as library_source,
-          COLLECT(DISTINCT CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_strategy
-                                        ELSE null END) as library_strategy,
           COUNT(DISTINCT file.id) as file_count,
           COLLECT(DISTINCT file.id) as files
       "
@@ -495,30 +655,39 @@ Indices:
             type: keyword
       file_participant_ids:
         type: keyword
-      race:
-        type: keyword
-      gender:
-        type: keyword
-      ethnicity:
-        type: keyword
-      age_at_diagnosis:
-        type: integer
-      diagnosis_anatomic_site:
-        type: keyword
-      disease_phase:
-        type: keyword
-      diagnosis_icd_o:
-        type: keyword
+      participant_filters:
+        type: nested
+        properties:
+          race:
+            type: keyword
+          gender:
+            type: keyword
+          ethnicity:
+            type: keyword
+      diagnosis_filters:
+        type: nested
+        properties:
+          age_at_diagnosis:
+            type: integer
+          diagnosis_anatomic_site:
+            type: keyword
+          disease_phase:
+            type: keyword
+          diagnosis_icd_o:
+            type: keyword
       vital_status:
         type: keyword
-      sample_anatomic_site:
-        type: keyword
-      participant_age_at_collection:
-        type: integer
-      sample_tumor_status:
-        type: keyword
-      tumor_classification:
-        type: keyword
+      sample_filters:
+        type: nested
+        properties:
+          sample_anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
       grant_id:
         type: keyword
       institution:
@@ -561,18 +730,24 @@ Indices:
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,      
           file.library_selection AS library_selection,
@@ -609,18 +784,24 @@ Indices:
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -657,18 +838,24 @@ Indices:
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -705,18 +892,24 @@ Indices:
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -753,18 +946,24 @@ Indices:
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -801,18 +1000,24 @@ Indices:
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -849,18 +1054,24 @@ Indices:
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
-          COLLECT(DISTINCT races) as race,
-          COLLECT(DISTINCT p.gender) as gender,
-          COLLECT(DISTINCT ethnicities) as ethnicity,
-          COLLECT(DISTINCT dg.age_at_diagnosis) as age_at_diagnosis,
-          COLLECT(DISTINCT dg.anatomic_site) as diagnosis_anatomic_site,
-          COLLECT(DISTINCT dg.disease_phase) as disease_phase,
-          COLLECT(DISTINCT dg.diagnosis_icd_o) as diagnosis_icd_o,
+          COLLECT(DISTINCT {
+              race: races,
+              gender: p.gender,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT sm.anatomic_site) as sample_anatomic_site,
-          COLLECT(DISTINCT sm.participant_age_at_collection) as participant_age_at_collection,
-          COLLECT(DISTINCT sm.sample_tumor_status) as sample_tumor_status,
-          COLLECT(DISTINCT sm.tumor_classification) as tumor_classification,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
