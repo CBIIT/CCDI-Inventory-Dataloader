@@ -55,6 +55,6 @@ Config:
   # S3 folder name for successful data files
   s3_folder_success: test
   # Loading mode, can be "upsert", "new" or "delete", default is "upsert"
-  loading_mode: upsert
+  loading_mode: {{load_mode}}
   # Location of dataset
-  dataset: data
+  dataset: "{{s3_folder}}"
