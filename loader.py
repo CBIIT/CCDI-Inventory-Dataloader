@@ -10,7 +10,7 @@ from neo4j.exceptions import AuthError
 
 from icdc_schema import ICDC_Schema
 from props import Props
-from bento.common.utils import get_logger, removeTrailingSlash, check_schema_files, UPSERT_MODE, NEW_MODE, DELETE_MODE, \
+from bento.common.utils import get_logger, get_raw_logger, removeTrailingSlash, check_schema_files, UPSERT_MODE, NEW_MODE, DELETE_MODE, \
     get_log_file, LOG_PREFIX, APP_NAME, load_plugin, print_config
 
 if LOG_PREFIX not in os.environ:
@@ -19,16 +19,17 @@ if LOG_PREFIX not in os.environ:
 os.environ[APP_NAME] = 'Data_Loader'
 
 from config import BentoConfig
-from data_loader import DataLoader
+from data_loader import DataLoader, VALIDATION_ERROR, VALIDATION_DELIMITER
 from bento.common.s3 import S3Bucket
 
 
-def parse_arguments():
+def parse_arguments(args=None):
     parser = argparse.ArgumentParser(description='Load TSV(TXT) files (from Pentaho) into Neo4j')
     parser.add_argument('-i', '--uri', help='Neo4j uri like bolt://12.34.56.78:7687')
     parser.add_argument('-u', '--user', help='Neo4j user')
     parser.add_argument('-p', '--password', help='Neo4j password')
     parser.add_argument('-s', '--schema', help='Schema files', action='append')
+    parser.add_argument('--data-model-version', help='Version for data model files')
     parser.add_argument('--prop-file', help='Property file, example is in config/props.example.yml')
     parser.add_argument('--backup-folder', help='Location to store database backup')
     parser.add_argument('config_file', help='Configuration file, example is in config/data-loader-config.example.yml',
@@ -42,12 +43,17 @@ def parse_arguments():
     parser.add_argument('-M', '--max-violations', help='Max violations to display', nargs='?', type=int)
     parser.add_argument('-b', '--bucket', help='S3 bucket name')
     parser.add_argument('-f', '--s3-folder', help='S3 folder')
-    parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE],
-                        default=UPSERT_MODE)
+    parser.add_argument('--bucket-logs', help='S3 bucket name for logs')
+    parser.add_argument('--s3-folder-logs', help='S3 folder for logs')
+    parser.add_argument('--bucket-fail', help='S3 bucket name for data that failed to validate and load.')
+    parser.add_argument('--s3-folder-fail', help='S3 folder for data that failed to validate and load.')
+    parser.add_argument('--bucket-success', help='S3 bucket name for data that successfully loaded.')
+    parser.add_argument('--s3-folder-success', help='S3 folder for data that successfully loaded.')
+    parser.add_argument('-m', '--mode', help='Loading mode', choices=[UPSERT_MODE, NEW_MODE, DELETE_MODE])
     parser.add_argument('--dataset', help='Dataset directory')
     parser.add_argument('--split-transactions', help='Creates a separate transaction for each file',
                         action='store_true')
-    return parser.parse_args()
+    return parser.parse_args() if args is None else parser.parse_args(args)
 
 
 def process_arguments(args, log):
@@ -79,6 +85,13 @@ def process_arguments(args, log):
         log.error('No schema file specified! ' +
                   'Please specify at least one schema file in config file or with CLI argument --schema')
         sys.exit(1)
+
+    if args.data_model_version:
+        config.data_model_version = args.data_model_version
+    if not config.data_model_version:
+        log.error('No data model version suppplied. ' +
+                  'Please specify the version for the supplied data model files in the config file ' +
+                  'or with CLI argument --data-model-version')
 
     if config.PSWD_ENV in os.environ and not config.neo4j_password:
         config.neo4j_password = os.environ[config.PSWD_ENV]
@@ -129,6 +142,31 @@ def process_arguments(args, log):
             log.error('Download files from S3 bucket "{}" failed!'.format(config.s3_bucket))
             sys.exit(1)
 
+    if args.bucket_logs:
+        config.s3_bucket_logs = args.bucket_logs
+    if args.s3_folder_logs:
+        config.s3_folder_logs = args.s3_folder_logs
+    if (config.s3_bucket_logs and not config.s3_folder_logs) or (not config.s3_bucket_logs and config.s3_folder_logs):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing logs, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.bucket_fail:
+        config.s3_bucket_fail = args.bucket_fail
+    if args.s3_folder_fail:
+        config.s3_folder_fail = args.s3_folder_fail
+    if (config.s3_bucket_fail and not config.s3_folder_fail) or (not config.s3_bucket_fail and config.s3_folder_fail):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that failed to validate and load, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+
+    if args.bucket_success:
+        config.s3_bucket_success = args.bucket_success
+    if args.s3_folder_success:
+        config.s3_folder_success = args.s3_folder_success
+    if (config.s3_bucket_success and not config.s3_folder_success) or (not config.s3_bucket_success and config.s3_folder_success):  # Python doesn't have an XOR for existence of value I don't think
+        log.error("Must specify both bucket and folder for depositing data that successfully validated and loaded, if specifying an S3 location for logs. Use CLI arguments --bucket-logs and --s3-folder-logs.")
+        sys.exit(1)
+    
+
     # Optional Fields
     if args.uri:
         config.neo4j_uri = args.uri
@@ -157,7 +195,7 @@ def process_arguments(args, log):
     if args.mode:
         config.loading_mode = args.mode
     if not config.loading_mode:
-        config.loading_mode = "UPSERT_MODE"
+        config.loading_mode = UPSERT_MODE
 
     if args.max_violations:
         config.max_violations = int(args.max_violations)
@@ -166,6 +204,15 @@ def process_arguments(args, log):
 
     return config
 
+
+def remove_file(bucket_name, folder, file_name):
+    s3 = S3Bucket(bucket_name)
+    key = f'{folder}/{file_name}'
+    return s3.delete_file(key)
+
+# a wrapper for 'upload_log_file' with a better name for use elsewhere
+def upload_file(bucket_name, folder, file_path):
+    return upload_log_file(bucket_name=bucket_name, folder=folder, file_path=file_path)
 
 def upload_log_file(bucket_name, folder, file_path):
     base_name = os.path.basename(file_path)
@@ -183,10 +230,11 @@ def prepare_plugin(config, schema):
 # Data loader will try to load all TSV(.TXT) files from given directory into Neo4j
 # optional arguments includes:
 # -i or --uri followed by Neo4j server address and port in format like bolt://12.34.56.78:7687
-def main():
+def main(args=None):
     log = get_logger('Loader')
     log_file = get_log_file()
-    config = process_arguments(parse_arguments(), log)
+    validation_logger, validation_log_file = get_raw_logger('Data Loader Validation', log_level=VALIDATION_ERROR, log_folder='tmp_validation', log_prefix='inventory_validation')
+    config = process_arguments(parse_arguments(args), log)
     print_config(log, config)
 
     if not check_schema_files(config.schema_files, log):
@@ -224,7 +272,12 @@ def main():
             if len(config.plugins) > 0:
                 for plugin_config in config.plugins:
                     plugins.append(prepare_plugin(plugin_config, schema))
-            loader = DataLoader(driver, schema, plugins)
+
+            validation_logger.log(VALIDATION_ERROR, ",".join([f"DataModelVersion: {config.data_model_version}"]))
+            validation_logger.log(VALIDATION_ERROR, "BatchFilenames")
+            validation_logger.log(VALIDATION_ERROR, "\n".join(file_list))  # have a column per file, I think this is easier to use in Excel            
+            validation_logger.log(VALIDATION_ERROR, VALIDATION_DELIMITER.join(["Filename","LineNumber","OffendingColumn","OffendingValue","OffendingReason"]))
+            loader = DataLoader(driver, schema, validation_logger, plugins)
 
             load_result = loader.load(file_list, config.cheat_mode, config.dry_run, config.loading_mode, config.wipe_db,
                         config.max_violations, split=config.split_transactions,
@@ -234,8 +287,51 @@ def main():
             if restore_cmd:
                 log.info(restore_cmd)
             if load_result == False:
-                log.error('Data files upload failed')
-                sys.exit(1)
+                log.error('Data file contents not loaded into database.')
+                if config.s3_bucket_fail and config.s3_folder_fail:
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move failed files into fail location {config.s3_bucket_fail}/{config.s3_folder_fail}.')
+                    for file in files:
+                        result = upload_file(config.s3_bucket_fail, config.s3_folder_fail, os.path.join(config.dataset,file))  # 'upload_file' is a wrapper for 'upload_log_file'
+                        if result:
+                            log.info(f'Moving failed file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving failed file {file} failed! File is still where this code ran and not in fail location.')
+                    log.info(f'Attempting to remove failed files from the source {config.s3_bucket}/{config.s3_folder}.')
+                    #for file in files:
+                        #result = remove_file(config.s3_bucket, config.s3_folder, file)
+                        #if result:
+                        #    log.info(f'Removing fail file {file} succeeded!')
+                        #else:
+                        #    log.error(f'Removing fail file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
+                else:
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper failure destination.')
+                    
+            else:
+                log.info('Data files successfully loaded into database.')
+                validation_logger.log(VALIDATION_ERROR, "Done.")
+                if config.s3_bucket_success and config.s3_folder_success:
+                    files = [x for x in os.listdir(config.dataset) if os.path.isfile(os.path.join(config.dataset,x))]
+                    log.info(f'Attempting to move success files into success location {config.s3_bucket_success}/{config.s3_folder_success}.')
+                    for file in files:
+                        result = upload_file(config.s3_bucket_success, config.s3_folder_success, os.path.join(config.dataset,file))  # 'upload_file' is a wrapper for 'upload_log_file'
+                        if result: 
+                            log.info(f'Moving successful file {file} succeeded!')
+                            if os.path.isfile(os.path.abspath(os.path.join(config.dataset,file))):
+                                os.remove(os.path.join(config.dataset,file))
+                        else:
+                            log.error(f'Moving successful file {file} failed! File is still where this code ran and not in success location.')
+                    #log.info(f'Attempting to remove successful files from the source {config.s3_bucket}/{config.s3_folder}.')
+                    #for file in files:
+                    #    result = remove_file(config.s3_bucket, config.s3_folder, file)
+                    #    if result:
+                    #        log.info(f'Removing successful file {file} succeeded!')
+                    #    else:
+                    #        log.error(f'Removing successful file {file} failed! File is still in source location {config.s3_bucket}/{config.s3_folder}.')
+                else:
+                    log.info(f'Data files not moved, still where this code ran and in source and not in proper success destination.')
         else:
             log.info('No files to load.')
 
@@ -255,12 +351,24 @@ def main():
         if restore_cmd:
             log.info(restore_cmd)
 
-    if config.s3_bucket and config.s3_folder:
-        result = upload_log_file(config.s3_bucket, f'{config.s3_folder}/logs', log_file)
+    if config.s3_bucket_logs and config.s3_folder_logs:
+        result = upload_log_file(config.s3_bucket_logs, f'{config.s3_folder_logs}/validation_logs', validation_log_file)
+        if result:
+            log.info(f'Uploading log file {validation_log_file} succeeded!')
+            if os.path.isfile(os.path.abspath(validation_log_file)):
+                os.remove(validation_log_file)
+        else:
+            log.error(f'Uploading log file {validation_log_file} failed!')
+
+        result = upload_log_file(config.s3_bucket_logs, f'{config.s3_folder_logs}/logs', log_file)
         if result:
             log.info(f'Uploading log file {log_file} succeeded!')
+            if os.path.isfile(os.path.abspath(log_file)):
+                os.remove(log_file)
         else:
             log.error(f'Uploading log file {log_file} failed!')
+
+    
 
 
 def confirm_deletion(message):

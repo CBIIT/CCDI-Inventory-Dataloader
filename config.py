@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from bento.common.utils import get_logger
+from bento.common.utils import get_logger, UPSERT_MODE
 
 class PluginConfig:
     def __init__(self, config):
@@ -16,6 +16,9 @@ class BentoConfig:
         self.PSWD_ENV = 'NEO_PASSWORD'
 
         if config_file is None:
+            # Metadata related
+            self.data_model_version = None
+
             # File-Loader related
             self.temp_folder = None
             self.queue_long_pull_time = None
@@ -39,6 +42,12 @@ class BentoConfig:
             self.max_violations = None
             self.s3_bucket = None
             self.s3_folder = None
+            self.s3_bucket_logs = None
+            self.s3_folder_logs = None
+            self.s3_bucket_fail = None
+            self.s3_folder_fail = None
+            self.s3_bucket_success = None
+            self.s3_folder_success = None
             self.loading_mode = None
             self.dataset = None
             self.no_parents = None
@@ -47,6 +56,10 @@ class BentoConfig:
             if os.path.isfile(config_file):
                 with open(config_file) as c_file:
                     config = yaml.safe_load(c_file)['Config']
+
+                    #################################
+                    # Metadata
+                    self.data_model_version = config.get('data_model_version')
 
                     #################################
                     # Folders
@@ -97,7 +110,13 @@ class BentoConfig:
                     self.max_violations = config.get('max_violations', 10)
                     self.s3_bucket = config.get('s3_bucket')
                     self.s3_folder = config.get('s3_folder')
-                    self.loading_mode = config.get('loading_mode', 'UPSERT_MODE')
+                    self.s3_bucket_logs = config.get('s3_bucket_logs')
+                    self.s3_folder_logs = config.get('s3_folder_logs')
+                    self.s3_bucket_fail = config.get('s3_bucket_fail')
+                    self.s3_folder_fail = config.get('s3_folder_fail')
+                    self.s3_bucket_success = config.get('s3_bucket_success')
+                    self.s3_folder_success = config.get('s3_folder_success')
+                    self.loading_mode = config.get('loading_mode', UPSERT_MODE)
                     self.dataset = config.get('dataset')
                     self.no_parents = config.get('no_parents')
                     self.split_transactions = config.get('split_transactions')
