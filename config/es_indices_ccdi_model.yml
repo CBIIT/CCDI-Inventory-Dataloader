@@ -344,6 +344,8 @@ Indices:
         type: keyword
       phs_accession:
         type: keyword
+      study_id:
+        type: keyword
       study_acronym:
         type: keyword
       study_short_title:
