@@ -724,8 +724,41 @@ Indices:
         fields:
           keyword:
             type: keyword
-      file_participant_ids:
-        type: keyword
+      combined_filters:
+        type: nested
+        properties:
+          participant_id:
+            type: keyword
+          race:
+            type: keyword
+          gender:
+            type: keyword
+          ethnicity:
+            type: keyword
+          diagnosis:
+            type: nested
+            properties:
+              age_at_diagnosis:
+                type: integer
+              diagnosis_anatomic_site:
+                type: keyword
+              disease_phase:
+                type: keyword
+              diagnosis_icd_o:
+                type: keyword
+          vital_status:
+            type: keyword
+          samples:
+            type: nested
+            properties:
+              sample_anatomic_site:
+                type: keyword
+              participant_age_at_collection:
+                type: integer
+              sample_tumor_status:
+                type: keyword
+              tumor_classification:
+                type: keyword
       participant_filters:
         type: nested
         properties:
@@ -800,7 +833,7 @@ Indices:
           p.participant_id AS participant_id,
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
@@ -836,6 +869,17 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
+        With file, st, p, races, ethnicities, COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_icd_o: dg.diagnosis_icd_o
+          }) AS diagnosis_filters, COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters, COLLECT(DISTINCT fu.vital_status) as vital_status, stf, stp
         RETURN DISTINCT
           file.id as id,
           null as pid,
@@ -854,25 +898,19 @@ Indices:
           null AS participant_id,
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
+              participant_id: p.participant_id,
               race: races,
               gender: p.gender,
-              ethnicity: ethnicities
-          }) AS participant_filters,
-          COLLECT(DISTINCT {
-              age_at_diagnosis: dg.age_at_diagnosis,
-              diagnosis_anatomic_site: dg.anatomic_site,
-              disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
-          }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT {
-              sample_anatomic_site: sm.anatomic_site,
-              participant_age_at_collection: sm.participant_age_at_collection,
-              sample_tumor_status: sm.sample_tumor_status,
-              tumor_classification: sm.tumor_classification
-          }) AS sample_filters,
+              ethnicity: ethnicities,
+              diagnosis: diagnosis_filters,
+              vital_status: vital_status,
+              samples: sample_filters
+          }) as combined_filters,
+          null as participant_filters,
+          null as diagnosis_filters,
+          null as vital_status,
+          null as sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
@@ -908,7 +946,7 @@ Indices:
           p.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
@@ -962,7 +1000,7 @@ Indices:
           p.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
@@ -1016,7 +1054,7 @@ Indices:
           p.participant_id AS participant_id,
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
@@ -1070,7 +1108,7 @@ Indices:
           p.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
@@ -1124,7 +1162,7 @@ Indices:
           p.participant_id as participant_id,
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
