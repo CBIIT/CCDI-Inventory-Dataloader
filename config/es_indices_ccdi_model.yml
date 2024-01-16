@@ -521,7 +521,7 @@ Indices:
         ORDER BY num_sites desc
         with st, num_p, cancers, collect(dg_sites + ' (' + toString(num_sites) + ')') as sites
         MATCH (st)<-[*..3]-(fl)
-        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:rathology OR fl:methylation_array_file OR fl:single_cell_sequencing_file OR OR fl:cytogenomic_file)
+        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:rathology OR fl:methylation_array_file OR fl:single_cell_sequencing_file OR fl:cytogenomic_file)
         with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
         ORDER BY num_ft desc
         with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
