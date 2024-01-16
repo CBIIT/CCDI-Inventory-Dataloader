@@ -388,7 +388,7 @@ Indices:
     cypher_query: "
         MATCH (p:participant)
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         with p, COLLECT(DISTINCT {
                       sample_anatomic_site: sm.anatomic_site,
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1152,7 +1152,7 @@ Indices:
           file.library_strategy AS library_strategy
         UNION ALL
         MATCH (file:cytogenomic_file)
-        MATCH (sm:sample)<-[:cytogenomic_file]-(file)
+        MATCH (sm:sample)<-[:of_cytogenomic_file]-(file)
         MATCH (p:participant)<-[:of_sample]-(sm)
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
