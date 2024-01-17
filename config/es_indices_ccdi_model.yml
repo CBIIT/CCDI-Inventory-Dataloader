@@ -11,7 +11,7 @@ Indices:
         type: keyword
       race:
         type: keyword
-      gender:
+      sex_at_birth:
         type: keyword
       ethnicity:
         type: keyword
@@ -118,7 +118,7 @@ Indices:
         p.id as pid,
         p.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
-        p.gender as gender,
+        p.sex_at_birth as sex_at_birth,
         apoc.text.split(p.ethnicity, ';') as ethnicity,
         COLLECT(DISTINCT {
             age_at_diagnosis: dg.age_at_diagnosis,
@@ -145,7 +145,7 @@ Indices:
           null as pid,
           null as participant_id,
           null as race,
-          null as gender,
+          null as sex_at_birth,
           null as ethnicity,
           [] AS diagnosis_filters,
           null as vital_status,
@@ -179,7 +179,7 @@ Indices:
         type: keyword
       race_str:
         type: keyword
-      gender:
+      sex_at_birth:
         type: keyword
       ethnicity:
         type: keyword
@@ -297,7 +297,7 @@ Indices:
         p.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
         p.race as race_str,
-        p.gender as gender,
+        p.sex_at_birth as sex_at_birth,
         apoc.text.split(p.ethnicity, ';') as ethnicity,
         p.ethnicity as ethnicity_str,
         p.alternate_participant_id as alternate_participant_id,
@@ -340,7 +340,7 @@ Indices:
         type: integer
       race:
         type: keyword
-      gender:
+      sex_at_birth:
         type: keyword
       ethnicity:
         type: keyword
@@ -449,7 +449,7 @@ Indices:
           dg.age_at_diagnosis as age_at_diagnosis,
           p.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
-          p.gender as gender,
+          p.sex_at_birth as sex_at_birth,
           apoc.text.split(p.ethnicity, ';') as ethnicity,
           st.study_id as study_id,
           st.phs_accession as phs_accession,
@@ -565,7 +565,7 @@ Indices:
         type: keyword
       race:
         type: keyword
-      gender:
+      sex_at_birth:
         type: keyword
       ethnicity:
         type: keyword
@@ -642,7 +642,7 @@ Indices:
           sm.sample_id as sample_id,
           p.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
-          p.gender as gender,
+          p.sex_at_birth as sex_at_birth,
           apoc.text.split(p.ethnicity, ';') as ethnicity,
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_icd_o as sample_diagnosis_icd_o,
@@ -733,7 +733,7 @@ Indices:
         properties:
           race:
             type: keyword
-          gender:
+          sex_at_birth:
             type: keyword
           ethnicity:
             type: keyword
@@ -805,7 +805,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -859,7 +859,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -913,7 +913,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -967,7 +967,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -1021,7 +1021,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -1075,7 +1075,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -1129,7 +1129,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -1183,7 +1183,7 @@ Indices:
           COLLECT(DISTINCT p.participant_id) as file_participant_ids,
           COLLECT(DISTINCT {
               race: races,
-              gender: p.gender,
+              sex_at_birth: p.sex_at_birth,
               ethnicity: ethnicities
           }) AS participant_filters,
           COLLECT(DISTINCT {
@@ -1229,7 +1229,7 @@ Indices:
   #     participant_filters:
   #       race:
   #         type: keyword
-  #       gender:
+  #       sex_at_birth:
   #         type: keyword
   #       ethnicity:
   #         type: keyword
@@ -1355,7 +1355,7 @@ Indices:
   #         st.study_short_title as study_short_title,
   #         COLLECT(DISTINCT {
   #             race: apoc.text.split(p.race, ';'),
-  #             gender: p.gender,
+  #             sex_at_birth: p.sex_at_birth,
   #             ethnicity: apoc.text.split(p.ethnicity, ';')
   #         }) AS participant_filters,
   #         COLLECT(DISTINCT {
