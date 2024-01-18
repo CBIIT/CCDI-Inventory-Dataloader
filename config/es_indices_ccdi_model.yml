@@ -1190,7 +1190,7 @@ Indices:
           file.library_selection AS library_selection,
           file.library_source AS library_source,
           file.library_strategy AS library_strategy
-                  UNION ALL
+        UNION ALL
         MATCH (file:cytogenomic_file)
         MATCH (sm:sample)<-[:of_cytogenomic_file]-(file)
         MATCH (p:participant)<-[:of_sample]-(sm)
