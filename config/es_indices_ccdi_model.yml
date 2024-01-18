@@ -809,7 +809,7 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (file:clinical_measure_file)
-        MATCH (p:participant)-[:of_clinical_measure_file_participant]-(file)
+        MATCH (p:participant)-[:of_clinical_measure_file]-(file)
         MATCH (st)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
