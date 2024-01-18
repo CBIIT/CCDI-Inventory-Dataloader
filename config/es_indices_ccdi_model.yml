@@ -1154,7 +1154,7 @@ Indices:
           file.cytogenomic_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
-          'Single Cell Sequencing' AS file_category,
+          'Cytogenomic' AS file_category,
           file.file_type AS file_type,
           file.file_description AS file_description,
           file.file_size AS file_size,
