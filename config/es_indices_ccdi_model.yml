@@ -1136,61 +1136,7 @@ Indices:
           file.library_selection AS library_selection,
           file.library_source AS library_source,
           file.library_strategy AS library_strategy
-        UNION ALL
-        MATCH (file:sequencing_file)
-        MATCH (sm:sample)<-[:of_sequencing_file]-(file)
-        MATCH (p:participant)<-[:of_sample]-(sm)
-        MATCH (st:study)<-[:of_participant]-(p)
-        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
-        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
-        UNWIND apoc.text.split(p.race, ';') AS races
-        RETURN DISTINCT
-          file.id as id,
-          p.id as pid,
-          file.sequencing_file_id AS file_id,
-          file.dcf_indexd_guid AS guid,
-          file.file_name AS file_name,
-          'Sequencing' AS file_category,
-          file.file_type AS file_type,
-          file.file_description AS file_description,
-          file.file_size AS file_size,
-          file.md5sum AS md5sum,
-          st.study_id AS study_id,
-          st.phs_accession as phs_accession,
-          st.study_acronym as study_acronym,
-          st.study_short_title as study_short_title,
-          p.participant_id as participant_id,
-          sm.sample_id AS sample_id,
-          COLLECT(DISTINCT file.id) as files,
-          null as combined_filters,
-          COLLECT(DISTINCT {
-              race: races,
-              gender: p.gender,
-              ethnicity: ethnicities
-          }) AS participant_filters,
-          COLLECT(DISTINCT {
-              age_at_diagnosis: dg.age_at_diagnosis,
-              diagnosis_anatomic_site: dg.anatomic_site,
-              disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
-          }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
-          COLLECT(DISTINCT {
-              sample_anatomic_site: sm.anatomic_site,
-              participant_age_at_collection: sm.participant_age_at_collection,
-              sample_tumor_status: sm.sample_tumor_status,
-              tumor_classification: sm.tumor_classification
-          }) AS sample_filters,
-          COLLECT(DISTINCT stf.grant_id) as grant_id,
-          COLLECT(DISTINCT stp.institution) as institution,
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
-        UNION ALL
+       UNION ALL
         MATCH (file:cytogenomic_file)
         MATCH (sm:sample)<-[:of_cytogenomic_file]-(file)
         MATCH (p:participant)<-[:of_sample]-(sm)
@@ -1208,7 +1154,7 @@ Indices:
           file.cytogenomic_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
-          'Cytogenomic' AS file_category,
+          'Single Cell Sequencing' AS file_category,
           file.file_type AS file_type,
           file.file_description AS file_description,
           file.file_size AS file_size,
@@ -1217,10 +1163,10 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id as participant_id,
+          p.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           COLLECT(DISTINCT file.id) as files,
-          COLLECT(DISTINCT p.participant_id) as file_participant_ids,
+          null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
               gender: p.gender,
