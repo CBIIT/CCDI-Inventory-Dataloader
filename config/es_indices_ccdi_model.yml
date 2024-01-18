@@ -65,7 +65,7 @@ Indices:
     cypher_query: "
       MATCH (p:participant)
       OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:clinical_measure_file OR file:cytogenomic_file)
       with p, COLLECT(DISTINCT {
                     sample_anatomic_site: sm.anatomic_site,
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -244,7 +244,7 @@ Indices:
     cypher_query: "
       MATCH (p:participant)
       OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:clinical_measure_file OR file:cytogenomic_file)
       with p, COLLECT(DISTINCT {
                     sample_anatomic_site: sm.anatomic_site,
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -390,7 +390,7 @@ Indices:
     cypher_query: "
         MATCH (p:participant)
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:clinical_measure_file OR file:cytogenomic_file)
         with p, COLLECT(DISTINCT {
                       sample_anatomic_site: sm.anatomic_site,
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -630,7 +630,7 @@ Indices:
     cypher_query: "
         MATCH (sm:sample)
         OPTIONAL MATCH (sm)<-[*..1]-(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR clinical_measure_file OR file:cytogenomic_file)
         MATCH (p:participant)<-[:of_sample]-(sm)
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
