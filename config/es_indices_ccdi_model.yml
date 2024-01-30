@@ -24,7 +24,7 @@ Indices:
             type: keyword
           disease_phase:
             type: keyword
-          diagnosis_icd_o:
+          diagnosis_classification:
             type: keyword
       vital_status:
         type: keyword
@@ -124,7 +124,7 @@ Indices:
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
             disease_phase: dg.disease_phase,
-            diagnosis_icd_o: dg.diagnosis_icd_o
+            diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
         general_file_filters + participant_file_filters AS sample_file_filters,
@@ -196,7 +196,7 @@ Indices:
             type: keyword
           disease_phase:
             type: keyword
-          diagnosis_icd_o:
+          diagnosis_classification:
             type: keyword
       vital_status:
         type: keyword
@@ -305,7 +305,7 @@ Indices:
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
             disease_phase: dg.disease_phase,
-            diagnosis_icd_o: dg.diagnosis_icd_o
+            diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
         general_file_filters + participant_file_filters AS sample_file_filters,
@@ -330,7 +330,7 @@ Indices:
         type: keyword
       participant_id:
         type: keyword
-      diagnosis_icd_o:
+      diagnosis_classification:
         type: keyword
       disease_phase:
         type: keyword
@@ -445,7 +445,7 @@ Indices:
           dg.id as id,
           p.id as pid,
           dg.diagnosis_id as diagnosis_id,
-          dg.diagnosis_icd_o as diagnosis_icd_o,
+          dg.diagnosis_classification as diagnosis_classification,
           dg.disease_phase as disease_phase,
           dg.anatomic_site as diagnosis_anatomic_site,
           dg.age_at_diagnosis as age_at_diagnosis,
@@ -515,7 +515,7 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p:participant)
         with st, count(p) as num_p
         MATCH (st:study)<-[:of_participant]-(participant)<-[:of_diagnosis]-(dg:diagnosis)
-        with st, num_p, dg.diagnosis_icd_o as dg_cancers, count(dg.diagnosis_icd_o) as num_cancers
+        with st, num_p, dg.diagnosis_classification as dg_cancers, count(dg.diagnosis_classification) as num_cancers
         ORDER BY num_cancers desc
         with st, num_p, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
         MATCH (st)<-[:of_participant]-(pa:participant)<-[:of_diagnosis]-(diag:diagnosis)
@@ -598,7 +598,7 @@ Indices:
             type: keyword
           disease_phase:
             type: keyword
-          diagnosis_icd_o:
+          diagnosis_classification:
             type: keyword
       vital_status:
         type: keyword
@@ -659,7 +659,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -748,7 +748,7 @@ Indices:
                 type: keyword
               disease_phase:
                 type: keyword
-              diagnosis_icd_o:
+              diagnosis_classification:
                 type: keyword
           vital_status:
             type: keyword
@@ -781,7 +781,7 @@ Indices:
             type: keyword
           disease_phase:
             type: keyword
-          diagnosis_icd_o:
+          diagnosis_classification:
             type: keyword
       vital_status:
         type: keyword
@@ -847,7 +847,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -877,7 +877,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters, COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -960,7 +960,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -1014,7 +1014,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -1068,7 +1068,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -1122,7 +1122,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
@@ -1176,7 +1176,7 @@ Indices:
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
-              diagnosis_icd_o: dg.diagnosis_icd_o
+              diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
           COLLECT(DISTINCT {
