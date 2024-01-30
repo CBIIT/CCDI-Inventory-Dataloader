@@ -573,7 +573,7 @@ Indices:
         type: keyword
       sample_anatomic_site:
         type: keyword
-      sample_diagnosis_icd_o:
+      sample_diagnosis_classification:
         type: keyword
       participant_age_at_collection:
         type: integer
