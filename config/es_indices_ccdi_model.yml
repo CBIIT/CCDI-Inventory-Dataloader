@@ -602,6 +602,12 @@ Indices:
         type: keyword
       sample_diagnosis_classification:
         type: keyword
+      sample_diagnosis_classification_system:
+        type: keyword
+      sample_diagnosis_verification_status:
+        type: keyword
+      sample_diagnosis_basis:
+        type: keyword      
       participant_age_at_collection:
         type: integer
       sample_tumor_status:
@@ -681,6 +687,9 @@ Indices:
           apoc.text.split(p.ethnicity, ';') as ethnicity,
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_classification as sample_diagnosis_classification,
+          sm.diagnosis_classification_system as sample_diagnosis_classification_system,
+          sm.diagnosis_verification_status as sample_diagnosis_verification_status,
+          sm.diagnosis_basis as sample_diagnosis_basis,
           sm.participant_age_at_collection as participant_age_at_collection,
           sm.sample_tumor_status as sample_tumor_status,
           sm.tumor_classification as tumor_classification,
