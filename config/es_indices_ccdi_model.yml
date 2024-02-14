@@ -84,7 +84,7 @@ Indices:
                               WHEN 'radiology_file' THEN 'Radiology imaging'
                               WHEN 'pathology_file' THEN 'Pathology imaging'
                               WHEN 'methylation_array_file' THEN 'Methylation array'
-                              WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+                              WHEN 'clinical_measure_file' THEN 'Clinical data' END,
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
@@ -105,7 +105,7 @@ Indices:
                 participant_age_at_collection: sm.participant_age_at_collection,
                 sample_tumor_status: sm.sample_tumor_status,
                 tumor_classification: sm.tumor_classification,
-                assay_method: CASE types_1 when null then null else 'Clinical measure' end,
+                assay_method: CASE types_1 when null then null else 'Clinical data' end,
                 file_type: types_1,
                 library_selection: null,
                 library_source: null,
@@ -163,7 +163,7 @@ Indices:
               participant_age_at_collection: null,
               sample_tumor_status: null,
               tumor_classification: null,
-              assay_method: 'Clinical measure',
+              assay_method: 'Clinical data',
               file_type: file.file_type,
               library_selection: null,
               library_source: null,
@@ -272,7 +272,7 @@ Indices:
                               WHEN 'radiology_file' THEN 'Radiology imaging'
                               WHEN 'pathology_file' THEN 'Pathology imaging'
                               WHEN 'methylation_array_file' THEN 'Methylation array'
-                              WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+                              WHEN 'clinical_measure_file' THEN 'Clinical data' END,
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
@@ -293,7 +293,7 @@ Indices:
                 participant_age_at_collection: sm.participant_age_at_collection,
                 sample_tumor_status: sm.sample_tumor_status,
                 tumor_classification: sm.tumor_classification,
-                assay_method: CASE types_1 when null then null else 'Clinical measure' end,
+                assay_method: CASE types_1 when null then null else 'Clinical data' end,
                 file_type: types_1,
                 library_selection: null,
                 library_source: null,
@@ -427,7 +427,7 @@ Indices:
                                 WHEN 'radiology_file' THEN 'Radiology imaging'
                                 WHEN 'pathology_file' THEN 'Pathology imaging'
                                 WHEN 'methylation_array_file' THEN 'Methylation array'
-                                WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+                                WHEN 'clinical_measure_file' THEN 'Clinical data' END,
                       file_type: file.file_type,
                       library_selection: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_selection
@@ -448,7 +448,7 @@ Indices:
                   participant_age_at_collection: sm.participant_age_at_collection,
                   sample_tumor_status: sm.sample_tumor_status,
                   tumor_classification: sm.tumor_classification,
-                  assay_method: CASE types_1 when null then null else 'Clinical measure' end,
+                  assay_method: CASE types_1 when null then null else 'Clinical data' end,
                   file_type: types_1,
                   library_selection: null,
                   library_source: null,
@@ -715,7 +715,7 @@ Indices:
                         WHEN 'radiology_file' THEN 'Radiology imaging'
                         WHEN 'pathology_file' THEN 'Pathology imaging'
                         WHEN 'methylation_array_file' THEN 'Methylation array'
-                        WHEN 'clinical_measure_file' THEN 'Clinical measure' END,
+                        WHEN 'clinical_measure_file' THEN 'Clinical data' END,
               file_type: file.file_type,
               library_selection: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_selection
@@ -882,7 +882,7 @@ Indices:
           file.clinical_measure_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
-          'Clinical measure' AS file_category,
+          'Clinical data' AS file_category,
           file.file_type AS file_type,
           file.file_description AS file_description,
           file.file_size AS file_size,
@@ -953,7 +953,7 @@ Indices:
           file.clinical_measure_file_id AS file_id,
           file.dcf_indexd_guid AS guid,
           file.file_name AS file_name,
-          'Clinical measure' AS file_category,
+          'Clinical data' AS file_category,
           file.file_type AS file_type,
           file.file_description AS file_description,
           file.file_size AS file_size,
@@ -1387,7 +1387,7 @@ Indices:
   #       with st, file1_filters, file2_filters, file3_filters, file4_filters, COLLECT(distinct file5.file_type) AS file5_types
   #       UNWIND (case file5_types when [] then [null] else file5_types end)  AS types_5
   #       with st, file1_filters, file2_filters, file3_filters, file4_filters, CASE file5_types WHEN [] then [] else COLLECT(DISTINCT {
-  #         assay_method: "Clinical measure",
+  #         assay_method: "Clinical data",
   #         file_type: types_5,
   #         library_selection: null,
   #         library_source: null,
