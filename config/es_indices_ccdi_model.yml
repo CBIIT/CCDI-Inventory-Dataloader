@@ -29,6 +29,8 @@ Indices:
           diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
+            type: keyword 
+          diagnosis_comment:
             type: keyword           
           diagnosis_classification:
             type: keyword
@@ -135,7 +137,8 @@ Indices:
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
             diagnosis_verification_status: dg.diagnosis_verification_status,
-            diagnosis_basis: dg.diagnosis_basis,            
+            diagnosis_basis: dg.diagnosis_basis, 
+            diagnosis_comment: dg.diagnosis_comment,           
             diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -213,7 +216,9 @@ Indices:
           diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
-            type: keyword              
+            type: keyword   
+          diagnosis_comment:
+            type: keyword            
           diagnosis_classification:
             type: keyword
       vital_status:
@@ -329,6 +334,7 @@ Indices:
             diagnosis_classification_system: dg.diagnosis_classification_system,
             diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis,
+            diagnosis_comment: dg.diagnosis_comment,
             diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -363,6 +369,8 @@ Indices:
       diagnosis_verification_status:
         type: keyword
       diagnosis_basis:
+        type: keyword
+      diagnosis_comment:
         type: keyword  
       diagnosis_anatomic_site:
         type: keyword
@@ -483,6 +491,7 @@ Indices:
           dg.diagnosis_classification_system as diagnosis_classification_system,
           dg.diagnosis_verification_status as diagnosis_verification_status,
           dg.diagnosis_basis as diagnosis_basis,
+          dg.diagnosis_comment as diagnosis_comment,
           dg.anatomic_site as diagnosis_anatomic_site,
           dg.age_at_diagnosis as age_at_diagnosis,
           p.participant_id as participant_id,
@@ -616,7 +625,9 @@ Indices:
       sample_diagnosis_verification_status:
         type: keyword
       sample_diagnosis_basis:
-        type: keyword      
+        type: keyword 
+      sample_diagnosis_comment:
+        type: keyword       
       participant_age_at_collection:
         type: integer
       sample_tumor_status:
@@ -645,6 +656,8 @@ Indices:
           diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
+            type: keyword
+          diagnosis_comment:
             type: keyword  
           diagnosis_classification:
             type: keyword
@@ -699,6 +712,7 @@ Indices:
           sm.diagnosis_classification_system as sample_diagnosis_classification_system,
           sm.diagnosis_verification_status as sample_diagnosis_verification_status,
           sm.diagnosis_basis as sample_diagnosis_basis,
+          sm.diagnosis_comment as sample_diagnosis_comment,
           sm.participant_age_at_collection as participant_age_at_collection,
           sm.sample_tumor_status as sample_tumor_status,
           sm.tumor_classification as tumor_classification,
@@ -713,6 +727,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -810,7 +825,9 @@ Indices:
               diagnosis_verification_status:
                 type: keyword
               diagnosis_basis:
-                type: keyword  
+                type: keyword 
+              diagnosis_comment:
+                type: keyword                  
               diagnosis_classification:
                 type: keyword
           vital_status:
@@ -849,7 +866,9 @@ Indices:
           diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
-            type: keyword  
+            type: keyword
+          diagnosis_comment:
+            type: keyword 
           diagnosis_classification:
             type: keyword
       vital_status:
@@ -919,6 +938,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -952,6 +972,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters, COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
@@ -1038,6 +1059,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -1095,6 +1117,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -1152,6 +1175,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -1209,6 +1233,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
@@ -1266,6 +1291,7 @@ Indices:
               diagnosis_classification_system: dg.diagnosis_classification_system,
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
