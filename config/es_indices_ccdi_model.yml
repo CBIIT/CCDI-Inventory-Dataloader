@@ -88,12 +88,15 @@ Indices:
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
+                                  WHEN 'single_cell_sequencing_file' THEN file.library_selection
                                   ELSE null END,
                     library_source: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_source
+                                  WHEN 'single_cell_sequencing_file' THEN file.library_source
                                   ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_strategy
+                                  WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                   ELSE null END
                 }) AS general_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -276,12 +279,15 @@ Indices:
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
+                                  WHEN 'single_cell_sequencing_file' THEN file.library_selection
                                   ELSE null END,
                     library_source: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_source
+                                   WHEN 'single_cell_sequencing_file' THEN file.library_source
                                   ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_strategy
+                                  WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                   ELSE null END
                 }) AS general_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -431,12 +437,15 @@ Indices:
                       file_type: file.file_type,
                       library_selection: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_selection
+                                    WHEN 'single_cell_sequencing_file' THEN file.library_selection
                                     ELSE null END,
                       library_source: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_source
+                                    WHEN 'single_cell_sequencing_file' THEN file.library_source
                                     ELSE null END,
                       library_strategy: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_strategy
+                                    WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                     ELSE null END
                   }) AS general_file_filters
         OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -719,12 +728,15 @@ Indices:
               file_type: file.file_type,
               library_selection: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_selection
+                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
                             ELSE null END,
               library_source: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_source
+                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                             ELSE null END,
               library_strategy: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_strategy
+                             WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                             ELSE null END
           }) AS file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -918,9 +930,9 @@ Indices:
           }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,      
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
         UNION ALL
         MATCH (file:clinical_measure_file)
         MATCH (st:study)<-[:of_clinical_measure_file]-(file)
@@ -1037,9 +1049,9 @@ Indices:
           }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
         UNION ALL
         MATCH (file:pathology_file)
         MATCH (sm:sample)<-[:of_pathology_file]-(file)
@@ -1151,9 +1163,9 @@ Indices:
           }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
         UNION ALL
         MATCH (file:single_cell_sequencing_file)
         MATCH (sm:sample)<-[:of_single_cell_sequencing_file]-(file)
@@ -1265,9 +1277,9 @@ Indices:
           }) AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
       "
 
   # This indice was NOT used in inventory v1
