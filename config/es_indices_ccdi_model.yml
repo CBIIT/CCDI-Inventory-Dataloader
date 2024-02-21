@@ -1086,7 +1086,7 @@ Indices:
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          CASE file WHEN null THEN []
+          CASE COLLECT(file) WHEN [] THEN []
                     ELSE COLLECT(DISTINCT {
                         assay_method: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN 'Sequencing'
@@ -1400,7 +1400,7 @@ Indices:
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + "," + sm.sample_id END AS sample_id,
+                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
@@ -1470,7 +1470,7 @@ Indices:
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + "," + sm.sample_id END AS sample_id,
+                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
@@ -1598,7 +1598,7 @@ Indices:
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + "," + sm.sample_id END AS sample_id,
+                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
@@ -1668,7 +1668,7 @@ Indices:
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + "," + sm.sample_id END AS sample_id,
+                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
@@ -1738,7 +1738,7 @@ Indices:
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + "," + sm.sample_id END AS sample_id,
+                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
