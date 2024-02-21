@@ -71,7 +71,6 @@ Indices:
         type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
-      # todo... study -> participant -> sample_1 -> cell_line -> sample_2 -> [node]_file
       MATCH (p:participant)
       optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
       WHERE (cl: cell_line or cl: pdx)
@@ -178,12 +177,12 @@ Indices:
                 library_selection: null,
                 library_source: null,
                 library_strategy: null
-        }) as participant_clinical_meansure_file_filters
+        }) as participant_clinical_measure_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
       OPTIONAL MATCH (p)<-[:of_radiology_file]-(file1:radiology_file)
-      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
+      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
       UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
-      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, COLLECT(DISTINCT {
+      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
                 sample_anatomic_site: sm.anatomic_site,
                 participant_age_at_collection: sm.participant_age_at_collection,
                 sample_tumor_status: sm.sample_tumor_status,
@@ -199,7 +198,7 @@ Indices:
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, participant_radiology_file_filters, fu, st, stf, stp, dg
+      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, fu, st, stf, stp, dg
       RETURN DISTINCT
         p.id as id,
         p.id as pid,
@@ -218,7 +217,7 @@ Indices:
             diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
-        apoc.coll.union(cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, participant_radiology_file_filters) AS sample_file_filters,
+        apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
         st.study_id as study_id,
         st.phs_accession as phs_accession,
         COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -258,8 +257,6 @@ Indices:
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title
         Union All
-        # todo... study -> cell_line_1 -> sample_1 -> [node]_file
-        # todo... study -> pdx_1 -> sample_1 -> [node]_file
         MATCH (st:study)
         MATCH (st)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
         Where (cl: cell_line or cl: pdx)
@@ -501,12 +498,12 @@ Indices:
                 library_selection: null,
                 library_source: null,
                 library_strategy: null
-        }) as participant_clinical_meansure_file_filters
+        }) as participant_clinical_measure_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
       OPTIONAL MATCH (p)<-[:of_radiology_file]-(file1:radiology_file)
-      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
+      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
       UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
-      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, COLLECT(DISTINCT {
+      with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
                 sample_anatomic_site: sm.anatomic_site,
                 participant_age_at_collection: sm.participant_age_at_collection,
                 sample_tumor_status: sm.sample_tumor_status,
@@ -524,7 +521,7 @@ Indices:
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, participant_radiology_file_filters, file, fu, st, stf, stp, dg
+      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, file, fu, st, stf, stp, dg
       RETURN DISTINCT
         p.id as id,
         p.participant_id as participant_id,
@@ -545,7 +542,7 @@ Indices:
             diagnosis_classification: dg.diagnosis_classification
         }) AS diagnosis_filters,
         COLLECT(DISTINCT fu.vital_status) as vital_status,
-        apoc.coll.union(cell_line_pdx_file_filters, general_file_filters, participant_clinical_meansure_file_filters, participant_radiology_file_filters) AS sample_file_filters,
+        apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
         st.study_id as study_id,
         st.phs_accession as phs_accession,
         COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -760,11 +757,11 @@ Indices:
         OPTIONAL MATCH (p)<-[*..4]-(file)
         WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        with p, apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) as sample_file_filters_1, apoc.coll.union(participant_clinical_measure_file_filters,participant_radiology_file_filters) as sample_file_filters_2, dg, file, fu order by fu.age_at_follow_up desc
+        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.age_at_follow_up desc
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH p, sample_file_filters_1, sample_file_filters_2, file, fu, st, stf, stp, dg
+        WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, fu, st, stf, stp, dg
         RETURN DISTINCT
           dg.id as id,
           p.id as pid,
@@ -787,7 +784,7 @@ Indices:
           st.study_short_title as study_short_title,
           head(collect(distinct fu.vital_status)) as last_vital_status,
           COLLECT(DISTINCT fu.vital_status) as vital_status,
-          apoc.coll.union(sample_file_filters_1, sample_file_filters_2) AS sample_file_filters,
+          apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           COLLECT(DISTINCT file.id) as files
