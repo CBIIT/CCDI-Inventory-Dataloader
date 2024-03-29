@@ -1,4 +1,4 @@
-Handle: CDA
+Handle: CCDI
 Nodes:
   cell_line:
     Props:
@@ -20,13 +20,29 @@ Nodes:
       - file_mapping_level
       - participant_list
       - id
+  cytogenomic_file:
+    Props:
+      - cytogenomic_file_id
+      - file_name
+      - file_type
+      - file_description
+      - file_size
+      - md5sum
+      - file_url_in_cds
+      - dcf_indexd_guid
+      - file_mapping_level
+      - cytogenomic_platform
+      - id
   diagnosis:
     Props:
       - diagnosis_id
-      - diagnosis_icd_o
-      - diagnosis_icd_cm
-      - diagnosis_finer_resolution
+      - diagnosis_classification
+      - diagnosis_classification_system
+      - diagnosis_verification_status
+      - diagnosis_basis
+      - diagnosis_comment
       - disease_phase
+      - tumor_classification
       - anatomic_site
       - age_at_diagnosis
       - toronto_childhood_cancer_staging
@@ -38,11 +54,11 @@ Nodes:
       - tumor_stage_clinical_n
       - tumor_stage_clinical_m
       - id
-     # - tumor_morphology
-     # - tumor_incidence_type # primary, metastatic, recurrence, progression
-     # - progression_or_recurrence
-     # - tissue_or_organ_of_origin
-     # - site_of_resection_or_biopsy
+    # - tumor_morphology
+    # - tumor_incidence_type # primary, metastatic, recurrence, progression
+    # - progression_or_recurrence
+    # - tissue_or_organ_of_origin
+    # - site_of_resection_or_biopsy
     # - days_to_last_followup
   exposure:
     Props:
@@ -100,10 +116,13 @@ Nodes:
       - age_at_molecular_test
       - gene_symbol
       - molecular_analysis_method
-      - test_result
+      - laboratory_test_name
+      - test_result_text
+      - test_result_numeric
+      - test_unit
       - aa_change
       - antigen
-      - biospecimen_type
+      - anatomic_site
       - blood_test_normal_range_upper
       - blood_test_normal_range_lower
       - cell_count
@@ -111,23 +130,20 @@ Nodes:
       - copy_number
       - cytoband
       - exon
+      - gene_mutation_abnormality_type
       - histone_family
       - histone_variant
       - intron
-      - laboratory_test
       - loci_abnormal_count
       - loci_count
       - locus
       - mismatch_repair_mutation
-      - molecular_consequence
       - pathogenicity
       - ploidy
       - second_exon
       - second_gene_symbol
       - specialized_molecular_test
       - test_analyte_type
-      - test_units
-      - test_value
       - transcript
       - variant_origin
       - variant_type
@@ -151,7 +167,7 @@ Nodes:
     Props:
       - participant_id
       - race       
-      - gender
+      - sex_at_birth
       - ethnicity
       - alternate_participant_id
       - id
@@ -166,10 +182,14 @@ Nodes:
       - md5sum
       - file_url_in_cds
       - dcf_indexd_guid
+      - image_modality
+      - license
       - magnification
       - fixation_embedding_method
       - staining_method
       - deidentification_method
+      - percent_tumor
+      - percent_necrosis
       - file_mapping_level
       - id
   pdx:
@@ -177,16 +197,17 @@ Nodes:
       - pdx_id
       - model_id
       - mouse_strain
-      - strain_immune_system_humanized
+      - sample_type_for_implantation
       - implantation_type
       - implantation_site
-      - type_of_humanization
-      - tumor_preparation
-      - tumor_characterization_method
-      - tumor_not_mus_or_ebv_origin
+      - tumor_confirmed_not_to_be_mus_or_ebv_origin
+      - is_tumor_from_untreated_patient
+      - passage_number
+      - passages_tested
+      - validation_technique
       - id
   publication:
-     Props:
+    Props:
       - publication_id
       - pubmed_id
       - id
@@ -204,6 +225,33 @@ Nodes:
       - participant_age_at_imaging
       - image_modality
       - deidentification_method
+      - magnetic_field_strength
+      - scanner_manufacturer
+      - scanner_model
+      - imaging_frequency
+      - repetition_time
+      - echo_time
+      - inversion_time
+      - flip_angle
+      - pixel_spacing
+      - slice_thickness
+      - echoPulseSequenceCategoryCode 
+      - diffusionBValue 
+      - diffusionDirectionalityCode 
+      - resonantNucleusCode 
+      - acquisitionContrastCode 
+      - inversionRecoveryIndicator 
+      - pulseSequenceName 
+      - multipleSpinEchoIndicator 
+      - phaseContrastIndicator 
+      - timeOfFlightContrastIndicator 
+      - arterialSpinLabelingContrastCode 
+      - steadyStatePulseSequenceCode 
+      - echoPlanarPulseSequenceIndicator 
+      - saturationRecoveryIndicator 
+      - spectrallySelectedSuppressionCode 
+      - mrImageReconstructionProtocolElement
+      - complexImageComponentCode
       - file_mapping_level
       - id
   sample:
@@ -211,8 +259,11 @@ Nodes:
       - sample_id
       - anatomic_site
       - participant_age_at_collection # 28.02.22 pdunn
-      - diagnosis_icd_o
-      - diagnosis_finer_resolution
+      - diagnosis_classification
+      - diagnosis_classification_system
+      - diagnosis_verification_status
+      - diagnosis_basis
+      - diagnosis_comment
       - sample_tumor_status
       - tumor_classification
       - sample_description
@@ -224,7 +275,6 @@ Nodes:
       - tumor_stage_clinical_t
       - tumor_stage_clinical_n
       - tumor_stage_clinical_m
-      - diagnosis_icd_cm
       - id
   #   - sample_type
   #   - biosample_accession captured in synonym 
@@ -257,29 +307,24 @@ Nodes:
       - custom_assembly_fasta_file_for_alignment
       - file_mapping_level
       - sequence_alignment_software
-      - cDNA_Offset
-      - cDNA_Length
-      - Cell_Barcode
-      - Cryopreserved_Cells_in_Sample
-      - Dissociation_Method
-      - End_Bias
-      - Input_Cells_and_Nuclei
-      - Library_Construction_Method
-      - Library_Preparation_Date
-      - Nucleic_Acid_Capture_Date
-      - Paired_End
-      - Protocols_Link
-      - Read1
-      - Read2
-      - Reverse_Transcription_Primer_Oligo_dT_Poly_dT
-      - Reverse_Transcription_Primer_Feature_barcoding
-      - Reverse_Transcription_Primer_Random
-      - Sequencing_Library_Construction_Date
-      - Single_Cell_Dissociation_Date
-      - Single_Cell_Isolation_Method
-      - Spike_In
-      - Total_Number_of_Input_Cells
-      - UMI
+      - cDNA_read
+      - cDNA_read_size
+      - cDNA_read_offset
+      - cell_barcode_offset
+      - cell_barcode_read
+      - cell_barcode_size
+      - single_cell_entity
+      - dissociation_method
+      - end_bias
+      - total_number_of_input_cells
+      - library_construction_method
+      - library_strand
+      - protocols_link
+      - reverse_transcription_primer
+      - spike_in
+      - UMI_barcode_offset
+      - UMI_barcode_read
+      - UMI_barcode_size
       - id
   sequencing_file: # 01.03.22 pdunn
     Props:
@@ -333,7 +378,7 @@ Nodes:
       - organism_species
       - adult_or_childhood_study # adult, pediatric - needs review, there are many other facets of study type (interventional, longitudinal), should this be added after a query of study_subject.age
       - data_types # generate from a DB query of list of data_types vs. template based entry?, generate from a query of list from enumerated values
-      - file_types_and_format # generate from a DB query of list of file extensions vs. template based entry?, list from enumerated values
+      - file_types_and_format
       - number_of_participants
       - number_of_samples
       - id
@@ -360,7 +405,7 @@ Nodes:
       - institution
       - id
   synonym:  # 09.20.22 pd, nee alias
-     Props:
+    Props:
       - synonym_id #the alternate or alias id in another repo
       - repository_of_synonym_id #the name of the other repo
       - id
@@ -371,13 +416,15 @@ Nodes:
       - age_at_treatment_end
       - treatment_outcome
       - treatment_type
-      - therapeutic_agents
+      - therapeutic_agent
       - id
 Relationships:
   of_cell_line:
     Props: null
     Mul: many_to_one
     Ends: 
+      - Src: cell_line
+        Dst: sample
       - Src: cell_line
         Dst: participant
       - Src: cell_line
@@ -387,13 +434,19 @@ Relationships:
     Mul: many_to_one 
     Ends:
       - Src: clinical_measure_file
-        Dst: study
-  of_clinical_measure_file_participant: 
-    Props: null
-    Mul: many_to_many 
-    Ends:
-      - Src: clinical_measure_file
         Dst: participant
+      - Src: clinical_measure_file
+        Dst: study
+  of_cytogenomic_file:
+    Props: null
+    Mul: many_to_one
+    Ends:
+      - Src: cytogenomic_file
+        Dst: cell_line
+      - Src: cytogenomic_file
+        Dst: pdx
+      - Src: cytogenomic_file
+        Dst: sample
   of_diagnosis: 
     Props: null
     Mul: many_to_one
@@ -463,15 +516,15 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: pdx
-        Dst: study
-      - Src: pdx
         Dst: sample
+      - Src: pdx
+        Dst: study
   of_publication: # 09.20.22 pd
     Props: null
     Mul: many_to_one
     Ends:
-     - Src: publication
-       Dst: study
+    - Src: publication
+      Dst: study
   of_radiology_file:
     Props: null
     Mul: many_to_one
@@ -483,9 +536,11 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: sample
-        Dst: participant
-     # - Src: sample
-     #   Dst: study
+        Dst: pdx
+      - Src: sample
+        Dst: cell_line
+      - Src: sample
+        Dst: participant  
   #of_sample_diagnosis: 
   of_sequencing_file: #09.20.22 pd
     Props: null
@@ -542,9 +597,9 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: synonym
-        Dst: participant
-      - Src: synonym
         Dst: sample
       - Src: synonym
+        Dst: participant
+      - Src: synonym
         Dst: study
- 
+
