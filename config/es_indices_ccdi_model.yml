@@ -1251,8 +1251,16 @@ Indices:
             normalizer: lowercase
       library_source:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
       library_strategy:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (file:clinical_measure_file)
