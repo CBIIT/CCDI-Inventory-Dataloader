@@ -1245,6 +1245,10 @@ Indices:
         type: keyword
       library_selection:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
       library_source:
         type: keyword
       library_strategy:
