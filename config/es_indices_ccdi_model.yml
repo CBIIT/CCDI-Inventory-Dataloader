@@ -193,6 +193,7 @@ Indices:
         }) as participant_radiology_file_filters
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
       OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+      OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
@@ -200,7 +201,7 @@ Indices:
       RETURN DISTINCT
         p.id as id,
         p.id as pid,
-        p.participant_id as participant_id,
+        sy.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
         p.sex_at_birth as sex_at_birth,
         COLLECT(DISTINCT {
@@ -509,17 +510,18 @@ Indices:
       WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
       OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+      OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
       WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, file, fu, st, stf, stp, dg
       RETURN DISTINCT
         p.id as id,
-        p.participant_id as participant_id,
+        sy.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
         p.race as race_str,
         p.sex_at_birth as sex_at_birth,
-        p.alternate_participant_id as alternate_participant_id,
+        sy.synonym_id as alternate_participant_id,
         COLLECT(DISTINCT {
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
@@ -618,11 +620,12 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (p:participant)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
         WHERE (cl: cell_line or cl: pdx)
         optional Match (sm2)<--(file)
         WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
-        with p, case COLLECT(distinct sm1) when [] then []
+        with p, sy, case COLLECT(distinct sm1) when [] then []
                       else COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
                               participant_age_at_collection: sm1.participant_age_at_collection,
@@ -681,10 +684,10 @@ Indices:
                                             WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample2
-        with p, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
+        with p, sy, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
         WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
-        with p, cell_line_pdx_file_filters, COLLECT(DISTINCT {
+        with p, sy, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                       sample_anatomic_site: sm.anatomic_site,
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
@@ -711,9 +714,9 @@ Indices:
                   }) AS general_file_filters
         OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (p)<-[:of_clinical_measure_file]-(file1:clinical_measure_file)
-        with p, cell_line_pdx_file_filters, general_file_filters,sm, COLLECT(DISTINCT file1.file_type) as file1_types
+        with p, sy, cell_line_pdx_file_filters, general_file_filters,sm, COLLECT(DISTINCT file1.file_type) as file1_types
         UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
-        with p, cell_line_pdx_file_filters, general_file_filters, COLLECT(DISTINCT {
+        with p, sy, cell_line_pdx_file_filters, general_file_filters, COLLECT(DISTINCT {
                   sample_anatomic_site: sm.anatomic_site,
                   participant_age_at_collection: sm.participant_age_at_collection,
                   sample_tumor_status: sm.sample_tumor_status,
@@ -726,9 +729,9 @@ Indices:
           }) as participant_clinical_measure_file_filters
         OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (p)<-[:of_radiology_file]-(file1:radiology_file)
-        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
+        with p, sy, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types
         UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
-        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
+        with p, sy, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
                   sample_anatomic_site: sm.anatomic_site,
                   participant_age_at_collection: sm.participant_age_at_collection,
                   sample_tumor_status: sm.sample_tumor_status,
@@ -744,11 +747,11 @@ Indices:
         OPTIONAL MATCH (p)<-[*..4]-(file)
         WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.follow_up_id desc,  fu.age_at_follow_up desc
+        with p, sy,cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.follow_up_id desc,  fu.age_at_follow_up desc
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, fu, st, stf, stp, dg
+        WITH p, sy, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, fu, st, stf, stp, dg
         RETURN DISTINCT
           dg.id as id,
           p.id as pid,
@@ -761,7 +764,7 @@ Indices:
           dg.diagnosis_comment as diagnosis_comment,
           dg.anatomic_site as diagnosis_anatomic_site,
           dg.age_at_diagnosis as age_at_diagnosis,
-          p.participant_id as participant_id,
+          sy.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
           p.sex_at_birth as sex_at_birth,
           st.study_id as study_id,
@@ -965,14 +968,15 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH file, fu, p, st, sm, stf, stp, dg
+        WITH file, fu, p,sy, st, sm, stf, stp, dg
         RETURN DISTINCT
           sm.id as id,
           p.id as pid,
           sm.sample_id as sample_id,
-          p.participant_id as participant_id,
+          sy.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
           p.sex_at_birth as sex_at_birth,
           sm.anatomic_site as sample_anatomic_site,
@@ -1248,6 +1252,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
@@ -1266,7 +1271,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
@@ -1304,10 +1309,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        With file, st, p, races, ethnicities, COLLECT(DISTINCT {
+        With file, st, p,sy, races, COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
@@ -1341,7 +1347,7 @@ Indices:
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           COLLECT(DISTINCT {
-              participant_id: p.participant_id,
+              participant_id: sy.participant_id,
               race: races,
               sex_at_birth: p.sex_at_birth,
               diagnosis: diagnosis_filters,
@@ -1364,10 +1370,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sy, sm1, sm, st, races, fu, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1383,7 +1390,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                     ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
@@ -1432,10 +1439,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sy, sm1, sm, st, races, fu, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1451,7 +1459,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                     ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
@@ -1501,6 +1509,7 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
@@ -1519,7 +1528,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           null AS sample_id,
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
@@ -1556,10 +1565,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sy, sm1, sm, st, races, fu, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1575,7 +1585,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                     ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
@@ -1624,10 +1634,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p,sy, sm1, sm, st, races, fu, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1643,7 +1654,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                     ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
@@ -1692,10 +1703,11 @@ Indices:
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p,sy, sm1, sm, st, races, fu, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1711,7 +1723,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                     ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
           COLLECT(DISTINCT file.id) as files,
@@ -1831,10 +1843,11 @@ Indices:
         where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with sm1, sm, p, ethnicities, races, st, dg, fu, stf, stp
+        with sm1, sm, p, sy, races, st, dg, fu, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -1850,7 +1863,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           null as files,
           null as combined_filters,
@@ -1890,10 +1903,11 @@ Indices:
         where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:single_cell_sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with sm, p, ethnicities, races, st, dg, fu, stf, stp
+        with sm, p, sy, races, st, dg, fu, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -1909,7 +1923,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           sm.sample_id AS sample_id,
           null as files,
           null as combined_filters,
@@ -1983,10 +1997,11 @@ Indices:
         where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         UNWIND apoc.text.split(p.race, ';') AS races
-        with p, ethnicities, races, st, dg, fu, stf, stp
+        with p, sy, races, st, dg, fu, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -2002,7 +2017,7 @@ Indices:
           st.phs_accession as phs_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          p.participant_id AS participant_id,
+          sy.participant_id AS participant_id,
           null AS sample_id,
           null as files,
           null as combined_filters,

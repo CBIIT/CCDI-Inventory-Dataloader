@@ -1,4 +1,5 @@
 Handle: CCDI
+Version: v1.8.0
 Nodes:
   cell_line:
     Props:
@@ -13,11 +14,11 @@ Nodes:
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
       - checksum_algorithm
       - checksum_value
-      - file_mapping_level
       - participant_list
       - id
   cytogenomic_file:
@@ -28,38 +29,33 @@ Nodes:
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
-      - file_mapping_level
       - cytogenomic_platform
       - id
   diagnosis:
     Props:
       - diagnosis_id
-      - diagnosis_classification
+      - diagnosis
       - diagnosis_classification_system
-      - diagnosis_verification_status
       - diagnosis_basis
       - diagnosis_comment
       - disease_phase
       - tumor_classification
       - anatomic_site
       - age_at_diagnosis
-      - toronto_childhood_cancer_staging
       - age_at_recurrence
       - last_known_disease_status
       - age_at_last_known_disease_status
-      - tumor_grade
+      - toronto_childhood_cancer_staging
       - tumor_stage_clinical_t
       - tumor_stage_clinical_n
       - tumor_stage_clinical_m
+      - tumor_stage_source
+      - tumor_grade
+      - tumor_grade_source
       - id
-    # - tumor_morphology
-    # - tumor_incidence_type # primary, metastatic, recurrence, progression
-    # - progression_or_recurrence
-    # - tissue_or_organ_of_origin
-    # - site_of_resection_or_biopsy
-    # - days_to_last_followup
   exposure:
     Props:
       - exposure_id
@@ -91,19 +87,6 @@ Nodes:
       - relationship
       - family_id
       - id
-  follow_up:
-    Props:
-      - follow_up_id
-      - vital_status
-      - age_at_follow_up 
-      - follow_up_category
-      - adverse_event
-      - comorbidity
-      - comorbidity_method_of_diagnosis
-      - disease_response
-      - risk_factor
-      - follow_up_other
-      - id
   medical_history:
     Props:
       - medical_history_id
@@ -113,6 +96,7 @@ Nodes:
   molecular_test:
     Props:
       - molecular_test_id
+      - anatomic_site
       - age_at_molecular_test
       - gene_symbol
       - molecular_analysis_method
@@ -122,11 +106,9 @@ Nodes:
       - test_unit
       - aa_change
       - antigen
-      - anatomic_site
       - blood_test_normal_range_upper
       - blood_test_normal_range_lower
       - cell_count
-      - chromosome
       - copy_number
       - cytoband
       - exon
@@ -149,7 +131,7 @@ Nodes:
       - variant_type
       - zygosity  
       - id
-  methylation_array_file: # 09.20.22 pd
+  methylation_array_file:
     Props:
       - methylation_array_file_id
       - file_name
@@ -157,9 +139,9 @@ Nodes:
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
-      - file_mapping_level
       - methylation_platform
       - reporter_label
       - id
@@ -168,8 +150,6 @@ Nodes:
       - participant_id
       - race       
       - sex_at_birth
-      - ethnicity
-      - alternate_participant_id
       - id
       # - dbgap_subject_id : store in synonym
   pathology_file: 
@@ -180,6 +160,7 @@ Nodes:
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
       - image_modality
@@ -190,7 +171,6 @@ Nodes:
       - deidentification_method
       - percent_tumor
       - percent_necrosis
-      - file_mapping_level
       - id
   pdx:
     Props: 
@@ -219,6 +199,7 @@ Nodes:
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
       - anatomic_site
@@ -252,48 +233,33 @@ Nodes:
       - spectrallySelectedSuppressionCode 
       - mrImageReconstructionProtocolElement
       - complexImageComponentCode
-      - file_mapping_level
       - id
   sample:
     Props:
       - sample_id
       - anatomic_site
-      - participant_age_at_collection # 28.02.22 pdunn
-      - diagnosis_classification
-      - diagnosis_classification_system
-      - diagnosis_verification_status
-      - diagnosis_basis
-      - diagnosis_comment
+      - participant_age_at_collection
       - sample_tumor_status
       - tumor_classification
       - sample_description
-      - alternate_sample_id
-      - last_known_disease_status
-      - age_at_last_known_disease_status
-      - toronto_childhood_cancer_staging
-      - tumor_grade
-      - tumor_stage_clinical_t
-      - tumor_stage_clinical_n
-      - tumor_stage_clinical_m
       - id
-  #   - sample_type
-  #   - biosample_accession captured in synonym 
-  #   - disease_phase
-  single_cell_sequencing_file:
+  sequencing_file: 
     Props:
-      - single_cell_sequencing_file_id
+      - sequencing_file_id
       - file_name
       - file_type
       - file_description
       - file_size
       - md5sum
+      - file_mapping_level
       - file_url_in_cds
       - dcf_indexd_guid
       - library_id # sra req'd
       - library_selection # sra req'd
       - library_strategy  # sra req'd
       - library_layout  # sra req'd # paired end, single, moved from submission
-      - library_source  # sra req'd # genomic, transcriptome, metagenomic, viral, synthetic; move from submission
+      - library_source_material  # nee library_source for SRA req'd 
+      - library_source_molecule
       - number_of_bp  # sra req'd
       - number_of_reads  # sra req'd
       - design_description
@@ -305,7 +271,6 @@ Nodes:
       - checksum_algorithm
       - checksum_value
       - custom_assembly_fasta_file_for_alignment
-      - file_mapping_level
       - sequence_alignment_software
       - cDNA_read
       - cDNA_read_size
@@ -326,42 +291,12 @@ Nodes:
       - UMI_barcode_read
       - UMI_barcode_size
       - id
-  sequencing_file: # 01.03.22 pdunn
-    Props:
-      - sequencing_file_id
-      - file_name
-      - file_type
-      - file_description
-      - file_size
-      - md5sum
-      - file_url_in_cds
-      - dcf_indexd_guid
-      - library_id # sra req'd
-      - library_selection # sra req'd
-      - library_strategy  # sra req'd
-      - library_layout  # sra req'd # paired end, single, moved from submission
-      - library_source  # sra req'd # genomic, transcriptome, metagenomic, viral, synthetic; move from submission
-      - number_of_bp  # sra req'd
-      - number_of_reads  # sra req'd
-      - design_description
-      - platform
-      - instrument_model
-      - avg_read_length # sra req'd
-      - coverage  # sra req'd
-      - reference_genome_assembly  # sra req'd
-      - checksum_algorithm
-      - checksum_value
-      - custom_assembly_fasta_file_for_alignment
-      - file_mapping_level
-      - sequence_alignment_software
-      - id
   study:
     Props:
       - study_id
-      - phs_accession #dbGaP accession
+      - dbgap_accession
       - acl
       - study_name
-      - study_short_title
       - study_acronym
       - study_description
       - consent
@@ -382,10 +317,10 @@ Nodes:
       - number_of_participants
       - number_of_samples
       - id
-  study_arm: # 09.21.22 pd
+  study_arm: 
     Props:
       - study_arm_id
-      - clinical_trial_arm
+      - study_arm_description
       - clinical_trial_identifier
       - clinical_trial_repository
       - id
@@ -398,25 +333,47 @@ Nodes:
       - id
   study_personnel:
     Props:
-      - study_personnel_id  # 02/03/2022 adeforge, used to be 'study_personnel_ID'
+      - study_personnel_id
       - personnel_name
       - personnel_type #enum: PI, Co-PI, Data Submitter, etc
       - email_address
       - institution
       - id
-  synonym:  # 09.20.22 pd, nee alias
+  survival:
+    Props:
+      - survival_id
+      - last_known_survival_status
+      - age_at_last_known_survival_status
+      - first_event
+      - event_free_survival_status
+      - age_at_event_free_survival_status
+      - follow_up_category
+      - adverse_event
+      - comorbidity
+      - comorbidity_method_of_diagnosis
+      - risk_factor
+      - follow_up_other
+      - id
+  synonym:
     Props:
       - synonym_id #the alternate or alias id in another repo
       - repository_of_synonym_id #the name of the other repo
       - id
-  therapeutic_procedure:
+  treatment:
     Props:
-      - therapeutic_procedure_id
+      - treatment_id
       - age_at_treatment_start
       - age_at_treatment_end
-      - treatment_outcome
       - treatment_type
-      - therapeutic_agent
+      - treatment_agent
+      - id
+  treatment_response:
+    Props:
+      - treatment_response_id
+      - response
+      - age_at_response
+      - response_category
+      - response_system
       - id
 Relationships:
   of_cell_line:
@@ -424,27 +381,21 @@ Relationships:
     Mul: many_to_one
     Ends: 
       - Src: cell_line
-        Dst: sample
+        Dst: study  
       - Src: cell_line
-        Dst: participant
-      - Src: cell_line
-        Dst: study   
+        Dst: sample 
   of_clinical_measure_file: # #09.20.22 pd
     Props: null
     Mul: many_to_one 
     Ends:
       - Src: clinical_measure_file
-        Dst: participant
-      - Src: clinical_measure_file
         Dst: study
+      - Src: clinical_measure_file
+        Dst: participant
   of_cytogenomic_file:
     Props: null
     Mul: many_to_one
     Ends:
-      - Src: cytogenomic_file
-        Dst: cell_line
-      - Src: cytogenomic_file
-        Dst: pdx
       - Src: cytogenomic_file
         Dst: sample
   of_diagnosis: 
@@ -453,6 +404,8 @@ Relationships:
     Ends:
       - Src: diagnosis
         Dst: participant
+      - Src: diagnosis
+        Dst: sample
   of_exposure:
     Props: null
     Mul: many_to_one
@@ -465,20 +418,16 @@ Relationships:
     Ends:
       - Src: family_relationship
         Dst: participant      
-  of_follow_up:
+  of_survival:
     Props: null
     Mul: many_to_one
     Ends:
-      - Src: follow_up
+      - Src: survival
         Dst: participant
   of_pathology_file:
     Props: null
     Mul: many_to_one
     Ends:
-      - Src: pathology_file
-        Dst: cell_line
-      - Src: pathology_file
-        Dst: pdx
       - Src: pathology_file
         Dst: sample
   of_medical_history:
@@ -487,14 +436,10 @@ Relationships:
     Ends:
       - Src: medical_history
         Dst: participant
-  of_methylation_array_file: # 09.20.22 pd
+  of_methylation_array_file:
     Props: null
     Mul: many_to_one
     Ends:
-      - Src: methylation_array_file
-        Dst: cell_line
-      - Src: methylation_array_file
-        Dst: pdx
       - Src: methylation_array_file
         Dst: sample
   of_molecular_test:
@@ -516,9 +461,9 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: pdx
-        Dst: sample
-      - Src: pdx
         Dst: study
+      - Src: pdx
+        Dst: sample
   of_publication: # 09.20.22 pd
     Props: null
     Mul: many_to_one
@@ -536,31 +481,16 @@ Relationships:
     Mul: many_to_one
     Ends:
       - Src: sample
+        Dst: participant 
+      - Src: sample
         Dst: pdx
       - Src: sample
-        Dst: cell_line
-      - Src: sample
-        Dst: participant  
-  #of_sample_diagnosis: 
-  of_sequencing_file: #09.20.22 pd
+        Dst: cell_line 
+  of_sequencing_file: 
     Props: null
     Mul: many_to_one
     Ends:
       - Src: sequencing_file
-        Dst: cell_line
-      - Src: sequencing_file
-        Dst: pdx
-      - Src: sequencing_file
-        Dst: sample
-  of_single_cell_sequencing_file:
-    Props: null
-    Mul: many_to_one
-    Ends:
-      - Src: single_cell_sequencing_file
-        Dst: cell_line
-      - Src: single_cell_sequencing_file
-        Dst: pdx
-      - Src: single_cell_sequencing_file
         Dst: sample
   of_study_admin: 
     Props: null
@@ -568,7 +498,7 @@ Relationships:
     Ends:
       - Src: study_admin
         Dst: study
-  of_study_arm: # 09.21.22 pd
+  of_study_arm: 
     Props: null
     Mul: many_to_one
     Ends:
@@ -586,20 +516,27 @@ Relationships:
     Ends:
       - Src: study_personnel  
         Dst: study     
-  of_therapeutic_procedure: # 09.07.22 svburke
-    Props: null
-    Mul: many_to_many
-    Ends:
-      - Src: therapeutic_procedure
-        Dst: participant
-  of_synonym: # 09.20.22 pd
+  of_synonym:
     Props: null
     Mul: many_to_one
     Ends:
       - Src: synonym
-        Dst: sample
+        Dst: study
       - Src: synonym
         Dst: participant
       - Src: synonym
-        Dst: study
+        Dst: sample
+  of_treatment:
+    Props: null
+    Mul: many_to_one
+    Ends:
+      - Src: treatment
+        Dst: participant
+  of_treatment_response:
+    Props: null
+    Mul: many_to_one
+    Ends:
+      - Src: treatment_response
+        Dst: participant
+
 

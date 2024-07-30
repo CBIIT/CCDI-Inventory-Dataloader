@@ -6,6 +6,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Key: true
     Req: true
@@ -17,9 +18,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596084'
         Value: Cytogenomic Analysis Instrumentation Text
+        Version: "null"
       - Origin: Illumina
         Code: 'cytogenomic'
         Value: cytogenomic_platform
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -30,9 +33,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14607707'
         Value: Imaging Technique Magnetic Field Strength Number
+        Version: "null"
       - Origin: DICOM
         Code: '0018,0087'
         Value: Imaging Technique Magnetic Field Strength Number
+        Version: "null"
     Type: string
     Req: true
     Key: false
@@ -44,6 +49,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2866141'
         Value: Equipment Manufacturer Model Name Text
+        Version: "null"
     Type: string
     Req: true
     Key: false
@@ -55,6 +61,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2413274'
         Value: Equipment Manufacturer Model Name Text
+        Version: "null"
     Type: string
     Req: true
     Key: false
@@ -66,6 +73,7 @@ PropDefinitions:
       - Origin: DICOM
         Code: '0018,0084'
         Value: imaging_frequency
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -77,9 +85,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14643671'
         Value: Imaging Technique Repetition Time Float Number
+        Version: "null"
       - Origin: DICOM
         Code: '0018,0080'
         Value: repetition_time
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -91,9 +101,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14644117'
         Value: Imaging Technique Echo Time Float Number
+        Version: "null"
       - Origin: DICOM
         Code: '0018,0081'
         Value: echo_time
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -105,9 +117,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14644131'
         Value: Imaging Technique Inversion Time Float Number
+        Version: "null"
       - Origin: DICOM
         Code: '0018,0082'
         Value: inversion_time
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -119,9 +133,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14644137'
         Value: Imaging Technique Flip Angle Float Number
+        Version: "null"
       - Origin: DICOM
         Code: '0018,1314'
         Value: flip_angle
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -133,6 +149,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2903393'
         Value: Image Pixel Spacing Float or Fixed-point Millimeter Number
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -144,6 +161,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3113185'
         Value: Image Plane Slice Thickness Float or Fixed-point Millimeter Number
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -155,9 +173,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14645641'
         Value: Image Acquisition Spin-Echo Pulse Sequence Code Category
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9008'
         Value: echoPulseSequenceCategoryCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -169,9 +189,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14607706'
         Value: Image Acquisition Spin-Echo Pulse Sequence Code Category
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9087'
         Value: diffusionBValue
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -183,9 +205,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616426'
         Value: Imaging Technique Diffusion Directionality Type
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9075'
         Value: diffusionDirectionalityCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -197,9 +221,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616427'
         Value: Image Acquisition Resonant Nucleus Code
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9100'
         Value: resonantNucleusCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -211,9 +237,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616428'
         Value: Image Acquisition Contrast Type
+        Version: "null"
       - Origin: DICOM
         Code: '0008,9209'
         Value: acquisitionContrastCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -225,9 +253,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14607722'
         Value: Image Acquisition Inversion Recovery Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9009'
         Value: inversionRecoveryIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -239,9 +269,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14608594'
         Value: Image Acquisition Pulse Sequence Pulse Sequence Name Text
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9005'
         Value: pulseSequenceName
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -253,9 +285,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14608595'
         Value: Imaging Technique Multiple Spin Echo Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9011'
         Value: multipleSpinEchoIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -267,9 +301,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14608601'
         Value: Image Phase Contrast Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9014'
         Value: phaseContrastIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -281,9 +317,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14608649'
         Value: Imaging Technique Time of Flight Contrast Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9015'
         Value: timeOfFlightContrastIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -295,9 +333,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616428'
         Value: Image Acquisition Contrast Type
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9250'
         Value: arterialSpinLabelingContrastCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -309,9 +349,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616430'
         Value: Image Acquisition Steady State Pulse Sequence Type
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9017'
         Value: steadyStatePulseSequenceCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -323,9 +365,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14612651'
         Value: Image Acquisition Echo Planar Pulse Sequence Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9018'
         Value: echoPlanarPulseSequenceIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -337,9 +381,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14612652'
         Value: Imaging Technique Saturation Recovery Indicator
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9024'
         Value: saturationRecoveryIndicator
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -351,9 +397,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616431'
         Value: Imaging Technique Spectrally Selected Suppression Type
+        Version: "null"
       - Origin: DICOM
         Code: '0018,9025'
         Value: spectrallySelectedSuppressionCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -365,6 +413,7 @@ PropDefinitions:
       - Origin: DICOM
         Code: '0018,9933'
         Value: mrImageReconstructionProtocolElement
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -376,9 +425,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616432'
         Value: Imaging Technique Complex Image Component Type
+        Version: "null"
       - Origin: DICOM
         Code: '0008,9208'
         Value: complexImageComponentCode
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -390,6 +441,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14534325'
         Value: CCDI Property Unique Identifier
+        Version: "null"
     Type: string
     Req: false
     Key: false
@@ -401,6 +453,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596104'
         Value: Cell Line Name Identifier
+        Version: "null"
     Type: string
     Req: true
     Key: true
@@ -411,6 +464,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596139'
         Value: Cell Line Source Name
+        Version: "null"
     Type: string
     Req: true
     Private: false  
@@ -421,6 +475,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '7788940'
         Value: Microscope Device Nominal Magnification Float Value
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -431,6 +486,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '8028962'
         Value: Biospecimen Preservation Procedure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -463,6 +519,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '8120269'
         Value: Biospecimen Stain Type
+        Version: "null"
     Type:
       value_type: string
       Enum: 
@@ -481,6 +538,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12307007'
         Value: Subject Age at Imaging Day Count
+        Version: "null"
     Type: integer
     Req: true
     Private: false  
@@ -491,6 +549,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14576319'
         Value: Electronic Data File Deidentification Method Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -508,6 +567,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14570321'
         Value: Medical History Relevant Condition Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -519,6 +579,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13209646'
         Value: Medical History Relevant Condition Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -539,6 +600,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13212141'
         Value: Medical History Relevant Condition Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -614,6 +676,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14570323'
         Value: Exposure Environment Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -625,6 +688,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14589582'
         Value: Subject Age at Exposure Day Count
+        Version: "null"
     Type: integer
     Req: true
     Private: false
@@ -635,7 +699,8 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2955385'
         Value: Person Cigarette Smoking History Pack Year Value
-    Type: integer
+        Version: "null"
+    Type: number
     Req: false
     Private: false
   #exposure
@@ -645,7 +710,8 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3285521'
         Value: Cigarette Smoking Duration Year Count
-    Type: integer
+        Version: "null"
+    Type: number
     Req: false
     Private: false
   #exposure
@@ -655,7 +721,8 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3114013'
         Value: Alcohol Consumption Weekly Days Usage Number
-    Type: integer
+        Version: "null"
+    Type: number
     Req: false
     Private: false
   #exposure
@@ -665,7 +732,8 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3124961'
         Value: Person Daily Alcohol Consumption Count
-    Type: integer
+        Version: "null"
+    Type: number
     Req: false
     Private: false
   #exposure
@@ -675,6 +743,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '7537144'
         Value: Alcohol History Indicator
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -692,6 +761,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3457767'
         Value: Alcohol Exposure Intensity
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -712,6 +782,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11256813'
         Value: Environmental Exposure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -729,6 +800,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2001716'
         Value: Smoking Use Average Number
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -739,6 +811,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11256813'
         Value: Environmental Exposure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -756,6 +829,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11256813'
         Value: Environmental Exposure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -773,6 +847,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11256813'
         Value: Environmental Exposure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -790,6 +865,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11256813'
         Value: Environmental Exposure Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -807,11 +883,13 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14645982'
         Value: Tobacco Smoking History Day Frequency
+        Version: "null"
     Type:
       value_type: string
       Enum:
         - "Every day"
         - "Some days"
+        - "Not Reported"
         - "Unknown"
     Req: false
     Strict: true
@@ -823,6 +901,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3279220'
         Value: Cigarette Smoking First Morning Time Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -830,6 +909,7 @@ PropDefinitions:
         - "6-30 Minutes"
         - "31-60 Minutes"
         - "After 60 Minutes"
+        - "Not Reported"
         - "Unknown"
     Req: false
     Strict: true
@@ -841,6 +921,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14494331'
         Value: Tobacco Smoking History Onset Year Date
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -851,6 +932,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14494374'
         Value: Tobacco Smoking History Cessation Year Date
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -861,6 +943,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6787413'
         Value: Smoking History Tobacco Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -882,6 +965,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14572339'
         Value: Environmental Smoke Exposure Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -919,7 +1003,6 @@ PropDefinitions:
         - "Tobacco smoke, cigar"
         - "Tobacco smoke, cigarettes"
         - "Tobacco smoke, pipe"
-        - "Unknown"
         - "Volcanic smoke"
         - "Waste burning smoke"
         - "Wood burning smoke, factory"
@@ -934,6 +1017,8 @@ PropDefinitions:
         - "Work-related smoke, plastics factory"
         - "Work-related smoke, plumbing"
         - "Work-related smoke, soldering/welding"
+        - "Not Reported"
+        - "Unknown"
     Req: false
     Strict: true
     Private: false
@@ -944,6 +1029,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6050093'
         Value: Tobacco Use Smoking Products Ever Used Regularly Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -953,55 +1039,129 @@ PropDefinitions:
         - "Other"
         - "Pipe"
         - "Smokeless Tobacco"
+        - "Not Reported"
+        - "Unkown"
     Req: false
     Strict: true
     Private: false
-  #follow_up
-  follow_up_id:
-    Desc: A unique sequence of characters used to identify, name, or characterize the the health status of an individual after a study has officially closed.
+  #survival
+  survival_id:
+    Desc: nnn
     Term:
       - Origin: caDSR
-        Code: '14576972'
-        Value: Subject Follow-Up Event Unique Identifier
+        Code: 'nn'
+        Value: nn
+        Version: "1.00"
     Type: string
     Req: true
     Private: false
     Key: true
-  #follow_up
-  age_at_follow_up:
-    Desc: The age (in days) when the follow-up status of the subject was recorded.
+  #survival
+  last_known_survival_status:
+    Desc: Participant vital status
     Term:
       - Origin: caDSR
-        Code: '14480965'
-        Value: Subject Age Follow-Up Day Count
+        Code: '2847330'
+        Value: Participant Vital Status Type
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "Alive"
+        - "Dead"
+        - "Not Reported"
+        - "Unknown"
+        - "Unspecified"
+    Req: true
+    Strict: true
+    Private: false
+  #survival
+  age_at_last_known_survival_status:
+    Desc: The age (in days) of the subject when the vitals measurement was taken.
+    Term:
+      - Origin: caDSR
+        Code: '12306025'
+        Value: Subject Age at Vitals Day Count
+        Version: "1.00"
     Type: integer
     Req: true
     Private: false
-  #follow_up
+  #survival
+  first_event:
+    Desc: Identify the nature of the event that best characterizes the endpoint of the study.
+    Term:
+      - Origin: caDSR
+        Code: '3070936'
+        Value: Study End Point Event Type
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "Progression"
+        - "Relapse"
+        - "Second Malignant Neoplasm"
+        - "Death"
+        - 'Not Reported'
+        - "Not Applicable"
+        - "Unknown"
+    Req: false
+    Strict: false
+    Private: false
+  #survival
+  event_free_survival_status:
+    Desc: Identify the nature of the event that best characterizes the endpoint of the study.
+    Term:
+      - Origin: caDSR
+        Code: '3070936'
+        Value: Study End Point Event Type
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "Censored"
+        - "Not Censored"
+        - 'Not Reported'
+        - "Unknown"
+    Req: false
+    Strict: false
+    Private: false
+  #survival
+  age_at_event_free_survival_status:
+    Desc: Time from diagnosis to first event (or censoring), in days.
+    Term:
+      - Origin: caDSR
+        Code: '3229334'
+        Value: Study End Point Event Occurrence Day Count
+        Version: "null"
+    Type: integer
+    Req: false
+    Private: false
+  #survival
   follow_up_category:
     Desc: A text term based on grouping information about the health status of an individual after a study has officially closed
     Term:
       - Origin: caDSR
         Code: '14480973'
         Value: Subject Follow-Up Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
         - "adverse_event"
         - "comorbidity"
-        - "disease_response"
         - "risk_factor"
         - "other"
     Req: false
     Strict: false
     Private: false
-  #follow_up
+  #survival
   adverse_event:
     Desc: Common Terminology Criteria for Adverse Events Version 4.0 Low Level Term Name
     Term:
       - Origin: caDSR
         Code: '3125302'
         Value: adverse event
+        Version: "1.00"
     Type:
       value_type: list
       Enum:
@@ -1798,13 +1958,14 @@ PropDefinitions:
     Req: false
     Strict: false
     Private: false
-  #follow_up
+  #survival
   comorbidity:
     Desc: The class or category of the secondary disease(s).
     Term:
       - Origin: caDSR
         Code: '14483678'
         Value: Person Comorbidity Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -1954,13 +2115,14 @@ PropDefinitions:
     Req: false
     Strict: false
     Private: false          
-  #follow_up
+  #survival
   comorbidity_method_of_diagnosis:
     Desc: The class of clinical or laboratory procedure(s) used to determine the secondary disease diagnosis.
     Term: 
       - Origin: caDSR
         Code: '14483681'
         Value: Comorbidity Disease Diagnosis Method Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -1992,6 +2154,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14589997'
         Value: Molecular Test Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -2003,9 +2166,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14590166'
         Value: Subject Age at Molecular Test Day Count
+        Version: "null"
       - Origin: NCIt
         Code: 'C192254'
         Value: Age at Laboratory Test
+        Version: "null"
     Type: integer
     Req: true
     Private: false
@@ -2016,6 +2181,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11280318'
         Value: Gene Occurrence HGNC Symbol Name
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2026,6 +2192,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142401'
         Value: Molecular Analysis Test Method Name
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2060,6 +2227,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13569486'
         Value: Laboratory Procedure Test Name
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2157,6 +2325,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13336306'
         Value: Laboratory Procedure Numeric Test Result Float
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2167,6 +2336,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13362271'
         Value: Laboratory Procedure Test Result Text
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2177,6 +2347,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2179671'
         Value: Lab Test Result Unit of Measure Code
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2187,6 +2358,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142465'
         Value: transcript
+        Version: "null"
     Type: string
     Req: false
     Private: false  #molecular_test
@@ -2196,6 +2368,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142508'
         Value: Molecular Analysis Amino Acid Change Text
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2206,6 +2379,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13362273'
         Value: Immunohistochemical Test Method Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2242,6 +2416,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142535'
         Value: Laboratory Procedure Upper Limit of Normal Value
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -2252,6 +2427,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142571'
         Value: Laboratory Procedure Lower Limit of Normal Value
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -2262,49 +2438,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142528'
         Value: Molecular Analysis Cell Count
+        Version: "null"
     Type: integer
     Req: false
-    Private: false
-  #molecular_test
-  chromosome:
-    Desc: Threadlike structures made of protein and a single molecule of DNA in a human that serve to carry the genomic information from cell to cell.    
-    Term:
-      - Origin: caDSR
-        Code: '11379445'
-        Value: Gene Human Chromosome Name
-    Type:
-      value_type: string
-      Enum:
-        - "Chr 1"
-        - "Chr 2"
-        - "Chr 3"
-        - "Chr 4"
-        - "Chr 5"
-        - "Chr 6"
-        - "Chr 7"
-        - "Chr 8"
-        - "Chr 9"
-        - "Chr 10"
-        - "Chr 11"
-        - "Chr 12"
-        - "Chr 13"
-        - "Chr 14"
-        - "Chr 15"
-        - "Chr 16"
-        - "Chr 17"
-        - "Chr 18"
-        - "Chr 19"
-        - "Chr 20"
-        - "Chr 21"
-        - "Chr 22"
-        - "Chr 23"
-        - "Chr M"
-        - "Chr X"
-        - "Chr Y"
-        - "Unknown"
-        - "Not Reported"
-    Req: false
-    Strict: true
     Private: false
   #molecular_test
   copy_number:
@@ -2313,6 +2449,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13367966'
         Value: Gene Mutation Copy Number Count
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -2323,6 +2460,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142405'
         Value: Molecular Analysis Cytoband Text
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2333,6 +2471,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142411'
         Value: Molecular Analysis Exon Identification Number
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2343,6 +2482,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142511'
         Value: Molecular Analysis Histone Gene Family Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2363,6 +2503,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14529709'
         Value: Molecular Analysis Histone Gene Family Variant Type
+        Version: "null"
     Type: string
     Req: false
     Strict: true
@@ -2374,6 +2515,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6514355'
         Value: Molecular Analysis Intron Identifier
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2384,6 +2526,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6074182'
         Value: loci_abnormal_count
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -2394,6 +2537,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6074183'
         Value: loci_count
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -2404,6 +2548,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142506'
         Value: locus
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2414,6 +2559,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142534'
         Value: Gene Mutation Mismatch Repair Indicator
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2424,10 +2570,12 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13367935'
         Value: Gene Mutation Abnormality Type
+        Version: "null"
     Type:
-      value_type: string
+      value_type: list
       Enum:
         - "Acceptor Splice Site SNP"
+        - "Coding Sequence Variant"
         - "Exon Mutation"
         - "Frameshift Mutation"
         - "Inframe"
@@ -2435,14 +2583,20 @@ PropDefinitions:
         - "Inframe Insertion"
         - "Intronic Mutation"
         - "Missense Mutation"
+        - "NMD Transcript Variant"
         - "Non-Coding Gene Mutation"
+        - "Non-coding Transcript Variant"
         - "Nonsense Mutation"
         - "Not Reported"
+        - "Protein Altering Variant"
         - "Splice Acceptor"
         - "Splice Donor"
+        - "Splice Region Variant"
         - "Start Lost"
+        - "Stop Gained"
         - "Stop Lost"
         - "Synonymous"
+        - "Upstream Gene Variant"
     Req: false
     Strict: false
     Private: false
@@ -2453,6 +2607,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14532361'
         Value: Molecular Analysis Pathogenicity Type
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2463,54 +2618,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142527'
         Value: ploidy
+        Version: "null"
     Type: string
     Req: false
-    Private: false
-  #follow_up
-  disease_response:
-    Desc: Code assigned to describe the patient's response or outcome to the disease.
-    Term:
-      - Origin: caDSR
-        Code: '5750671'
-        Value: Disease Response Code
-    Type:
-      value_type: list
-      Enum:
-        - "AJ-Adjuvant Therapy"
-        - "BED-Biochemical Evidence of Disease"
-        - "CPD-Clinical Progression"
-        - "CR-Complete Response"
-        - "CRU-Complete Response Unconfirmed"
-        - "DU-Disease Unchanged"
-        - "IMR-Immunoresponse"
-        - "IPD-Immunoprogression"
-        - "MR-Minimal/Marginal response"
-        - "MX-Mixed Response"
-        - "Non-CR/Non-PD-Non-CR/Non-PD"
-        - "NPB-No Palliative Benefit"
-        - "NR-No Response"
-        - "PA-Palliative Therapy"
-        - "PB-Palliative Benefit"
-        - "PD-Progressive Disease"
-        - "PDM-Persistent Distant Metastasis"
-        - "PLD-Persistent Locoregional Disease"
-        - "PPD-Pseudoprogression"
-        - "PR-Partial Response"
-        - "PSR-Pseudoresponse"
-        - "RD-Responsive Disease"
-        - "RP-Response"
-        - "RPD-Radiographic Progressive Disease"
-        - "sCR-Stringent Complete Response"
-        - "SD-Stable Disease"
-        - "SPD-Surgical Progression"
-        - "TE-Too Early"
-        - "TF-Tumor Free"
-        - "VGPR-Very Good Partial Response"
-        - "WT-With Tumor"
-        - "Unknown"
-        - "Not Reported"
-    Req: false
-    Strict: true
     Private: false
   #molecular_test
   second_exon:
@@ -2519,6 +2629,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14578182'
         Value: Molecular Analysis Second Exon of Interest Identification Number
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2529,6 +2640,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '13367968'
         Value: Gene Mutation Second Gene HGNC Symbol Name
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2539,6 +2651,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14595986'
         Value: Molecular Test Specialized Text
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2549,6 +2662,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142394'
         Value: Molecular Analysis Analyte Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2569,6 +2683,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14473382'
         Value: Molecular Analysis Gene Variant Genomic Source Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2585,6 +2700,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142402'
         Value: Molecular Analysis Gene Variant Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -2622,6 +2738,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142510'
         Value: Molecular Analysis Genetic Zygosity Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2641,6 +2758,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142389'
         Value: Risk Factor 
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -2747,6 +2865,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3119787'
         Value: Follow Up
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2772,6 +2891,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -2783,6 +2903,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: cDNA Offset
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2793,9 +2914,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14599885'
         Value: Sequencing Library cDNA Offset Text
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: cDNA Offset
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2806,6 +2929,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: cDNA read size
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2816,6 +2940,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Cell Barcode offset
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2826,6 +2951,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Cell Barcode read
+        Version: "null"
     Type: string
     Req: false
     Private: false  
@@ -2836,6 +2962,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Cell Barcode size
+        Version: "null"
     Type: string
     Req: false
     Private: false  
@@ -2846,9 +2973,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14606481'
         Value: Sequencing Library Tissue Dissociation Method Text
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Dissociation Method
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2859,6 +2988,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Dissociation Method
+        Version: "null"
     Type: string
     Req: false
     Private: false  
@@ -2869,9 +2999,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14606486'
         Value: Sequencing Library End Bias Type
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: End Bias
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2882,9 +3014,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142528'
         Value: Molecular Analysis Cell Count
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Total Number of Input Cells
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2895,9 +3029,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14606495'
         Value: Sequencing Library Construction Method Text
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Library Construction Method
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2908,6 +3044,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Library Strand
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2926,9 +3063,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '7787673'
         Value: Raw Data Protocol Or Digital Object Identifier Text
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
-        Value: Protocols  Link
+        Value: Protocols  Link
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2939,9 +3078,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14604593'
         Value: Sequencing Library Reverse Transcription Primer Type
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: Reverse Transcription Primer Oligo-dT, Poly-dT
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -2959,9 +3100,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14606468'
         Value: Sequencing Library RNA Spike-In Type
+        Version: "null"
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf 
         Value: Spike In
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2972,6 +3115,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: UMI barcode offset 
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2982,6 +3126,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: UMI barcode read
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -2992,6 +3137,7 @@ PropDefinitions:
       - Origin: HTAN Guidelines for reporting single-cell RNA-Seq experiments
         Code: https://arxiv.org/ftp/arxiv/papers/1910/1910.14623.pdf
         Value: UMI barcode size
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -3002,6 +3148,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14540943'
         Value: Family Relationship Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3012,6 +3159,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14539685'
         Value: Family Member Relationship Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3021,6 +3169,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2690165'
         Value: Family Member Relationship Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3102,7 +3251,7 @@ PropDefinitions:
         - "Natural Sister"
         - "Natural Son"
         - "Nephew"
-        - "Niece Second Degree Relative"
+        - "Niece Second Degree Relative"
         - "Niece"
         - "None"
         - "Other"
@@ -3120,6 +3269,7 @@ PropDefinitions:
         - "Paternal Half Sibling"
         - "Paternal Half Sister"
         - "Paternal Uncle"
+        - "Proband"
         - "Refused"
         - "Sibling"
         - "Sister-in-law"
@@ -3150,6 +3300,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14540945'
         Value: Participant Family Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3160,6 +3311,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596170'
         Value: PDX Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3171,9 +3323,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596191'
         Value: PDX Model Unique Identifier
+        Version: "null"
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3184,16 +3338,19 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596198'
         Value: PDX Implantation Type
+        Version: "null"
       - Origin: 'EMBL OLS OBI'
         Code: 'OBI_0000426'
         Value: Process which aims at introducing a compound or a mixture into a material entity (either biological entity or instrument) by relying on devices such as syringe or injector connection, attached or forced into a vascular system (veins of an organism or tubes of a machine) or in a tissue
+        Version: "null"
     Type:
       value_type: string
       Enum:
         - 'injection'
-        - 'trocar'
-        - 'surgical'
+        - 'intravenous'
         - 'orthotopic'
+        - 'surgical'
+        - 'trocar'
     Req: true
     Strict: false
     Private: false
@@ -3204,11 +3361,12 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12299653'
         Value: Specimen Original Anatomic Site Uberon Name
+        Version: "null"
     Type:
       value_type: string
       Enum:
         - 'brain stem'
-        - 'intra peritoneal cavity'
+        - 'intraperitoneal cavity'
         - 'left cerebrum'
         - 'mammary fat pad'
         - 'muscle'
@@ -3227,9 +3385,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596205'
         Value: PDX Host Mouse Strain Name
+        Version: "null"
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3240,9 +3400,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616474'
         Value: PDX Tumor Preparation Text
+        Version: "null"
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3253,6 +3415,7 @@ PropDefinitions:
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3269,9 +3432,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14616759'
         Value: PDX Tumor Origin Evaluated Type
+        Version: "null"
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3288,6 +3453,7 @@ PropDefinitions:
       - Origin: CancerModels.org
         Code: https://www.cancermodels.org/validation/dictionary
         Value: passage_number
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -3298,9 +3464,11 @@ PropDefinitions:
       - Origin: CancerModels.org
         Code: https://www.cancermodels.org/validation/dictionary
         Value: passages_tested
+        Version: "null"
       - Origin: PubMedCentral
         Code: 'PMC5738926'
         Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -3311,6 +3479,7 @@ PropDefinitions:
       - Origin: CancerModels.org
         Code: https://www.cancermodels.org/validation/dictionary
         Value: validation_technique
+        Version: "null"
     Type: string
     Req: false
     Private: false    
@@ -3321,6 +3490,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3443454'
         Value: Study Publication Identification Digital Object Identifier Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3332,6 +3502,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3443453'
         Value: Study Publication Identification PubMed Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3342,6 +3513,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14612666'
         Value: Research Activity Alternate Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3353,6 +3525,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14612686'
         Value: Research Activity Alternate Identifier Repository Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3363,8 +3536,9 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14608610'
         Value: Study Subject Identifier List Text
+        Version: "null"
     Type: string
-    Reg: false
+    Req: false
     Private: false
   # clinical_measure_file
   clinical_measure_file_id: 
@@ -3373,37 +3547,50 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
     Key: true
   # diagnosis
   diagnosis_id:
-    Desc:  sequence of characters used to uniquely identify, name, or characterize the presence and nature of a disease or condition.
+    Desc: A sequence of characters used to uniquely identify, name, or characterize the presence and nature of a disease or condition.
     Term:
       - Origin: caDSR
         Code: '14540952'
         Value: Diagnosis Disease or Disorder Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
     Key: true
   #diagnosis, sample
   diagnosis_classification_system:
-    Desc: 'The classification source from which the diagnosis value was obtained.'
+    Desc: 'The standard or agency upon which the specific term used as the diagnosis value was obtained.'
     Term:
       - Origin: caDSR
-        Code: ''
-        Value: ''
+        Code: '14714144'
+        Value: Diagnosis Term Source Name
+        Version: "1.00"
       - Origin: NCIt
-        Code: ' C42673'
-        Value: 'Definition Source'
+        Code: 'C42673'
+        Value: Definition Source
+        Version: "null"
+      - Origin: NCIt
+        Code: 'C91220'
+        Value: French-American-British Classification
+      - Origin: NCIt
+        Code: 'C159157'
+        Value: WHO AML Classification of Tumors
     Type:
       value_type: string
       Enum:
         - 'CNS Diagnosis Category'
+        - 'French-American-British Classification'
         - 'ICD-O-3.2'
         - 'Indication for Study'
+        - 'St. Jude Cloud Disease Ontology'
+        - 'WHO AML Classification of Tumors'
         - 'WHO CNS5 Integrated Diagnosis'
         - 'Unknown'
         - 'Not Reported'
@@ -3411,36 +3598,19 @@ PropDefinitions:
     Strict: false
     Private: false 
   #diagnosis, sample
-  diagnosis_verification_status: 
-    Desc: 'The type of generic chronology for which the diagnosis was obtained.'
+  diagnosis_basis: 
+    Desc: 'The origin of the diagnosis.'
     Term:
       - Origin: caDSR
-        Code: ''
-        Value: ''
+        Code: '14714146'
+        Value: Diagnosis Assessment Basis Source
+        Version: "1.00"
     Type:
       value_type: string
       Enum:
-        - 'Initial'
-        - 'Update'
-        - 'Final'
-        - 'Unknown'
-        - 'Not Reported'
-    Req: true
-    Strict: false
-    Private: false 
-  #diagnosis, sample
-  diagnosis_basis: 
-    Desc: 'The type of event for which the diagnosis was obtained.'
-    Term:
-      - Origin: caDSR
-        Code: ''
-        Value: ''
-    Type:
-      value_type: list
-      Enum:
         - 'Clinical'
         - 'Molecular'
-        - 'Pathological'
+        - 'Pathology'
         - 'Unknown'
         - 'Not Reported'
     Req: true
@@ -3448,7 +3618,12 @@ PropDefinitions:
     Private: false 
   #diagnosis, sample
   diagnosis_comment:
-    Desc: Freeform text entry for further details about the diagnosis.
+    Desc: Words that describe observations or explanations related to the diagnosis.
+    Term:
+      - Origin: caDSR
+        Code: '14714147'
+        Value: Diagnosis Comment Text
+        Version: "null"
     Type: string
     Req: false
     Private: false    
@@ -3459,37 +3634,23 @@ PropDefinitions:
       - Origin: caDSR
         Code: '10609539'
         Value: Subject Age at Diagnosis Integer
+        Version: "null"
       - Origin: NCIt
         Code: 'C156420'
         Value: Age at Diagnosis 
+        Version: "null"
     Type: integer
     Req: true
     Private: false
   #diagnosis
-  vital_status:
-    Desc: Participant vital status
-    Term:
-      - Origin: caDSR
-        Code: '2847330'
-        Value: Participant Vital Status Type
-    Type:
-      value_type: string
-      Enum:
-        - "Alive"
-        - "Dead"
-        - "Not Reported"
-        - "Unknown"
-        - "Unspecified"
-    Req: true
-    Strict: true
-    Private: false
-  #diagnosis, sample
+  #diagnosis
   toronto_childhood_cancer_staging:
     Desc: Cancer stage as captured by the Toronto Childhood Cancer Stage Guidelines.
     Term: 
       - Origin: caDSR
         Code: '13299113'
         Value: Childhood Cancer Toronto Guidelines Stage
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3569,6 +3730,136 @@ PropDefinitions:
     Req: false
     Strict: true
     Private: false
+  #diagnosis, sample
+  tumor_stage_clinical_m:
+    Desc: Extent of the distant metastasis for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
+    Term:
+      - Origin: caDSR
+        Code: '3440331'
+        Value: Neoplasm American Joint Committee on Cancer Clinical Distant Metastasis M Stage
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "cM0 (i+)"
+        - "M0"
+        - "M1"
+        - "M1a"
+        - "M1b"
+        - "M1c"
+        - "MX"
+    Req: false  # 02/22/2022 adeforge, not required? correct: 28feb22 pdunn
+    Strict: false
+    Private: false
+  #diagnosis, sample
+  tumor_stage_clinical_n:
+    Desc: Extent of the regional lymph node involvement for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
+    Term:
+      - Origin: caDSR
+        Code: '3440330'
+        Value: Neoplasm American Joint Committee on Cancer Clinical Regional Lymph Node N Stage
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "N0"
+        - "N0 (i-)"
+        - "N0 (i+)"
+        - "N0 (mol-)"
+        - "N0 (mol+)"
+        - "N1"
+        - "N1a"
+        - "N1b"
+        - "N1bI"
+        - "N1bII"
+        - "N1bIII"
+        - "N1bIV"
+        - "N1c"
+        - "N1mi"
+        - "N2"
+        - "N2a"
+        - "N2b"
+        - "N2c"
+        - "N3"
+        - "N3a"
+        - "N3b"
+        - "N3c"
+        - "N4"
+        - "NX"
+    Req: false  # 02/22/2022 adeforge, not required? correct: 28feb22 pdunn
+    Strict: false
+    Private: false
+  #diagnosis, sample
+  tumor_stage_clinical_t: 
+    Desc: Extent of the primary cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
+    Term:
+      - Origin: caDSR
+        Code: '3440328'
+        Value: Neoplasm American Joint Committee on Cancer Clinical Primary Tumor T Stage
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "T0"
+        - "T1"
+        - "T1a"
+        - "T1a1"
+        - "T1a2"
+        - "T1b"
+        - "T1b1"
+        - "T1b2"
+        - "T1c"
+        - "T1mi"
+        - "T2"
+        - "T2a"
+        - "T2a1"
+        - "T2a2"
+        - "T2b"
+        - "T2c"
+        - "T2d"
+        - "T3"
+        - "T3a"
+        - "T3b"
+        - "T3c"
+        - "T3d"
+        - "T4"
+        - "T4a"
+        - "T4b"
+        - "T4c"
+        - "T4d"
+        - "T4e"
+        - "T5"
+        - "Ta"
+        - "Tis"
+        - "Tis (DCIS)"
+        - "Tis (LCIS)"
+        - "Tis (Paget's)"
+        - "TX"
+    Req: false
+    Strict: false
+    Private: false
+  #diagnosis, sample
+  tumor_stage_source: 
+    Desc: Code of pathological T (primary tumor) to define the size or contiguous extension of the primary tumor (T), using staging criteria from the American Joint Committee on Cancer (AJCC).
+    Term:
+      - Origin: caDSR
+        Code: '3045435'
+        Value: American Joint Committee on Cancer Tumor Stage Code
+        Version: "null"
+      - Origin: caDSR
+        Code: '13299113'
+        Value: Childhood Cancer Toronto Guidelines Stage
+        Version: "null"
+    Type:
+      value_type: string
+      Enum:
+        - "AJCC Metastasis M Stage"
+        - "AJCC Lymph Node N Stage"
+        - "AJCC Tumor T Stage"
+        - "Toronto Childhood Cancer Stage Guidelines"
+    Req: false
+    Strict: false
+    Private: false
   #diagnosis
   age_at_recurrence:
     Desc: The age (in days) of the subject at the time of recurrence.
@@ -3576,6 +3867,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14483684'
         Value: Subject Age at Recurrence Day Count
+        Version: "null"
     Type: integer
     Req: false
     Private: false     
@@ -3586,6 +3878,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12447172'
         Value: Subject Last Known Disease Status
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3610,6 +3903,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14589579'
         Value: The age (in days) of subject at the time of their last known disease status.
+        Version: "null"
     Type: integer
     Req: false
     Private: false  
@@ -3623,6 +3917,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11284037'
         Value: Electronic Data File Name
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3633,6 +3928,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11416926'
         Value: Electronic Data File Format Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3649,6 +3945,7 @@ PropDefinitions:
         - "crai"
         - "csi"
         - "csv"
+        - "dict"
         - "dicom"
         - "docx"
         - "fasta"
@@ -3696,6 +3993,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11280338'
         Value: Electronic Data File Description Text   
+        Version: "null"
     Type: string
     Req: false 
     Private: false
@@ -3706,6 +4004,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11479876'
         Value: Electronic Data File Size Integer
+        Version: "null"
     Type: integer
     Req: true
     Private: false
@@ -3716,6 +4015,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556150'
         Value: Electronic Data File MD5 Checksum Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3726,6 +4026,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11480133'
         Value: Electronic Data File Checksum Value
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -3736,6 +4037,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11475057'
         Value: Electronic Data File Checksum Type
+        Version: "null"
     Type: string
     Req: false
     Private: false    
@@ -3746,6 +4048,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556141'
         Value: Electronic File Pathname Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3756,6 +4059,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14576969'
         Value: GUID DCFS Indexd Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3766,13 +4070,14 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11595478'
         Value: Electronic File Relationship Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
         - "Participiant"
         - "Sample"
         - "Study"
-    Req: false
+    Req: true
     Strict: true
     Private: false    
   # pathology_file
@@ -3782,6 +4087,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3793,6 +4099,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3804,6 +4111,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12137353'
         Value: Imaging Technology DICOM Modality Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3822,33 +4130,27 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12220014'
         Value: Subject Alternate Data Origin Identifier
+        Version: '1'
     Type: string
     Req: true
     Private: false
     Key: true
   #participant
-  alternate_participant_id:
-    Desc: An alternate sequence of letters, numbers, or characters that uniquely identifies the subject who has taken part in the investigation or research study.
-    Term:
-      - Origin: caDSR
-        Code: '14528097'
-        Value: Subject Alternate Data Origin Identifier
-    Type: string
-    Req: false
-    Private: false
-  #participant
   race: 
-    Desc: The text for reporting information about race based on the Office of Management and Budget (OMB) categories.
+    Desc: The text for reporting information about race based on the Office of Management and Budget (OMB) categories SPD 15 (spd15revision.gov).
     Term:
       - Origin: caDSR
         Code: '2192199'
         Value: Race Category Text
+        Version: "null"
     Type:
       value_type: list
       Enum:
         - "American Indian or Alaska Native"
         - "Asian"
         - "Black or African American"
+        - "Hispanic or Latino"
+        - "Middle Eastern or North African"
         - "Native Hawaiian or other Pacific Islander"
         - "Not Allowed to Collect"
         - "Not Reported"
@@ -3864,6 +4166,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '7572817'
         Value: Person Sex at Birth Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -3880,24 +4183,6 @@ PropDefinitions:
     Req: true
     Strict: false
     Private: false
-  #participant
-  ethnicity:
-    Desc: The text for reporting information about ethnicity based on the Office of Management and Budget (OMB) categories.
-    Term:
-      - Origin: caDSR
-        Code: '2192217'
-        Value: Ethnic Group Category Text
-    Type:
-      value_type: list
-      Enum:
-        - "Hispanic or Latino"
-        - "Not Allowed to Collect"
-        - "Not Hispanic or Latino"
-        - "Not Reported"
-        - "Unknown" 
-    Req: true
-    Strict: false
-    Private: false
   #study
   consent:
     Desc: Words which describe a set of study participants who have signed the same consent agreement and that will be included in the dbGaP repository.
@@ -3905,6 +4190,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14534329'
         Value: Research Activity dbGaP Consent Group Text
+        Version: "null"
     Type: string
     Req: true
     Private: false 
@@ -3915,6 +4201,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14534330'
         Value: Research Activity dbGaP Consent Group Number
+        Version: "null"
     Type: integer
     Req: true
     Private: false  
@@ -3925,6 +4212,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6921892'
         Value: Biospecimen Source Laboratory Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -3936,6 +4224,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14596000'
         Value: Specimen Alternate Unique Identifier
+        Version: "null"
     Type: string
     Req: false
     Private: false 
@@ -3946,6 +4235,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14156279'
         Value: Disease Anatomic Site ICD-O-3 Label Text
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -3965,9 +4255,12 @@ PropDefinitions:
         - "C21.0 : Anus, NOS"
         - "C75.5 : Aortic body and other paraganglia"
         - "C18.1 : Appendix"
+        - "C76.4 : Arm, NOS"
         - "C18.2 : Ascending colon"
+        - "C47 : PERIPHERAL NERVES AND AUTONOMIC NERVOUS SYSTEM"
         - "C47.9 : Autonomic nervous system, NOS"
         - "C50.6 : Axillary tail of breast"
+        - "C76.7 : Back, NOS"
         - "C01.9 : Base of tongue, NOS"
         - "C24.9 : Biliary tract, NOS"
         - "C67.5 : Bladder neck"
@@ -4001,6 +4294,7 @@ PropDefinitions:
         - "C15.0 : Cervical esophagus"
         - "C53.9 : Cervix uteri"
         - "C06.0 : Cheek mucosa"
+        - "C76.1 : Chest, NOS"
         - "C76.1 : Chest wall, NOS"
         - "C69.3 : Choroid"
         - "C69.4 : Ciliary body"
@@ -4123,6 +4417,7 @@ PropDefinitions:
         - "C00.5 : Mucosa of lip, NOS"
         - "C00.4 : Mucosa of lower lip"
         - "C00.3 : Mucosa of upper lip"
+        - "C49.9 : Muscle, NOS"
         - "C54.2 : Myometrium"
         - "C30.0 : Nasal cavity"
         - "C30 : NASAL CAVITY AND MIDDLE EAR"
@@ -4234,6 +4529,7 @@ PropDefinitions:
         - "C40.3 : Short bones of lower limb and associated joints"
         - "C40.1 : Short bones of upper limb and associated joints"
         - "C40.0 : Bone of shoulder"
+        - "C76.4 : Shoulder, NOS"
         - "C18.7 : Sigmoid colon"
         - "C44.0 : Skin of lip, NOS"
         - "C44.7 : Skin of lower limb and hip"
@@ -4250,6 +4546,7 @@ PropDefinitions:
         - "C72.0 : Spinal cord"
         - "C72 : SPINAL CORD, CRANIAL NERVES, AND OTHER PARTS OF CENTRAL NERVOUS SYSTEM"
         - "C70.1 : Spinal meninges"
+        - "C41.2 : Spine"
         - "C42.2 : Spleen"
         - "C18.5 : Splenic flexure of colon"
         - "C16.9 : Stomach, NOS"
@@ -4310,6 +4607,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14473376'
         Value: Subject Age At Specimen Collection Day Count
+        Version: "null"
     Type: integer
     Req: true  
     Private: false
@@ -4320,6 +4618,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11325685'
         Value: Diagnosis Tumor Grade
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4336,112 +4635,17 @@ PropDefinitions:
     Req: false
     Strict: false
     Private: false
-  # sample
-  tumor_stage_clinical_t: 
-    Desc: Extent of the primary cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
+  tumor_grade_source:
+    Desc: A text term for the origin of tumor grade permissible values.
     Term:
       - Origin: caDSR
-        Code: '3440328'
-        Value: Neoplasm American Joint Committee on Cancer Clinical Primary Tumor T Stage
-    Type:
-      value_type: string
-      Enum:
-        - "T0"
-        - "T1"
-        - "T1a"
-        - "T1a1"
-        - "T1a2"
-        - "T1b"
-        - "T1b1"
-        - "T1b2"
-        - "T1c"
-        - "T1mi"
-        - "T2"
-        - "T2a"
-        - "T2a1"
-        - "T2a2"
-        - "T2b"
-        - "T2c"
-        - "T2d"
-        - "T3"
-        - "T3a"
-        - "T3b"
-        - "T3c"
-        - "T3d"
-        - "T4"
-        - "T4a"
-        - "T4b"
-        - "T4c"
-        - "T4d"
-        - "T4e"
-        - "T5"
-        - "Ta"
-        - "Tis"
-        - "Tis (DCIS)"
-        - "Tis (LCIS)"
-        - "Tis (Paget's)"
-        - "TX"
-    Req: false  # 02/22/2022 adeforge, not required? correct: 28feb22 pdunn
+        Code: '11325685'
+        Value: Diagnosis Tumor Grade
+        Version: "null"
+    Type: string
+    Req: false
     Strict: false
     Private: false
-  # sample
-  tumor_stage_clinical_n:
-    Desc: Extent of the regional lymph node involvement for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
-    Term:
-      - Origin: caDSR
-        Code: '3440330'
-        Value: Neoplasm American Joint Committee on Cancer Clinical Regional Lymph Node N Stage
-    Type:
-      value_type: string
-      Enum:
-        - "N0"
-        - "N0 (i-)"
-        - "N0 (i+)"
-        - "N0 (mol-)"
-        - "N0 (mol+)"
-        - "N1"
-        - "N1a"
-        - "N1b"
-        - "N1bI"
-        - "N1bII"
-        - "N1bIII"
-        - "N1bIV"
-        - "N1c"
-        - "N1mi"
-        - "N2"
-        - "N2a"
-        - "N2b"
-        - "N2c"
-        - "N3"
-        - "N3a"
-        - "N3b"
-        - "N3c"
-        - "N4"
-        - "NX"
-    Req: false  # 02/22/2022 adeforge, not required? correct: 28feb22 pdunn
-    Strict: false
-    Private: false
-  # sample
-  tumor_stage_clinical_m:
-    Desc: Extent of the distant metastasis for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
-    Term:
-      - Origin: caDSR
-        Code: '3440331'
-        Value: Neoplasm American Joint Committee on Cancer Clinical Distant Metastasis M Stage
-    Type:
-      value_type: string
-      Enum:
-        - "cM0 (i+)"
-        - "M0"
-        - "M1"
-        - "M1a"
-        - "M1b"
-        - "M1c"
-        - "MX"
-    Req: false  # 02/22/2022 adeforge, not required? correct: 28feb22 pdunn
-    Strict: false
-    Private: false
-# tumor_morphology: CCDIDC-360
   #diagnosis
   disease_phase:
     Desc: The stage or period of an individual's treatment process during which relevant observations were recorded.
@@ -4449,6 +4653,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12217251'
         Value: Disease Phase Timepoint Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4471,6 +4676,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12922545'
         Value: Tumor Classification Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4502,9 +4708,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2003907'
         Value: Sample Description Text
+        Version: "null"
       - Origin: caDSR
         Code: '5432687'
         Value: Tissue Sample Description
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -4513,19 +4721,16 @@ PropDefinitions:
     Desc: Text term that represents a description of the kind of tissue collected with respect to disease status or proximity to tumor tissue.
     Term:
       - Origin: caDSR
-        Code: '5432687'
-        Value: Tissue Sample Description Category
+        Code: '14688604'
+        Value: Specimen Neoplasm Category
+        Version: "null"
     Type:
       value_type: string
       Enum:
-        - 'Abnormal'
-        - 'Non-neoplastic'
         - 'Normal'
         - 'Peritumoral'
         - 'Tumor'
-        - 'Unavailable'
-        - 'Unknown'
-        - 'Unspecified'
+        - 'Not Reported'
     Req: true
     Strict: false
     Private: false
@@ -4536,6 +4741,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -4547,9 +4753,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555660'
         Value: Sequencing Library Unique Identifier Text
+        Version: "null"
       - Origin: NCIt
         Code: 'C175893'
         Value: Sequencing Library Unique Identifier 
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -4560,6 +4768,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6273393'
         Value: Sequencing Library Technique Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4610,9 +4819,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6347771'
         Value: Sequencing Library Platform Name
+        Version: "null"
       - Origin: NCIt
         Code: 'C172274'
         Value: Sequencing Platform Name 
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4638,6 +4849,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6352164'
         Value: Sequencing Library Platform Model Name
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4680,6 +4892,8 @@ PropDefinitions:
         - "Illumina MiniSeq"
         - "Illumina MiSeq"
         - "Illumina NextSeq"
+        - "Illumina NextSeq 1000"
+        - "Illumina NextSeq 2000"
         - "Illumina NovaSeq"
         - "Illumina NovaSeq 6000"
         - "Ion Torrent PGM"
@@ -4693,10 +4907,11 @@ PropDefinitions:
         - "PacBio RS II"
         - "PromethION"
         - "Not Reported"
+        - "Not Applicable"
         - "Other"
         - "Unknown"
     Req: true
-    Strict: true
+    Strict: false
     Private: false
   #sequencing_file
   library_layout: 
@@ -4705,6 +4920,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11527735'
         Value: Sequencing Library Read Layout Type 
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4715,39 +4931,50 @@ PropDefinitions:
     Strict: true
     Private: false
   #sequencing_file
-  library_source: 
-    Desc: The source of a sample collection of double stranded DNA fragments analyzed by high-throughput sequencing.
+  library_source_material: 
+    Desc: The cellular source of the double stranded DNA fragments analyzed by high-throughput sequencing.
     Term:
       - Origin: caDSR
-        Code: '6285979'
-        Value: Sequencing Library Specimen Source
+        Code: '14808227'
+        Value: Sequencing Library Cellular Material Source
+        Version: "1.00"
       - Origin: NCIt
         Code: 'C175895'
         Value: Sequencing Library Source Indicator
+        Version: "1.00"
     Type:
       value_type: string
       Enum:
-        - "Bulk cells"
-        - "Bulk nuclei"
-        - "Bulk tissue"
-        - "DNA"
-        - "Genomic"
-        - "Genomic Single Cell"
-        - "Metagenomic"
-        - "Metatranscriptomic"
-        - "RNA"
+        - "Bulk Cells"
+        - "Bulk Nuclei"
+        - "Bulk Tissue"
         - "Single-cells"
         - "Single-nuclei"
-        - "Synthetic"
-        - "Transcriptomic"
-        - "Transcriptomic Single Cell"
-        - "Viral RNA"
-        - "Viral"
-        - "Not Applicable"  
+        - "Not Reported"  
         - "Other"
     Req: true
-    Strict: true
+    Strict: false
     Private: false
+  #sequencing_file
+  library_source_molecule: 
+    Desc: The molecular source of the nucleic acid fragments analyzed by high-throughput sequencing.
+    Term:
+      - Origin: caDSR
+        Code: '14808232'
+        Value: Sequencing Library Molecule Source
+        Version: "1.00"
+    Type:
+      value_type: string
+      Enum:
+        - "Genomic"
+        - "Metagenomic"
+        - "Metatranscriptomic"
+        - "Transcriptomic"
+        - "Viral RNA"
+        - "Not Reported"  
+    Req: true
+    Strict: true
+    Private: false  
   #sequencing_file
   number_of_bp:
     Desc: Count of unique basecalls present in the data. Please count each base only once if using secondary alignments.
@@ -4761,6 +4988,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529035'
         Value: Sequencing Library Sequence Read Count 
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -4771,6 +4999,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12426615'
         Value: Nucleotide Sequence Average Read Length Count
+        Version: "null"
     Type: number
     Req: false
     Private: false
@@ -4781,6 +5010,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556322'
         Value: Genome Assembly Sequence Depth of Coverage Number
+        Version: "null"
     Type: number
     Req: false
     Private: false
@@ -4791,9 +5021,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529031'
         Value: Genome Assembly NCBI Genetic Reference Sequence Identifier
+        Version: "null"
       - Origin: NCIt
         Code: 'C164388'
         Value: Genetic Reference Sequence
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -4804,6 +5036,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11636299'
         Value: Genome Assembly Custom FASTA File Name
+        Version: "null"
     Type: string
     Req: false
     Private: false    
@@ -4814,9 +5047,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529072'
         Value: Nucleotide Sequence Alignment Software Name Text
+        Version: "null"
       - Origin: NCIt
         Code: 'C175896'
         Value: Sequence Alignment Software Name 
+        Version: "null"
     Type: string
     Req: false
     Private: false    
@@ -4827,6 +5062,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6347743'
         Value: Sequencing Library Creation Method Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -4852,12 +5088,11 @@ PropDefinitions:
         - "MNase"
         - "MSLL"
         - "Not Applicable"
-        - "Oligo-dT"
         - "Other"
         - "Padlock Probes Capture Method"
         - "PCR"
         - "PolyA"
-        - "Poly-T Enrichment"
+        - "Poly-A Enriched Genomic Library"
         - "RACE"
         - "Random"
         - "Random PCR"
@@ -4878,6 +5113,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529028'
         Value: Sequencing Library Design Description Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -4888,27 +5124,30 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12960571'
         Value: Study Pediatric Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
     Key: true
   # study
-  phs_accession:
+  dbgap_accession:
     Desc: A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). 
     Term:
       - Origin: caDSR
         Code: '11524544'
         Value: Research Activity dbGaP Accession Number Identifier 
+        Version: "1.00"
     Type: string
-    Req: false
+    Req: true
     Private: false
   # study
-  study_short_title:
-    Desc: The acronym or abbreviated form of the title for a research data collection.
+  study_name:
+    Desc: The narrative title used as a textual label for a research data collection.
     Term:
       - Origin: caDSR
-        Code: '11459812'
-        Value: Study Short Name Text
+        Code: '11459810'
+        Value: Study Name Text
+        Version: "1.00"
     Type: string
     Req: true
     Private: false
@@ -4919,6 +5158,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11459812'
         Value: Study Short Name Text
+        Version: "1.00"
     Type: string
     Req: true
     Private: false
@@ -4929,6 +5169,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3444002'
         Value: Study Research Identification Descriptive Text
+        Version: "1.00"
     Type: string
     Req: true
     Private: false
@@ -4939,6 +5180,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556141'
         Value: Electronic File Pathname Text
+        Version: "null"
     Type: string
     Req: false  # 02/22/2022 adeforge, not required?
     Private: false
@@ -4949,10 +5191,22 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12373576'
         Value: Research Activity Experimental Method Type 
+        Version: "1.00"
     Type:
       value_type: list
-      Type: string
+      Enum:
+        - "Archer Fusion"
+        - "Bisulfite-Seq"
+        - "DNA-Seq"
+        - "Methylation Array"
+        - "Pathological"
+        - "Radiological"
+        - "RNA-Seq"
+        - "scRNA-Seq"
+        - "WGA"
+        - "WXS"  
     Req: false
+    Strict: true
     Private: false  
   #study_admin
   number_of_participants:
@@ -4961,6 +5215,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555662'
         Value: Research Activity Unique Subjects Count
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -4971,6 +5226,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555663'
         Value: Research Activity Sample Size Count
+        Version: "null"
     Type: integer
     Req: false
     Private: false    
@@ -4981,9 +5237,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12373576'
         Value: Data File Size Value
+        Version: "null"
       - Origin: NCIt
         Code: 'C171192'
         Value: Electronic Data File Size Integer
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -4994,9 +5252,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12571096'
         Value: Data Collection Scientific Data Type Category
+        Version: "null"
       - Origin: NCIt
         Code: 'C175886'
         Value: Scientific Data Type
+        Version: "null"
     Type:
       value_type: list
       Enum:
@@ -5008,16 +5268,6 @@ PropDefinitions:
     Req: false
     Strict: true
     Private: false
-  #study_admin
-  study_name:
-    Desc: The narrative title used as a textual label for a research data collection.
-    Term:
-      - Origin: caDSR
-        Code: '11459810'
-        Value: Study Name Text
-    Type: string
-    Req: false
-    Private: false
   # study_admin
   study_admin_id:
     Desc: A sequence of characters used to uniquely identify, name, or characterize the individual who is responsible for managing a detailed examination, analysis, or critical inspection of a subject designed to discover facts about it.
@@ -5025,6 +5275,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528073'
         Value: Person Study Administrator Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5036,9 +5287,11 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6118266'
         Value: Sample Organism Type
+        Version: "null"
       - Origin: NCIt
         Code: 'C14250'
         Value: Organism 
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -5056,6 +5309,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524549'
         Value: Subject Legal Adult Or Pediatric Participant Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -5077,6 +5331,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11416926'
         Value: Electronic Data File Format Type 
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -5086,6 +5341,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555664'
         Value: Electronic Data File Access Level Text 
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5105,6 +5361,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528051'
         Value: Funding Agency Organization Name Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5115,6 +5372,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524545'
         Value: Funding Agency Organization Name Text 
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5124,6 +5382,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524546'
         Value: Funding Agency Program Name Text 
+        Version: "null"
     Type: string
     Req: false
     Private: false
@@ -5133,37 +5392,41 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3434057'
         Value: Grant Funding Identifier Number
+        Version: "null"
     Type: string
     Req: true
     Private: false
   #study_arm
   study_arm_id:
-    Desc: A sequence of characters used to identify, name, or characterize the specific treatment plan within a clinical trial that describes the activities a pediatric subject will be involved in as he or she progresses through the study.
+    Desc: One or more characters used to identify, name, or characterize digital data records related to specific treatment plans within a clinical trial.
     Term:
       - Origin: caDSR
-        Code: '12988910'
-        Value: Study Pediatric Protocol Treatment Arm Identifier
+        Code: '14674393'
+        Value: CCDI Study Arm Electronic Record Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false 
     Key: true
   #study_arm
-  clinical_trial_arm:
-    Desc: Identifier for the noted protocol, used by the Clinical Trial Sponsor to uniquely identify the investigational protocol.
+  study_arm_description:
+    Desc: Text which describes a treatment arm of the clinical trial.
     Term:
       - Origin: caDSR
-        Code: '2649415'
-        Value: Clinical Trial Protocol Identifier 64 Character Text
+        Code: '11524548'
+        Value: Clinical Trial Treatment Arm Text
+        Version: "null"
     Type: string
     Req: false
     Private: false
   #study_arm
   clinical_trial_identifier:
-    Desc: Identifier for the noted protocol, used by the Clinical Trial Sponsor to uniquely identify the investigational protocol.
+    Desc: One or more characters assigned by the Clinical Trial Sponsor to uniquely identify the investigational protocol or research activity.
     Term:
       - Origin: caDSR
-        Code: '2649415'
-        Value: Clinical Trial Site Identifier 64 Character Text
+        Code: '11524548'
+        Value: Clinical Trial Treatment Arm Text
+        Version: "1.00"
     Type: string
     Req: true
     Private: false
@@ -5174,6 +5437,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2413202'
         Value: Clinical Trial Protocol Identifier 64 Character Text
+        Version: "null"
     Type: string
     Req: false
     Private: false        
@@ -5184,6 +5448,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528070'
         Value: Person Study Personnel Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5195,6 +5460,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2222323'
         Value: Derived Person Full Formatted Name
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5205,6 +5471,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2201713'
         Value: Person Affiliation Role Text Type
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -5222,6 +5489,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2517550'
         Value: Person Email Address Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5232,168 +5500,77 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12662779'
         Value: Data Source Organizational Unit Identifier
+        Version: "null"
     Type: string
-    Req: true  # 28feb22 pdunn
-    Private: false
-  #therapeutic_procedure
-  treatment_outcome:
-    Desc: Text term that describes the patient's final outcome after the treatment was administered.
-    Term:
-      - Origin: caDSR
-        Code: '5102383'
-        Value: Treatment Outcome Type
-    Type:
-      value_type: list
-      Enum:
-        - "Complete Remission/Response"
-        - "Complete Response"
-        - "Elevated Tumor Markers and Residual Mass"
-        - "First Course Treatment Still in Progress"
-        - "Mixed Response"
-        - "No Measurable Disease"
-        - "No Measureable Tumor or Tumor Markers"
-        - "No Response"
-        - "Normalization of Tumor Markers, but Residual Tumor Mass"
-        - "Not Applicable"
-        - "Not Reported"
-        - "Other"
-        - "Partial Remission/Response"
-        - "Partial Response"
-        - "Persistent Disease"
-        - "Progressive Disease"
-        - "Progressive Tumor Mass and Tumor Markers"
-        - "Stable Disease"
-        - "Treatment Ongoing"
-        - "Treatment Stopped Due to Toxicity"
-        - "Unknown"
-        - "Very Good Partial Response"
     Req: true
-    Strict: false
     Private: false
-  #therapeutic_procedure
+  #treatment
   treatment_type:
     Desc: Text term that describes the kind of treatment administered.
     Term:
       - Origin: caDSR
-        Code: '5102381'
-        Value: Treatment Method Type
+        Code: '14737565'
+        Value: Therapeutic Procedure Performed Type
+        Version: "1.00"
     Type:
       value_type: list
       Enum:
-        - "Ablation, Cryo"
-        - "Ablation, Ethanol Injection"
-        - "Ablation, Microwave"
-        - "Ablation, NOS"
-        - "Ablation, Radiofrequency"
-        - "Ablation, Radiosurgical"
-        - "Ancillary Treatment"
-        - "Antiseizure Treatment"
-        - "Bisphosphonate Therapy"
-        - "Blinded Study, Treatment Unknown"
-        - "Brachytherapy, High Dose"
-        - "Brachytherapy, Low Dose"
-        - "Brachytherapy, NOS"
-        - "Chemoembolization"
-        - "Chemoprotectant"
+        - "3-Dimensional Conformal Radiation Therapy"
+        - "Allogeneic Hematopoietic Stem Cell Transplantation"
+        - "Autologous Stem Cell Transplantation"
+        - "Cellular Therapy"
         - "Chemotherapy"
         - "Concurrent Chemoradiation"
-        - "Cryoablation"
-        - "Cytotoxic chemotherapy"
-        - "Embolization"
-        - "Ethanol Injection Ablation"
-        - "External Beam Radiation"
-        - "External Radiation"
+        - "Conventional Radiotherapy"
+        - "External Beam Radiation Therapy"
+        - "High-Dose Rate Brachytherapy"
         - "Hormone Therapy"
-        - "I-131 Radiation Therapy"
         - "Immunotherapy"
-        - "Immunotherapy (Including Vaccines)"
-        - "Internal Radiation"
-        - "Isolated Limb Perfusion (ILP)"
-        - "No Treatment"
+        - "Intensity-Modulated Radiation Therapy"
+        - "Low-Dose Rate Brachytherapy"
         - "Not Reported"
-        - "Organ Transplantation"
-        - "Other"
-        - "Other Treatment Type"
-        - "Palliative Care"
-        - "Pharmaceutical Therapy"
-        - "Pharmaceutical Therapy, NOS"
-        - "Pleurodesis"
-        - "Pleurodesis, NOS"
-        - "Pleurodesis, Talc"
-        - "Radiation (NOS)"
-        - "Radiation Therapy"
+        - "Pharmacotherapy"
+        - "Proton Beam Radiation Therapy"
         - "Radiation Therapy, NOS"
-        - "Radiation therapy, NOS"
-        - "Radiation, 2D Conventional"
-        - "Radiation, 3D Conformal"
-        - "Radiation, 3D conformal"
-        - "Radiation, Combination"
-        - "Radiation, Cyberknife"
-        - "Radiation, External Beam"
-        - "Radiation, Hypofractionated"
-        - "Radiation, Implants"
-        - "Radiation, Intensity-Modulated Radiotherapy"
-        - "Radiation, intensity-modulated radiotherapy"
-        - "Radiation, Internal"
-        - "Radiation, Mixed Photon Beam"
-        - "Radiation, Photon Beam"
-        - "Radiation, Proton Beam"
-        - "Radiation, proton beam"
-        - "Radiation, Radioisotope"
-        - "Radiation, stereotactic body"
-        - "Radiation, Stereotactic/Gamma Knife/SRS"
-        - "Radiation, Systemic"
-        - "Radiation, whole brain radiation therapy"
-        - "Radioactive Iodine Therapy"
-        - "Radioembolization"
-        - "Radiosensitizing Agent"
-        - "Stem Cell Transplant"
-        - "Stem Cell Transplantation, Allogeneic"
-        - "Stem Cell Transplantation, Autologous"
-        - "Stem Cell Transplantation, Double Autologous"
-        - "Stem Cell Transplantation, Haploidentical"
-        - "Stem Cell Transplantation, Non-Myeloablative"
-        - "Stem Cell Transplantation, NOS"
-        - "Stem Cell Transplantation, Syngenic"
-        - "Stem Cell Treatment"
+        - "Radiofrequency Ablation"
+        - "Stereotactic Body Radiation Therapy"
         - "Stereotactic Radiosurgery"
-        - "Stereotactic radiosurgery"
-        - "Steroid Therapy"
-        - "Surgery"
-        - "Surgery Only"
-        - "Systemic Radiation"
+        - "Surgical Procedure"
         - "Targeted Molecular Therapy"
         - "Unknown"
     Req: true
     Strict: false
     Private: false
-  #therapeutic_procedure
+  #treatment
   age_at_treatment_start:
     Desc: Subject Age in Days at Start of Treatment Course Day Count
     Term:
       - Origin: caDSR
         Code: '12304720'
         Value: Subject Age at Start of Treatment Course Day Count
+        Version: "null"
     Type: integer
     Req: true
     Private: false
-  #therapeutic_procedure
+  #treatment
   age_at_treatment_end:
     Desc: Subject Age in Days at End of Treatment Course Day Count
     Term:
       - Origin: caDSR
         Code: '12304723'
         Value: Subject Age at End of Treatment Course Day Count
+        Version: "null"
     Type: integer
     Req: true
     Private: false  
-  #therapeutic_procedure
-  therapeutic_procedure_id: 
+  #treatment
+  treatment_id: 
     Desc: A unique sequence of characters used to identify, name, or characterize the kind of treatment administered.
     Term:
       - Origin: caDSR
         Code: '14569111'
         Value: Treatment Method Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5405,6 +5582,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14528010'
         Value: Electronic Data File Unique Identifier
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5416,6 +5594,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12033935'
         Value: Methylation Analysis Instrumentation Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5426,6 +5605,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12033929'
         Value: Methylation Analysis Methyl Tag Text
+        Version: "null"
     Type: string
     Req: true
     Private: false
@@ -5436,6 +5616,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '5432686'
         Value: Specimen Tumor Cell Percentage Value
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -5446,6 +5627,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2841237'
         Value: Malignant Neoplasm Necrosis Percentage Value
+        Version: "null"
     Type: integer
     Req: false
     Private: false
@@ -5456,6 +5638,7 @@ PropDefinitions:
       - Origin: NCIt
         Code: 'C43611'
         Value: License
+        Version: "null"
     Type:
       value_type: string
       Enum:
@@ -5465,28 +5648,592 @@ PropDefinitions:
     Strict: false
     Private: false
   #diagnosis, sample
-  diagnosis_classification:
-    Desc: The text term used to describe the type of malignant disease, as categorized by diagnosis_classification_system property.    
+  diagnosis:
+    Desc: The term which identifies normal and abnormal cells and tissues used to define the presence and nature of disease, as categorized by diagnosis_classification_system property.    
     Term:
       - Origin: caDSR
-        Code: '13594090'
-        Value: Disease Morphology ICD-O-3 Code Label Text
+        Code: '14714127'
+        Value: Diagnosis Disease or Disorder Text
+        Version: "null"
     Type:
       value_type: string
       Enum:
-        - "[---- CNS Diagnosis Category ----]"
-        - "Atypical teratoid/rhabdoid tumor"
+        - "[---- Childhood Cancer Diagnosis ----]"
+        - "Acoustic Neuroma"
+        - "Acute Basophilic Leukemia"
+        - "Acute Erythroid Leukemia : M6"
+        - "Acute Leukemias of Ambiguous Lineage"
+        - "Acute Lymphoblastic Leukemia, NOS"
+        - "Acute Megakaryoblastic Leukemia, BCR-ABL1"
+        - "Acute Megakaryoblastic Leukemia, biallelic CEBPA alteration"
+        - "Acute Megakaryoblastic Leukemia, CBFA2T3-GLIS2"
+        - "Acute Megakaryoblastic Leukemia, ETS family rearrangement"
+        - "Acute Megakaryoblastic Leukemia, GATA1 ateration"
+        - "Acute Megakaryoblastic Leukemia, HOX rearranged"
+        - "Acute Megakaryoblastic Leukemia, KMT2A rearrangement"
+        - "Acute Megakaryoblastic Leukemia, NOS"
+        - "Acute Megakaryoblastic Leukemia, NPM1 alteration"
+        - "Acute Megakaryoblastic Leukemia, NUP98 alteration"
+        - "Acute Megakaryoblastic Leukemia, PICALM-MLLT10"
+        - "Acute Megakaryoblastic Leukemia, RBM15-MKL1"
+        - "Acute Megakaryoblastic Leukemia, UBTF tandem duplication"
+        - "Acute Megakaryoblastic Leukemia : M7"
+        - "Acute Monoblastic/Monocytic Leukemia"
+        - "Acute Monoblastic/Monocytic Leukemia, KMT2A rearrangement"
+        - "Acute Monocytic Leukemia : M5"
+        - "Acute Myeloid Leukemia (megakaryoblastic) with t(1;22)(p13.3;q13.3); RBM15-MKL1"
+        - "Acute Myeloid Leukemia, BCL11B rearrangement"
+        - "Acute Myeloid Leukemia, biallelic CEBPA alteration"
+        - "Acute Myeloid Leukemia, CBFA2T3-GLIS2"
+        - "Acute Myeloid Leukemia, CBFB-MYH11"
+        - "Acute Myeloid Leukemia, Core Binding Factor, NOS"
+        - "Acute Myeloid Leukemia, DEK-NUP214"
+        - "Acute Myeloid Leukemia, ETS family rearrangement"
+        - "Acute Myeloid Leukemia, GATA1 alteration"
+        - "Acute Myeloid Leukemia, HOX rearrangement"
+        - "Acute Myeloid Leukemia, JMML-like"
+        - "Acute Myeloid Leukemia, KAT6A rearrangement"
+        - "Acute Myeloid Leukemia, KMT2A partial tandem duplication"
+        - "Acute Myeloid Leukemia, KMT2A rearrangement"
+        - "Acute Myeloid Leukemia, MECOM rearrangement"
+        - "Acute Myeloid Leukemia, MNX1 rearrangement"
+        - "Acute Myeloid Leukemia, NOS"
+        - "Acute Myeloid Leukemia, NPM1 alteration"
+        - "Acute Myeloid Leukemia, NUP98 rearrangement"
+        - "Acute Myeloid Leukemia, PICALM-MLLT10"
+        - "Acute Myeloid Leukemia, RBM15-MKL1"
+        - "Acute Myeloid Leukemia, RUNX1-RUNX1T1 like"
+        - "Acute Myeloid Leukemia, RUNX1-RUNX1T1"
+        - "Acute Myeloid Leukemia, UBTF tandem duplication"
+        - "Acute Myeloid Leukemia"
+        - "Acute Myeloid Leukemia, Not Otherwise Specified"
+        - "Acute Myeloid Leukemia Not Otherwise Specified : Acute Myeloid Leukemia Not Further Subclassified"
+        - "Acute Myeloid Leukemia with BCR-ABL1, Provisional Entity"
+        - "Acute Myeloid Leukemia with Biallelic Mutations of CEBPA"
+        - "Acute Myeloid Leukemia with inv(16)(p13.1q22) or t(16;16)(p13.1;q22); CBFB-MYH11"
+        - "Acute Myeloid Leukemia with inv(3)(q21.3q26.2) or t(3;3)(q21.3;q26.2); GATA2, MECOM"
+        - "Acute Myeloid Leukemia with Maturation : M2"
+        - "Acute Myeloid Leukemia with Minimal Differentiation : M0"
+        - "Acute Myeloid Leukemia with Mutated NPM1"
+        - "Acute Myeloid Leukemia with Myelodysplasia-related Changes"
+        - "Acute Myeloid Leukemia with t(6;9)(p23;q34.1);DEK-NUP214"
+        - "Acute Myeloid Leukemia with Mutated RUNX1, Provisional Entity"
+        - "Acute Myeloid Leukemia with t(8;21)(q22;q22.1); RUNX1-RUNX1T1"
+        - "Acute Myeloid Leukemia with t(9;11)(p21.3;q23.3); KMT2A-MLLT3"
+        - "Acute Myeloid Leukemia without Maturation : M1"
+        - "Acute Myelomonocytic Leukemia"
+        - "Acute Myelomonocytic Leukemia : M4"
+        - "Acute Myelomonocytic Leukemia with Abnormal Eosinophils : M4eo"
+        - "Acute Myelomonocytic Leukemia, biallelic CEBPA alteration"
+        - "Acute Myelomonocytic Leukemia, KAT6A rearrangement"
+        - "Acute Myelomonocytic Leukemia, KMT2A rearrangement"
+        - "Acute Myelomonocytic Leukemia, NPM1 alteration"
+        - "Acute Myelomonocytic Leukemia, NUP98 alteration"
+        - "Acute Myelomonocytic Leukemia, UBTF tandem duplication"
+        - "Acute Panmyelosis with Myelofibrosis"
+        - "Acute Promyelocytic Leukemia"
+        - "Acute Promyelocytic Leukemia in which the promyelocytes in the peripheral blood have paucity or absence of cytoplasmic granules and characteristic bilobed nuclei. : M3 Variant"
+        - "Acute Promyelocytic Leukemia with PML-RARA : M3"
+        - "Acute Undifferentiated Leukemia, KMT2A rearrangement"
+        - "Acute Undifferentiated Leukemia"
+        - "Adamantinomatous craniopharyngioma"
+        - "Adenocarcinoma, NOS"
+        - "Adenoid Cystic Carcinoma of the Eyelid"
+        - "Adenoid Cystic Carcinoma of the Lacrimal Gland"
+        - "Adenoid Cystic Carcinoma of the Salivary Gland"
+        - "Adenoma, NOS"
+        - "Adenomatoid Odontogenic Tumor"
+        - "Adrenocortical Adenoma"
+        - "Adrenocortical Carcinoma"
+        - "Adrenocortical Tumor, NOS"
+        - "Adrenocortical Tumor, Uncertain Malignant Potential"
+        - "Adrenocortical Tumor"
+        - "Alveolar Rhabdomyosarcoma"
+        - "Alveolar Soft Part Sarcoma"
+        - "Anaplastic Astrocytoma"
+        - "Anaplastic Ependymoma, Posterior Fossa"
+        - "Anaplastic Ganglioglioma"
+        - "Anaplastic large cell lymphoma (ALK+/ALK-)"
+        - "Anaplastic Large Cell Lymphoma, ALK Positive"
+        - "Anaplastic Large Cell Lymphoma"
+        - "Anaplastic Medulloblastoma, Group 3"
+        - "Anaplastic Medulloblastoma, Group 4"
+        - "Anaplastic Oligoastrocytoma"
+        - "Anaplastic Pleomorphic Xanthoastrocytoma"
+        - "Anaplastic Sarcoma, NOS"
+        - "Aneurysmal Bone Cyst"
+        - "Angiocentric Glioma"
+        - "Angiomatoid Fibrous Histiocytoma"
+        - "Angiomyxoma"
+        - "Angiosarcoma"
+        - "Astroblastoma, MN1-altered"
+        - "Astrocytoma, IDH-mutant"
+        - "Astrocytoma, NOS"
+        - "ATRT-MYC"
+        - "ATRT-SHH"
+        - "ATRT-TYR"
+        - "ATRT, NOS or NEC"
+        - "Atypical Choroid Plexus Papilloma"
+        - "Atypical Dendritic Cell Tumor"
+        - "Atypical Melanocytic Neoplasm"
+        - "Atypical Nevus"
+        - "Atypical Osteocartilaginous Lesion"
+        - "Atypical Spitzoid Melanocytic Neoplasm"
+        - "Atypical Spitzoid Neoplasm"
+        - "Atypical Teratoid/Rhabdoid Tumor, MYC subgroup"
+        - "Atypical Teratoid/Rhabdoid Tumor, SHH subgroup"
+        - "Atypical Teratoid/Rhabdoid Tumor, TYR subgroup"
+        - "Atypical Teratoid/Rhabdoid Tumor"
+        - "B-Cell Acute Lymphoblastic Leukemia, BCR-ABL1 like"
+        - "B-Cell Acute Lymphoblastic Leukemia, BCR-ABL1"
+        - "B-Cell Acute Lymphoblastic Leukemia, CRLF2 rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, Dicentric"
+        - "B-Cell Acute Lymphoblastic Leukemia, Down Syndrome"
+        - "B-Cell Acute Lymphoblastic Leukemia, DUX4-IGH like"
+        - "B-Cell Acute Lymphoblastic Leukemia, DUX4-IGH"
+        - "B-Cell Acute Lymphoblastic Leukemia, ETV6-RUNX1 like"
+        - "B-Cell Acute Lymphoblastic Leukemia, ETV6-RUNX1"
+        - "B-Cell Acute Lymphoblastic Leukemia, HLF rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, Hyperdiploidy"
+        - "B-Cell Acute Lymphoblastic Leukemia, Hypodiploidy"
+        - "B-Cell Acute Lymphoblastic Leukemia, iAMP21"
+        - "B-Cell Acute Lymphoblastic Leukemia, IGH-CEBPD"
+        - "B-Cell Acute Lymphoblastic Leukemia, IKZF1 N159Y"
+        - "B-Cell Acute Lymphoblastic Leukemia, KMT2A rearrangement like"
+        - "B-Cell Acute Lymphoblastic Leukemia, KMT2A rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, MEF2D rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, MYC rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, NOS"
+        - "B-Cell Acute Lymphoblastic Leukemia, NUTM1 rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, PAX5 alteration"
+        - "B-Cell Acute Lymphoblastic Leukemia, PAX5 P80R"
+        - "B-Cell Acute Lymphoblastic Leukemia, TCF3-HLF"
+        - "B-Cell Acute Lymphoblastic Leukemia, TCF3-PBX1"
+        - "B-Cell Acute Lymphoblastic Leukemia, ZEB2 alteration and CEBPE rearrangement"
+        - "B-Cell Acute Lymphoblastic Leukemia, ZNF384 rearrangement like"
+        - "B-Cell Acute Lymphoblastic Leukemia, ZNF384 rearrangement"
+        - "B-Cell Lymphoblastic Leukemia"
+        - "B-Cell Lymphoblastic Lymphoma, BCR-ABL1 like"
+        - "B-Cell Lymphoblastic Lymphoma, NOS"
+        - "B-Cell Lymphoblastic Lymphoma, TCF3-HLF"
+        - "B-Cell Lymphoblastic Lymphoma, TCF3-PBX1"
+        - "Basal Cell Carcinoma"
+        - "BCOR Sarcoma"
+        - "Bizarre Parosteal Osteochondromatous Proliferation"
+        - "Blood Cancer of Unknown Primary"
+        - "Botryoid Type Embryonal Rhabdomyosarcoma"
+        - "Brain Sarcoma"
+        - "Brain Tumor, NOS"
+        - "Burkitt Lymphoma"
+        - "Carcinoma, NOS"
+        - "Cellular Myofibroma"
+        - "Central Neurocytoma"
+        - "Cerebellar liponeurocytoma"
+        - "Chondroblastic Osteosarcoma"
+        - "Chondroblastoma"
+        - "Chondromesenchymal Hamartoma"
+        - "Chondrosarcoma"
+        - "Chordoid glioma"
+        - "Chordoma (including poorly differentiated chordoma)"
+        - "Chordoma"
+        - "Choriocarcinoma, Ovary"
+        - "Choriocarcinoma, Testis"
+        - "Choriocarcinoma, Uterus"
+        - "Choroid Plexus Carcinoma"
+        - "Choroid Plexus Papilloma"
         - "Choroid Plexus tumors"
+        - "Chromophobe Renal Cell Carcinoma"
+        - "Chronic Myeloid Leukemia"
+        - "Chronic Neutrophilic Leukemia"
+        - "CIC-Rearranged Sarcoma, Brain"
+        - "CIC-rearranged sarcoma"
+        - "Clear Cell Sarcoma of Kidney"
+        - "Clear Cell Sarcoma"
+        - "CNS embryonal tumor, NOS or NEC"
+        - "CNS Ewing Sarcoma Family Tumor, CIC alteration"
         - "CNS Germ Cell Tumors"
+        - "CNS Germinoma"
+        - "CNS neuroblastoma, FOXR2-activated"
+        - "CNS Non-Germinomatous Germ Cell Tumor"
+        - "CNS Sarcoma, NOS or NEC"
         - "CNS Sarcoma"
+        - "CNS tumor with BCOR internal tandem duplication"
+        - "Congenital Melanocytic Nevus"
+        - "Congenital Mesoblastic Nephroma"
+        - "Control Sample"
+        - "Craniopharyngioma, Adamantinomatous Type"
+        - "Craniopharyngioma, NOS"
         - "Craniopharyngioma"
+        - "Cribriform neuroepithelial tumor"
+        - "Cutaneous Melanoma, CRTC1-TRIM11"
+        - "Cutaneous Myxoma"
+        - "Cystic Nephroma"
+        - "Dermatofibrosarcoma Protuberans"
+        - "Desmoid/Aggressive Fibromatosis"
+        - "Desmoplastic Infantile Astrocytoma"
+        - "Desmoplastic infantile ganglioglioma / desmoplastic infantile astrocytoma"
+        - "Desmoplastic Infantile Ganglioglioma"
+        - "Desmoplastic myxoid tumor of the pineal region, SMARCB1-mutant"
+        - "Desmoplastic Small Round Cell Tumor"
+        - "Desmoplastic/Nodular Medulloblastoma, SHH subtype"
+        - "Diffuse astrocytoma, MYB- or MYBL1-altered"
+        - "Diffuse Astrocytoma"
+        - "Diffuse Glioma"
+        - "Diffuse glioneuronal tumor with oligodendroglioma-like features and nuclear clusters"
+        - "Diffuse hemispheric glioma, H3 G34-mutant"
+        - "Diffuse Intrinsic Pontine Glioma"
+        - "Diffuse Large B-Cell Lymphoma, NOS"
+        - "Diffuse leptomeningeal glioneuronal tumor"
+        - "Diffuse Leptomeningeal Glioneuronal Tumour"
+        - "Diffuse low-grade glioma, MAPK pathway-altered"
+        - "Diffuse midline glioma, H3 K27-altered"
+        - "Diffuse pediatric-type high-grade glioma, H3-wildtype and IDH-wildtype"
+        - "Dysembryoplastic Neuroepithelial Tumor"
+        - "Dysgerminoma, Ovarian"
+        - "Dysgerminoma, Pelvis"
+        - "Dysplastic cerebellar gangliocytoma (Lhermitte-Duclos disease)"
+        - "Ectomesenchymoma"
+        - "Embryonal Rhabdomyosarcoma"
+        - "Embryonal Tumor with Multilayered Rosettes, Brain"
+        - "Embryonal tumor with multilayered rosettes, C19MC altered"
+        - "Embryonal tumor with multilayered rosettes, NOS"
+        - "Embryonal Tumor, Brain"
+        - "Encapsulated Glioma"
+        - "Eosinophilia, NOS"
+        - "Eosinophilic Renal Cell Carcinoma"
         - "Ependymoma"
+        - "Ependymomal Tumor, Anaplastic"
+        - "Ependymomal Tumor, NOS"
+        - "Ependymomal Tumor, Posterior Fossa"
+        - "Ependymomal Tumor, Spinal Tumor"
+        - "Ependymomal Tumor, Supratentorial"
+        - "Epitheliod Neoplasm, NOS"
+        - "Epithelioid Fibro-Osseous Tumor"
+        - "Epithelioid Glioblastoma"
+        - "Epithelioid Sarcoma"
+        - "Epstein-Barr Virus Positive smooth muscle tumors"
+        - "Erdheim-Chester disease"
+        - "Ewing Sarcoma of Soft Tissue"
+        - "Ewing Sarcoma"
+        - "Extranodal Marginal Zone Lymphoma"
+        - "Extraventricular neurocytoma"
+        - "Fibroblastic/Myofibroblastic Tumor"
+        - "Fibrolamellar Carcinoma"
+        - "Fibroma, NOS"
+        - "Fibromatosis"
+        - "Fibromyxoid Neoplasm "
+        - "Fibromyxoid Sarcoma"
+        - "Fibrosarcoma, Abdominal"
+        - "Fibrosarcoma, NOS"
+        - "Fibrous dysplasia"
+        - "Fibrous Hamartoma of Infancy"
+        - "Fibrous Umbilical Polyp"
+        - "Follicular Adenoma, Thyroid"
+        - "Follicular Lymphoma"
+        - "Follicular Thyroid Cancer"
+        - "Gangliocytoma"
+        - "Ganglioglioma"
+        - "Ganglioneuroblastoma"
+        - "Ganglioneuroma"
+        - "Gastrointestinal Neuroendocrine Tumor"
+        - "Gastrointestinal Stromal Tumor"
+        - "General Bone Tumor"
+        - "General Leukemia"
+        - "Germ Cell Tumor, Brain"
+        - "Germ Cell Tumor, NOS"
+        - "Germinoma"
+        - "Giant Cell Fibroblastoma"
+        - "Giant Cell Tumor of Bone"
+        - "Giant Cell Tumor, NOS"
+        - "Glioblastoma, IDH-wildtype"
+        - "Glioblastoma"
+        - "Glioma, NOS"
+        - "Glioneuronal and neuronal tumors, NOS or NEC"
         - "Glioneuronal and neuronal tumors"
+        - "Glioneuronal Neoplasm, NOS"
+        - "Hemangioblastoma"
+        - "Hemangiomas and vascular malformations"
+        - "Hepatic Focal Nodular Hyperplasia"
+        - "Hepatoblastoma"
+        - "Hepatocellular Carcinoma"
+        - "High Grade Sarcoma"
+        - "High-grade astrocytoma with piloid features"
+        - "High-Grade B-Cell Lymphoma, NOS"
+        - "High-Grade Calvarium Sarcoma"
+        - "High-grade glioma, NOS or NEC"
+        - "High-Grade Glioma, NOS"
         - "High-Grade Glioma"
+        - "High-Grade Glioneuronal Tumor"
+        - "High-Grade Neuroepithelial Tumor"
+        - "Histiocytic sarcoma"
+        - "Hodgkin Lymphoma"
+        - "Hurthle Cell Thyroid Cancer"
+        - "Hybrid nerve sheath tumor"
+        - "Immunodeficiency-associated CNS lymphoma"
+        - "Infant-type hemispheric glioma"
+        - "Infantile Fibrosarcoma"
+        - "Infantile Hemangioendothelioma"
+        - "Inflammatory Myofibroblastic Lung Tumor"
+        - "Inflammatory Myofibroblastic Stomach Tumor"
+        - "Inflammatory Myofibroblastic Tumor"
+        - "Inflammatory Pseudotumor, Lung"
+        - "Intracranial mesenchymal tumor, FET-CREB fusion-positive"
+        - "Intracranial Mesenchymal Tumor, FET-CREB"
+        - "Intravascular large B-cell lymphoma"
+        - "Islet Cell Carcinoma"
+        - "Juvenile Granulosa Cell Ovarian Tumor"
+        - "Juvenile Myelomonocytic Leukemia"
+        - "Juvenile Xanthogranuloma"
+        - "Juxtagliomerular Cell Tumor"
+        - "Kaposiform Hemangioendothelioma"
+        - "Kidney Tumor, NOS"
+        - "Langerhans Cell Histiocytosis"
+        - "Large Cell/Anaplastic Medulloblastoma, SHH subtype"
+        - "Large Cell/Anaplastic Medulloblastoma"
+        - "Leiomyoma"
+        - "Lipoblastoma"
+        - "Lipofibromatosis"
+        - "Lipoma"
+        - "Liposarcoma"
+        - "Liver Angiosarcoma"
+        - "Liver Malignancy, NOS"
+        - "Liver, NOS"
+        - "Low-Grade Dermal Lesion"
+        - "Low-grade glioma, NOS or NEC"
+        - "Low-Grade Glioma, NOS"
         - "Low-Grade Glioma"
+        - "Low-Grade Glioneuronal Tumor"
+        - "Low-Grade Mesenchymal Neoplasm"
+        - "Low-Grade Neuroepithelial Tumor"
+        - "Low-Grade Oncocytic Renal Tumor"
+        - "Low-Grade Peripheral Nerve Sheath Tumor"
+        - "Lymphomatoid granulomatosis"
+        - "Malignant melanotic nerve sheath tumor"
+        - "Malignant Peripheral Nerve Sheath Tumor"
+        - "Malignant Rhabdoid Tumor of the Bladder"
+        - "Malignant Rhabdoid Tumor of the Liver"
+        - "Malignant Thymoma"
+        - "MALT lymphoma of the dura"
+        - "Mammary Analogue Secretory Carcinoma of Salivary Gland Origin"
+        - "Mature B-Cell Neoplasms"
+        - "Mature Teratoma, Ovarian"
+        - "Mature Teratoma"
+        - "Medullary Thyroid Cancer"
+        - "Medulloblastoma with Extensive Nodularity, SHH subtype"
+        - "Medulloblastoma, Group 3"
+        - "Medulloblastoma, Group 4"
+        - "Medulloblastoma, non-WNT/non-SHH"
+        - "Medulloblastoma, NOS or NEC"
+        - "Medulloblastoma, SHH subtype"
+        - "Medulloblastoma, SHH-activated and TP53-mutant"
+        - "Medulloblastoma, SHH-activated and TP53-wildtype"
+        - "Medulloblastoma, WNT subtype"
+        - "Medulloblastoma, WNT-activated"
         - "Medulloblastoma"
+        - "Melanocytic Nevus"
+        - "Melanoma"
+        - "Meningeal melanocytic neoplasms (includes melanoma)"
+        - "Meningioma"
+        - "Mesenchymal Chondrosarcoma"
+        - "Mesenchymal Tumor, NOS"
+        - "Metanephric Adenofibroma"
+        - "Metastatic Tumor, NOS"
+        - "Miscellaneous Brain Tumor"
+        - "Mixed Germ Cell Tumor, Brain"
+        - "Mixed Germ Cell Tumor, NOS"
+        - "Mixed Germ Cell Tumor, Ovary"
+        - "Mixed Germ Cell Tumor, Testis"
+        - "Mixed Myxopapillary Anaplastic Ependymoma, Spinal Tumor"
+        - "Mixed Phenotype Acute Leukemia, B/Myeloid, NOS"
+        - "Mixed Phenotype Acute Leukemia, T/Myeloid, NOS"
+        - "Monomorphic Posttransplant Lymphoproliferative Disorder"
+        - "Mucinous Adenocarcinoma of the Colon and Rectum"
+        - "Mucinous Adenocarcinoma, Ovarian"
+        - "Mucinous Borderline Ovarian Tumor"
+        - "Mucinous Cystadenocarcinoma, Ovary"
+        - "Mucinous Ovarian Cancer"
+        - "Mucoepidermoid Carcinoma"
+        - "Multinodular and vacuolating neuronal tumor"
+        - "Myelodysplastic Syndromes"
+        - "Myelodysplastic/Myeloproliferative Neoplasm"
+        - "Myeloid Leukemia Associated with Down Syndrome"
+        - "Myeloid Proliferations Related to Down Syndrome"
+        - "Myeloid Sarcoma"
+        - "Myeloproliferative Neoplasms"
+        - "Myoepithelial Carcinoma"
+        - "Myofibroblastic Neoplasm, NOS"
+        - "Myofibroblastic Sarcoma, NOS"
+        - "Myofibroma"
+        - "Myofibromatosis"
+        - "Myopericytoma"
+        - "Myositis Ossificans"
+        - "Myxofibrosarcoma"
+        - "Myxoid glioneuronal tumor"
+        - "Myxoid Neoplasm, NOS"
+        - "Myxoid/Round Cell Liposarcoma"
+        - "Myxopapillary Ependymoma, Fourth Ventricle"
+        - "Myxopapillary Ependymoma, Posterior Fossa"
+        - "Myxopapillary Ependymoma"
+        - "Nasopharyngeal Carcinoma"
+        - "Nephroblastic Process, Consistent With Either WT or NR"
+        - "Nephrogenic Rest"
+        - "Nerve Sheath Tumor"
+        - "Neuroblastoma"
+        - "Neuroendocrine Tumor, Liver"
+        - "Neuroendocrine Tumor, NOS"
+        - "Neurofibroma"
+        - "Neuromuscular Choristoma"
+        - "Neurothekeoma"
+        - "Nodular Malignant Melanoma"
+        - "Nodular Thyroid Hyperplasia"
+        - "Non-Hodgkin Lymphoma"
+        - "Non-Invasive Follicular Thyroid Neoplasm with Papillary Like Nuclear Features"
+        - "Non-Rhabdomyosarcoma Soft Tissue Tumor"
+        - "Odontogenic Carcinoma"
+        - "Oligoastrocytoma"
+        - "Oligodendroglioma, IDH-mutant, and 1p/19q-codeleted"
+        - "Oligodendroglioma"
+        - "Oncocytic Adenoma of the Thyroid"
+        - "Osteoblastic Osteosarcoma"
+        - "Osteoblastoma"
+        - "Osteoid Osteoma"
+        - "Osteosarcoma"
         - "Other CNS Embryonal tumors"
-        - "Other"        
+        - "Other low-grade B-cell lymphomas of the CNS"
+        - "Other"
+        - "Ovarian Fibroma"
+        - "Ovarian Germ Cell Tumor"
+        - "Pancreatic Neuroendocrine Tumor"
+        - "Papillary craniopharyngioma"
+        - "Papillary glioneuronal tumor"
+        - "Papillary Renal Cell Carcinoma"
+        - "Papillary Thyroid Cancer"
+        - "Papillary Tumor of the Pineal Region"
+        - "Paraganglioma"
+        - "Pediatric Cystic Nephroma"
+        - "Perineurioma"
+        - "Pheochromocytoma"
+        - "Pilocytic Astrocytoma"
+        - "Pilomyxoid Astrocytoma"
+        - "Pineal Anlage Tumor"
+        - "Pineal Parenchymal Tumor of Intermediate Differentiation"
+        - "Pineal Parenchymal Tumor"
+        - "Pineal Tumor"
+        - "Pineoblastoma"
+        - "Pineocytoma"
+        - "Pituicytoma, granular cell tumor of the sellar region, and spindle cell oncocytoma"
+        - "Pituitary adenoma/PitNET"
+        - "Pituitary blastoma"
+        - "Pleomorphic Adenoma"
+        - "Pleomorphic Rhabdomyosarcoma"
+        - "Pleomorphic Xanthoastrocytoma"
+        - "Pleuropulmonary Blastoma"
+        - "Polymorphic Post-Transplant Lymphoproliferative Disorder"
+        - "Polymorphous low-grade neuroepithelial tumor of the young"
+        - "Poorly Differentiated Thyroid Cancer"
+        - "Posterior fossa ependymoma, group PFA"
+        - "Posterior fossa ependymoma, group PFB"
+        - "Posterior fossa ependymoma, NOS or NEC"
+        - "Primary diffuse large B-cell lymphoma of the CNS"
+        - "Primary intracranial sarcoma, DICER1-mutant"
+        - "Primitive Myxoid Mesenchymal Tumor of Infancy"
+        - "Primitive Neuroectodermal Tumor"
+        - "Primitive Round Cell Neoplasm"
+        - "Pulmonary Blastoma"
+        - "Pure Erythroid Leukemia"
+        - "Renal Angiomyolipoma"
+        - "Renal Cell Carcinoma"
+        - "Renal Epitheloid Angiomyolipoma"
+        - "Renal Oncocytoma"
+        - "Retinoblastoma"
+        - "Rhabdoid Cancer, Kidney"
+        - "Rhabdoid Tumor, NOS"
+        - "Rhabdomyosarcoma, NOS"
+        - "Rhabdomyosarcoma"
+        - "Rosai-Dorfman disease"
+        - "Rosette-forming Glioneuronal Tumor"
+        - "Round Cell Sarcoma, NOS"
+        - "Salivary Gland Anlage Tumor"
+        - "Sarcoma, NOS"
+        - "Schwannoma"
+        - "Sclerosing Microcystic Adenocarcinoma"
+        - "Sebaceous Carcinoma"
+        - "Seminoma"
+        - "Serous cystadenoma"
+        - "Sertoli-Leydig Cell Tumor"
+        - "Sex Cord Stromal Tumor"
+        - "Sialoblastoma"
+        - "Signet Ring Cell Carcinoma of the Stomach"
+        - "Signet Ring Cell Carcinoma, NOS"
+        - "Sinonasal Squamous Cell Carcinoma"
+        - "Small Cell Carcinoma of the Ovary"
+        - "Soft Tissue Perineuroma"
+        - "Soft Tissue Sarcoma, NOS"
+        - "Solid Cancer of Unknown Primary"
+        - "Solid Pseudopapillary Neoplasm of the Pancreas"
+        - "Solitary fibrous tumor"
+        - "Solitary Fibrous Tumor/Hemangiopericytoma"
+        - "Spinal ependymoma, MYCN-amplified"
+        - "Spinal ependymoma, NOS or NEC"
+        - "Spindle Cell Neoplasm"
+        - "Spindle Cell Rhabdomyosarcoma"
+        - "Spindle Cell Sarcoma, NOS"
+        - "Spindle Cell Tumor, NOS"
+        - "Spindle Cell/Sclerosing Rhabdomyosarcoma"
+        - "Spindle Epithelial Tumor with Thymus-Like Differentiation"
+        - "Spitzoid Melanoma"
+        - "Squamous Cell Carcinoma, NOS"
+        - "Stomach Adenocarcinoma"
+        - "Subependymal Giant Cell Astrocytoma"
+        - "Subependymoma"
+        - "Supratentorial ependymoma, NOS or NEC"
+        - "Supratentorial ependymoma, YAP1 fusion-positive"
+        - "Supratentorial ependymoma, ZFTA fusion-positive"
+        - "Synovial Sarcoma"
+        - "T-Cell Acute Lymphoblastic Leukemia, BCL11B rearrangement"
+        - "T-Cell Acute Lymphoblastic Leukemia, HOXA activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, LMO2 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, LYL1 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, NKX2 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, NOS"
+        - "T-Cell Acute Lymphoblastic Leukemia, SPI1 rearrangement"
+        - "T-Cell Acute Lymphoblastic Leukemia, TAL1 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, TAL2 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, TLX1 activation"
+        - "T-Cell Acute Lymphoblastic Leukemia, TLX3 activation"
+        - "T-cell and NK/T-cell lymphomas"
+        - "T-Cell Lymphoblastic Leukemia"
+        - "T-Cell Lymphoblastic Lymphoma, LMO1 rearrangement"
+        - "T-Cell Lymphoblastic Lymphoma, NKX2 rearrangement"
+        - "T-Cell Lymphoblastic Lymphoma, NOS"
+        - "T-Cell Lymphoblastic Lymphoma, TAL1 rearrangement"
+        - "Tenosynovial Giant Cell Tumor Diffuse Type"
+        - "Teratoma, NOS"
+        - "Teratoma, Testis"
+        - "Testicular Leydig Cell Tumor"
+        - "Therapy Related Myeloproliferative Neoplasm"
+        - "Therapy-Related Acute Myeloid Leukemia, NPM1 alteration"
+        - "Therapy-Related Acute Myeloid Leukemia"
+        - "Therapy-Related Myelodysplastic Syndrome"
+        - "Therapy-Related Myeloid Neoplasm"
+        - "Thymic Carcinoma"
+        - "Thyroid Gland Follicular Adenoma with Papillary Hyperplasia"
+        - "Thyroid Hyperplastic Nodule"
+        - "Transient Abnormal Myelopoiesis (TAM)"
+        - "Tubular Adenoma of the Breast"
+        - "Tubular Adenoma of the Colon"
+        - "Tubulovillous Adenoma"
+        - "Undifferentiated Embryonal Sarcoma of the Liver"
+        - "Undifferentiated Pleomorphic Sarcoma"
+        - "Undifferentiated Round Cell Sarcoma"
+        - "Wilms, Bilateral"
+        - "Wilms"
+        - "Yolk Sac Tumor, Brain"
+        - "Yolk Sac Tumor, NOS"
+        - "Yolk Sac Tumor, Ovary"
+        - "Yolk Sac Tumor, Parotid"
+        - "Yolk Sac Tumor, Sacrococcygeal or Presacral"
+        - "Yolk Sac Tumor, Testis"
         - "[---- ICD-O 3.2 ----]"
         - "8000/0 : Neoplasm, benign"
         - "8000/1 : Neoplasm, uncertain whether benign or malignant"
@@ -5668,6 +6415,7 @@ PropDefinitions:
         - "8230/2 : Ductal carcinoma in situ, solid type"
         - "8230/3 : Solid carcinoma, NOS"
         - "8231/3 : Carcinoma simplex"
+        - "8240/1 : Carcinoid tumor of uncertain malignant potential"
         - "8240/3 : Neuroendocrine tumor, NOS"
         - "8241/3 : Enterochromaffin cell carcinoid"
         - "8242/3 : Enterochromaffin-like cell tumor"
@@ -5927,8 +6675,8 @@ PropDefinitions:
         - "8601/0 : Thecoma, luteinized"
         - "8602/0 : Sclerosing stromal tumor"
         - "8610/0 : Luteoma, NOS"
-        - "8620/1 : Adult granulosa cell tumor of testis"
-        - "8620/3 : Adult granulosa cell tumor of ovary"
+        - "8620/1 : Granulosa cell tumor, NOS"
+        - "8620/3 : Granulosa cell tumor, malignant"
         - "8621/1 : Granulosa cell-theca cell tumor"
         - "8622/0 : Granulosa cell tumor of testis, juvenile"
         - "8622/1 : Granulosa cell tumor, juvenile"
@@ -5948,14 +6696,18 @@ PropDefinitions:
         - "8641/0 : Sertoli cell tumor with lipid storage"
         - "8642/1 : Large cell calcifying Sertoli cell tumor"
         - "8643/1 : Intratubular large cell hyalinizing Sertoli cell neoplasia"
-        - "8650/0 : Leydig cell tumor of ovary, NOS"
-        - "8650/1 : Leydig cell tumor of testis, NOS"
+        - "8650/0 : Leydig cell tumor, benign"
+        - "8650/0 : Interstitial cell tumor, benign"
+        - "8650/1 : Leydig cell tumor, NOS"
+        - "8650/1 : Interstitial cell tumor, NOS"
         - "8650/3 : Leydig cell tumor, malignant"
+        - "8650/3 : Interstitial cell tumor, malignant"
         - "8660/0 : Hilus cell tumor"
         - "8670/0 : Lipid cell tumor of ovary"
         - "8670/3 : Steroid cell tumor, malignant"
         - "8671/0 : Adrenal rest tumor"
-        - "8680/3 : Paraganglioma, NOS"
+        - "8680/1 : Paraganglioma, NOS"
+        - "8680/3 : Paraganglioma, malignant"
         - "8681/3 : Sympathetic paraganglioma"
         - "8682/3 : Parasympathetic paraganglioma"
         - "8683/0 : Gangliocytic paraganglioma"
@@ -5963,6 +6715,7 @@ PropDefinitions:
         - "8691/3 : Aortic body tumor"
         - "8692/3 : Carotid body paraganglioma"
         - "8693/3 : Extra-adrenal paraganglioma, NOS"
+        - "8700/0 : Pheochromocytoma, NOS"
         - "8700/3 : Pheochromocytoma, NOS"
         - "8710/3 : Glomangiosarcoma"
         - "8711/0 : Glomus tumor, NOS"
@@ -6067,6 +6820,7 @@ PropDefinitions:
         - "8832/1 : Dermatofibrosarcoma protuberans, NOS"
         - "8832/3 : Dermatofibrosarcoma protuberans, fibrosarcomatous"
         - "8833/1 : Pigmented dermatofibrosarcoma protuberans"
+        - "8833/3 : Pigmented dermatofibrosarcoma protuberans"
         - "8834/1 : Giant cell fibroblastoma"
         - "8835/1 : Plexiform fibrohistiocytic tumor"
         - "8836/1 : Angiomatoid fibrous histiocytoma"
@@ -6133,6 +6887,8 @@ PropDefinitions:
         - "8935/0 : Stromal tumor, benign"
         - "8935/1 : Stromal tumor, NOS"
         - "8935/3 : Stromal sarcoma, NOS"
+        - "8936/0 : Gastrointestinal stromal tumor, benign"
+        - "8936/1 : Gastrointestinal stromal tumor, NOS"
         - "8936/3 : Gastrointestinal stromal tumor"
         - "8940/0 : Pleomorphic adenoma"
         - "8940/3 : Mixed tumor, malignant, NOS"
@@ -6248,6 +7004,7 @@ PropDefinitions:
         - "9130/3 : Hemangioendothelioma, malignant"
         - "9131/0 : Capillary hemangioma"
         - "9132/0 : Intramuscular hemangioma"
+        - "9133/1 : Epithelioid hemangioendothelioma, NOS"
         - "9133/3 : Epithelioid hemangioendothelioma, NOS"
         - "9135/1 : Papillary intralymphatic angioendothelioma"
         - "9136/1 : Spindle cell hemangioendothelioma"
@@ -6438,6 +7195,7 @@ PropDefinitions:
         - "9522/3 : Olfactory neuroblastoma"
         - "9523/3 : Olfactory neuroepithelioma"
         - "9530/0 : Meningioma, NOS"
+        - "9530/1 : Meningiomatosis, NOS"
         - "9530/3 : Meningioma, malignant"
         - "9531/0 : Meningothelial meningioma"
         - "9532/0 : Fibrous meningioma"
@@ -6643,125 +7401,24 @@ PropDefinitions:
         - "999 : Unknown, to be completed later"
         - "[---- Indication for Study ----]"
         - "see diagnosis_comment"
-        - "[---- WHO CNS5 Integrated Diagnosis ----]"
-        - "Adamantinomatous craniopharyngioma"
-        - "Anaplastic large cell lymphoma (ALK+/ALK−)"
-        - "Angiocentric glioma"
-        - "Astroblastoma, MN1-altered"
-        - "Astrocytoma, IDH-mutant"
-        - "ATRT-MYC"
-        - "ATRT-SHH"
-        - "ATRT-TYR"
-        - "ATRT, NOS or NEC"
-        - "Atypical choroid plexus papilloma"
-        - "Central neurocytoma"
-        - "Cerebellar liponeurocytoma"
-        - "Chondrosarcoma"
-        - "Chordoid glioma"
-        - "Chordoma (including poorly differentiated chordoma)"
-        - "Choroid plexus carcinoma"
-        - "Choroid plexus papilloma"
-        - "CIC-rearranged sarcoma"
-        - "CNS embryonal tumor, NOS or NEC"
-        - "CNS Germinoma"
-        - "CNS neuroblastoma, FOXR2-activated"
-        - "CNS Non-Germinomatous Germ Cell Tumor"
-        - "CNS Sarcoma, NOS or NEC"
-        - "CNS tumor with BCOR internal tandem duplication"
-        - "Cribriform neuroepithelial tumor"
-        - "Desmoplastic infantile ganglioglioma / desmoplastic infantile astrocytoma"
-        - "Desmoplastic myxoid tumor of the pineal region, SMARCB1-mutant"
-        - "Diffuse astrocytoma, MYB- or MYBL1-altered"
-        - "Diffuse glioneuronal tumor with oligodendroglioma-like features and nuclear clusters"
-        - "Diffuse hemispheric glioma, H3 G34-mutant"
-        - "Diffuse leptomeningeal glioneuronal tumor"
-        - "Diffuse low-grade glioma, MAPK pathway-altered"
-        - "Diffuse midline glioma, H3 K27-altered"
-        - "Diffuse pediatric-type high-grade glioma, H3-wildtype and IDH-wildtype"
-        - "Dysembryoplastic neuroepithelial tumor"
-        - "Dysplastic cerebellar gangliocytoma (Lhermitte-Duclos disease)"
-        - "Embryonal tumor with multilayered rosettes, C19MC altered"
-        - "Embryonal tumor with multilayered rosettes, NOS"
-        - "Erdheim-Chester disease"
-        - "Ewing sarcoma"
-        - "Extraventricular neurocytoma"
-        - "Gangliocytoma"
-        - "Ganglioglioma"
-        - "Glioblastoma, IDH-wildtype"
-        - "Glioneuronal and neuronal tumors, NOS or NEC"
-        - "Hemangioblastoma"
-        - "Hemangiomas and vascular malformations"
-        - "High-grade astrocytoma with piloid features"
-        - "High-grade glioma, NOS or NEC"
-        - "Histiocytic sarcoma"
-        - "Immunodeficiency-associated CNS lymphoma"
-        - "Infant-type hemispheric glioma"
-        - "Intracranial mesenchymal tumor, FET-CREB fusion-positive"
-        - "Intravascular large B-cell lymphoma"
-        - "Juvenile xanthogranuloma"
-        - "Langerhans cell histiocytosis"
-        - "Low-grade glioma, NOS or NEC"
-        - "Lymphomatoid granulomatosis"
-        - "MALT lymphoma of the dura"
-        - "Medulloblastoma, Group 3"
-        - "Medulloblastoma, Group 4"
-        - "Medulloblastoma, non-WNT/non-SHH"
-        - "Medulloblastoma, NOS on NEC"
-        - "Medulloblastoma, SHH-activated and TP53-mutant"
-        - "Medulloblastoma, SHH-activated and TP53-wildtype"
-        - "Medulloblastoma, WNT-activated"
-        - "Meningeal melanocytic neoplasms (includes melanoma)"
-        - "Meningioma"
-        - "Mesenchymal chondrosarcoma"
-        - "Multinodular and vacuolating neuronal tumor"
-        - "Myxoid glioneuronal tumor"
-        - "Myxopapillary ependymoma"
-        - "Oligodendroglioma, IDH-mutant, and 1p/19q-codeleted"
-        - "Other low-grade B-cell lymphomas of the CNS"
-        - "Papillary craniopharyngioma"
-        - "Papillary glioneuronal tumor"
-        - "Papillary tumor of the pineal region"
-        - "Pilocytic astrocytoma"
-        - "Pineal parenchymal tumor of intermediate differentiation"
-        - "Pineoblastoma"
-        - "Pineocytoma"
-        - "Pituicytoma, granular cell tumor of the sellar region, and spindle cell oncocytoma"
-        - "Pituitary adenoma/PitNET"
-        - "Pituitary blastoma"
-        - "Pleomorphic xanthoastrocytoma"
-        - "Polymorphous low-grade neuroepithelial tumor of the young"
-        - "Posterior fossa ependymoma, group PFA"
-        - "Posterior fossa ependymoma, group PFB"
-        - "Posterior fossa ependymoma, NOS or NEC"
-        - "Primary diffuse large B-cell lymphoma of the CNS"
-        - "Primary intracranial sarcoma, DICER1-mutant"
-        - "Rhabdomyosarcoma"
-        - "Rosai-Dorfman disease"
-        - "Rosette-forming glioneuronal tumor"
-        - "Solitary fibrous tumor"
-        - "Spinal ependymoma, MYCN-amplified"
-        - "Spinal ependymoma, NOS or NEC"
-        - "Subependymal giant cell astrocytoma"
-        - "Subependymoma"
-        - "Supratentorial ependymoma, NOS or NEC"
-        - "Supratentorial ependymoma, YAP1 fusion-positive"
-        - "Supratentorial ependymoma, ZFTA fusion-positive"
-        - "T-cell and NK/T-cell lymphomas"         
         - "[---- Miscellaneous ----]"
-        - "Unknown"
+        - "Healthy Control"
+        - "Normal"
         - "Not Reported"
+        - "Unknown"
     Req: true
-    Strict: true
+    Strict: false
     Private: false  
-  #therapeutic_procedure
-  therapeutic_agent:
+  #treatment
+  treatment_agent:
     Desc: The name of the individual therapeutic agent(s) used as part of a treatment regimen.
     Term:
       - Origin: caDSR
         Code: '13579886'
         Value: Therapeutic Procedure Agent Name
+        Version: "1.00"
     Type:
-      value_type: list
+      value_type: string
       Enum:
         - "10-Deacetyltaxol"
         - "11C Topotecan"
@@ -8146,6 +8803,7 @@ PropDefinitions:
         - "Chlorotoxin (EQ)-CD28-CD3zeta-CD19t-expressing CAR T-lymphocytes"
         - "Chlorozotocin"
         - "Choline Kinase Alpha Inhibitor TCD-717"
+        - "CHOP regimen"
         - "CHP-NY-ESO-1 Peptide Vaccine IMF-001"
         - "Chromomycin A3"
         - "Chrysanthemum morifolium/Ganoderma lucidum/Glycyrrhiza glabra/Isatis indigotica/Panax pseudoginseng/Rabdosia rubescens/Scutellaria baicalensis/Serona repens Supplement"
@@ -11239,5 +11897,109 @@ PropDefinitions:
         - "Unknown"
         - "Not Reported"
     Req: false
+    Strict: false
+    Private: false
+  #treatment_response
+  treatment_response_id:
+    Desc: In medicine, an improvement related to treatment. One or more characters used to identify, name, or characterize the nature, properties, or contents of a thing.
+    Term:
+      - Origin: caDSR
+        Code: '2608389'
+        Value: Response Identifier
+        Version: "1.00"
+    Type: string
+    Req: true
+    Private: false 
+    Key: true
+  #treatment_response
+  response:
+    Desc: The result of an evaluation to determine whether pathologic and/or clinical changes resulted from treatment.
+    Term:
+      - Origin: caDSR
+        Code: '13383448'
+        Value: Disease Response Assessment Outcome
+        Version: "1.00"
+    Type:
+      value_type: list
+      Enum:
+        - "Complete Remission"
+        - "Minor Response"
+        - "Mixed Response"
+        - "No Evidence of Disease"
+        - "Non-Response"
+        - "Not Applicable"
+        - "Not Done"
+        - "Not Evaluable"
+        - "Not Reported"
+        - "Partial Response"
+        - "Progressive Disease"
+        - "Stable Disease"
+        - "Unknown"
+        - "Very Good Partial Response"
+    Req: true
+    Strict: false
+    Private: false
+  #treatment_response
+  age_at_response:
+    Desc: The age (in days) of subject when the response assessment was made.
+    Term:
+      - Origin: caDSR
+        Code: '12326598'
+        Value: Subject Age at Response Assessment Day Count
+        Version: "1.00"
+    Type: integer
+    Req: true
+    Strict: false
+    Private: false
+  #treatment_response
+  response_category:
+    Desc: A text term based on categorization of the pathologic and/or clinical changes that result from treatment, including eradication of detectable disease, stabilization of disease, or disease progression.    
+    Term:
+      - Origin: caDSR
+        Code: '13383449'
+        Value: Disease Response Assessment Category
+        Version: "1.00"
+    Type:
+      value_type: list
+      Enum:        
+        - "Bone Marrow Response"
+        - "CNS Response"
+        - "Metastatic Soft Tissue and Bone Response"
+        - "Myeloid Sarcoma Response"
+        - "Non-Target Lesions"
+        - "Not Reported"
+        - "Other"
+        - "Overall Response"
+        - "Primary Site Response"
+        - "Target Lesions"
+        - "Unknown"
+    Req: true
+    Strict: false
+    Private: false
+  #treatment_response
+  response_system:
+    Desc: The type of standard from which a judgment concerning tumor response to therapy can be established.      
+    Term:
+      - Origin: caDSR
+        Code: '13381490'
+        Value: Disease Tumor Response System Type
+        Version: "1.00"
+    Type:
+      value_type: list
+      Enum:
+        - "Choi"
+        - "INRC, Brodeur 1993"
+        - "INRC, Park 2017"
+        - "iRANO"
+        - "Modified MacDonald"
+        - "mRECIST"
+        - "Not Reported"
+        - "PERCIST"
+        - "RANO"
+        - "RAPNO"
+        - "RECIST"
+        - "Unknown"
+        - "WHO"
+    Req: true
     Strict: false
     Private: false
