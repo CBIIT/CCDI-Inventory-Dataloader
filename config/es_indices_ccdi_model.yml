@@ -190,8 +190,8 @@ Indices:
                 library_strategy: null
         }) as participant_radiology_file_filters
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival) 
-      OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
       WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, su, st, stf, stp, dg
@@ -502,7 +502,7 @@ Indices:
       OPTIONAL MATCH (p)<-[*..4]-(file)
       WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival) 
+      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
       OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
@@ -614,7 +614,7 @@ Indices:
         optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
         WHERE (cl: cell_line or cl: pdx)
         optional Match (sm2)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylatIn  ion_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
         with p, case COLLECT(distinct sm1) when [] then []
                       else COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
