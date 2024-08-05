@@ -1020,7 +1020,7 @@ Indices:
               tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          su.last_known_survival_status as last_known_survival_status
+          su.last_known_survival_status as last_known_survival_status,
           COLLECT(DISTINCT {
               assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
@@ -1091,7 +1091,7 @@ Indices:
               tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          su. last_known_survival_status as last_known_survival_status
+          su. last_known_survival_status as last_known_survival_status,
           CASE COLLECT(file) WHEN [] THEN []
                     ELSE COLLECT(DISTINCT {
                         assay_method: CASE LABELS(file)[0]
