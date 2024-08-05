@@ -2147,6 +2147,26 @@ PropDefinitions:
     Req: false
     Strict: false
     Private: false
+  #survival
+  cause_of_death:
+    Desc: A high level grouping of the circumstance or condition of greatest rank or importance that results in the death of a living being.
+    Term:
+      - Origin: caDSR
+        Code: '4783273'
+        Value: Primary Cause of Death Reason
+        Version: "1.00"
+    Type:
+      value_type: string
+      Enum:
+        - "Due to non-study treatment"
+        - "Due to other cause"
+        - "Due to protocol treatment"
+        - "Due to secondary primary cancer"
+        - "Due to this disease"
+        - "Unknown"
+    Req: false
+    Strict: true
+    Private: false
   #molecular_test
   molecular_test_id:
     Desc: A unique sequence of characters used to identify, name, or characterize a laboratory procedure that involves the study of tissues, cells, and fluids at the molecular level.
@@ -4042,7 +4062,7 @@ PropDefinitions:
     Req: false
     Private: false    
   #file
-  file_url_in_cds:
+  file_url:
     Desc: The specification of a node (file or directory) in a hierarchical file system where an electronic file is located.
     Term:
       - Origin: caDSR
@@ -4052,6 +4072,44 @@ PropDefinitions:
     Type: string
     Req: true
     Private: false
+  #file
+  acl:
+    Desc: A free text field used to document whether the data in a repository is open access or controlled access. If access to the data are unrestricted, the acl field should be listed [“*”]. Controlled access should be denoted as a comma delimited list of phs accession numbers, for example, [“phs000123”] or [“phs000123”,”phs000124”].
+    Term:
+      - Origin: caDSR
+        Code: '11555664'
+        Value: Electronic Data File Access Level Text 
+        Version: "1.00"
+    Type: string
+    Req: true
+    Private: false
+  #file
+  authz:
+    Desc: A free text field used to document whether the data in a repository is open access or controlled access. Open access files should have authz = ['/open']. Controlled access files have an acl value format of ['/programs/phsNNN'] (e.g.  ['/programs/1234'].
+    Term:
+      - Origin: caDSR
+        Code: '11555664'
+        Value: Electronic Data File Access Level Text 
+        Version: "1.00"
+    Type: string
+    Req: true
+    Private: false 
+  #file
+  file_access:
+    Desc: A enumerated value text field used to document whether the data in a repository is open access or controlled access. 
+    Term:
+      - Origin: caDSR
+        Code: '11555664'
+        Value: Electronic Data File Access Level Text 
+        Version: "1.00"
+    Type:
+      value_type: string
+      Enum:
+        - "Controlled"
+        - "Open"
+    Req: true
+    Strict: true
+    Private: false 
   #file
   dcf_indexd_guid:
     Desc: A unique sequence of characters used to identify, name, or characterize the indexing process that is different from all other UUIDs/GUIDs generated, making it possible to interoperate with data commons and share data within a data ecosystem.    
@@ -4074,7 +4132,7 @@ PropDefinitions:
     Type:
       value_type: string
       Enum:
-        - "Participiant"
+        - "Participant"
         - "Sample"
         - "Study"
     Req: true
@@ -4217,17 +4275,6 @@ PropDefinitions:
     Req: true
     Private: false
     Key: true
-  # sample
-  alternate_sample_id:
-    Desc: A backup sequence of characters used to identify, name, or characterize a material sample taken from a biological entity for testing, diagnostic, propagation, treatment or research purposes.
-    Term:
-      - Origin: caDSR
-        Code: '14596000'
-        Value: Specimen Alternate Unique Identifier
-        Version: "null"
-    Type: string
-    Req: false
-    Private: false 
   # sample
   anatomic_site:
     Desc: The location within the body as captured in the topography label of the International Classification of Diseases for Oncology, 3rd Edition (ICD-O-3).
@@ -5331,29 +5378,10 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11416926'
         Value: Electronic Data File Format Type 
-        Version: "null"
+        Version: "1.00"
     Type: string
     Req: false
     Private: false
-  acl:
-    Desc: A free text field used to document whether the data in a repository is open access or controlled access. 
-    Term:
-      - Origin: caDSR
-        Code: '11555664'
-        Value: Electronic Data File Access Level Text 
-        Version: "null"
-    Type: string
-    Req: true
-    Private: false
-#  bioproject_accession:
-#    Desc: An alphanumeric identifier (PRJ accession number) assigned to a collection of experimental data associated with a project by the National Center for Biotechnology Information (NCBI) BioProject repository.
-#    Term:
-#      - Origin: NCIt
-#        Code: 'C175890'
-#        Value: BioProject Accession Number 
-#    Type: string
-#    Req: false
-#    Private: false    
   # study_funding
   study_funding_id:
     Desc: A sequence of characters used to uniquely identify, name, or characterize the study funding organization.
@@ -5366,6 +5394,7 @@ PropDefinitions:
     Req: true
     Private: false
     Key: true
+  # study_funding
   funding_agency:
     Desc: The name of the funding source organization or sponsor.
     Term:
@@ -5376,6 +5405,7 @@ PropDefinitions:
     Type: string
     Req: true
     Private: false
+  # study_funding
   funding_source_program_name:
     Desc: The name of the program assigned by the funding agency.
     Term:
@@ -5386,6 +5416,7 @@ PropDefinitions:
     Type: string
     Req: false
     Private: false
+  # study_funding
   grant_id: 
     Desc: Unique alphanumeric Identifier of a grant funding resource used to treat a patient on a study.
     Term:
@@ -7418,7 +7449,7 @@ PropDefinitions:
         Value: Therapeutic Procedure Agent Name
         Version: "1.00"
     Type:
-      value_type: string
+      value_type: list
       Enum:
         - "10-Deacetyltaxol"
         - "11C Topotecan"

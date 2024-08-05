@@ -29,7 +29,11 @@ Indices:
           diagnosis_basis:
             type: keyword 
           diagnosis_comment:
-            type: keyword           
+            type: keyword 
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword            
           diagnosis:
             type: keyword
       sample_file_filters:
@@ -208,7 +212,9 @@ Indices:
             diagnosis_classification_system: dg.diagnosis_classification_system,
             diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis, 
-            diagnosis_comment: dg.diagnosis_comment,           
+            diagnosis_comment: dg.diagnosis_comment, 
+            tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,          
             diagnosis: dg.diagnosis
         }) AS diagnosis_filters,
         
@@ -332,7 +338,11 @@ Indices:
           diagnosis_basis:
             type: keyword   
           diagnosis_comment:
-            type: keyword            
+            type: keyword
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword              
           diagnosis:
             type: keyword
       sample_file_filters:
@@ -523,6 +533,8 @@ Indices:
             diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis,
             diagnosis_comment: dg.diagnosis_comment,
+            tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,
             diagnosis: dg.diagnosis
         }) AS diagnosis_filters,
         
@@ -559,7 +571,11 @@ Indices:
       diagnosis_basis:
         type: keyword
       diagnosis_comment:
+        type: keyword
+      tumor_grade_source:
         type: keyword  
+      tumor_stage_source:
+        type: keyword    
       diagnosis_anatomic_site:
         type: keyword
       age_at_diagnosis:
@@ -752,6 +768,8 @@ Indices:
           dg.diagnosis_verification_status as diagnosis_verification_status,
           dg.diagnosis_basis as diagnosis_basis,
           dg.diagnosis_comment as diagnosis_comment,
+          dg.tumor_grade_source as tumor_grade_source,
+          dg.tumor_stage_source as tumor_stage_source,
           dg.anatomic_site as diagnosis_anatomic_site,
           dg.age_at_diagnosis as age_at_diagnosis,
           p.participant_id as participant_id,
@@ -919,7 +937,11 @@ Indices:
           diagnosis_basis:
             type: keyword
           diagnosis_comment:
+            type: keyword
+          tumor_grade_source:
             type: keyword  
+          tumor_stage_source:
+            type: keyword    
           diagnosis:
             type: keyword
       file_filters:
@@ -986,6 +1008,8 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1055,6 +1079,8 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1152,7 +1178,11 @@ Indices:
               diagnosis_basis:
                 type: keyword 
               diagnosis_comment:
-                type: keyword                  
+                type: keyword
+              tumor_grade_source:
+                type: keyword  
+              tumor_stage_source:
+                type: keyword                    
               diagnosis:
                 type: keyword
           samples:
@@ -1189,7 +1219,11 @@ Indices:
           diagnosis_basis:
             type: keyword
           diagnosis_comment:
-            type: keyword 
+            type: keyword
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword   
           diagnosis:
             type: keyword
       sample_filters:
@@ -1268,6 +1302,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1301,6 +1337,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters, COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
@@ -1384,6 +1422,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1452,6 +1492,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1519,6 +1561,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1576,6 +1620,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1644,6 +1690,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1712,6 +1760,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
           
@@ -1787,6 +1837,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,          
           COLLECT(DISTINCT {
@@ -1849,6 +1901,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,          
           apoc.coll.union(COLLECT(DISTINCT {
@@ -1907,6 +1961,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis: dg.diagnosis
           }) AS diagnosis_filters,          
           COLLECT(DISTINCT {
@@ -1998,6 +2054,8 @@ COLLECT(DISTINCT {
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis_classification: dg.diagnosis_classification
           }) AS diagnosis_filters,          
           null AS sample_filters,
