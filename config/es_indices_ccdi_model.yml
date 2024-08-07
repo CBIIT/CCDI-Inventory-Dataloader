@@ -757,7 +757,7 @@ Indices:
         OPTIONAL MATCH (p)<-[*..4]-(file)
         WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.age_at_follow_up desc
+        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.follow_up_id desc,  fu.age_at_follow_up desc
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
@@ -1245,10 +1245,22 @@ Indices:
         type: keyword
       library_selection:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
       library_source:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
       library_strategy:
         type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
         MATCH (file:clinical_measure_file)
@@ -1852,4 +1864,211 @@ Indices:
                     WHEN 'sequencing_file' THEN file.library_strategy
                     WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                     ELSE null END AS library_strategy
+        UNION ALL
+        MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
+        where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
+        UNWIND apoc.text.split(p.race, ';') AS races
+        with sm1, sm, p, ethnicities, races, st, dg, fu, stf, stp
+        RETURN DISTINCT
+          null as id,
+          p.id as pid,
+          null AS file_id,
+          null AS guid,
+          null AS file_name,
+          null AS file_category,
+          null AS file_type,
+          null AS file_description,
+          null AS file_size,
+          null AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          sm.sample_id AS sample_id,
+          null as files,
+          null as combined_filters,
+          COLLECT(DISTINCT {
+              race: races,
+              sex_at_birth: p.sex_at_birth,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_classification_system: dg.diagnosis_classification_system,
+              diagnosis_verification_status: dg.diagnosis_verification_status,
+              diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
+              diagnosis_classification: dg.diagnosis_classification
+          }) AS diagnosis_filters,
+          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          apoc.coll.union(COLLECT(DISTINCT {
+                              sample_anatomic_site: sm1.anatomic_site,
+                              participant_age_at_collection: sm1.participant_age_at_collection,
+                              sample_tumor_status: sm1.sample_tumor_status,
+                              tumor_classification: sm1.tumor_classification
+                          }), COLLECT(DISTINCT {
+                              sample_anatomic_site: sm.anatomic_site,
+                              participant_age_at_collection: sm.participant_age_at_collection,
+                              sample_tumor_status: sm.sample_tumor_status,
+                              tumor_classification: sm.tumor_classification
+                          })) AS sample_filters,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT stp.institution) as institution,
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
+        UNION ALL
+        MATCH (st:study)<--(p:participant)<--(sm:sample)
+        where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:single_cell_sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
+        UNWIND apoc.text.split(p.race, ';') AS races
+        with sm, p, ethnicities, races, st, dg, fu, stf, stp
+        RETURN DISTINCT
+          null as id,
+          p.id as pid,
+          null AS file_id,
+          null AS guid,
+          null AS file_name,
+          null AS file_category,
+          null AS file_type,
+          null AS file_description,
+          null AS file_size,
+          null AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          sm.sample_id AS sample_id,
+          null as files,
+          null as combined_filters,
+          COLLECT(DISTINCT {
+              race: races,
+              sex_at_birth: p.sex_at_birth,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_classification_system: dg.diagnosis_classification_system,
+              diagnosis_verification_status: dg.diagnosis_verification_status,
+              diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
+              diagnosis_classification: dg.diagnosis_classification
+          }) AS diagnosis_filters,
+          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT stp.institution) as institution,
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
+        UNION ALL
+        MATCH (st:study)<--(cl)<--(sm:sample)
+        Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        with sm, st, stf, stp
+        RETURN DISTINCT
+          null as id,
+          null as pid,
+          null AS file_id,
+          null AS guid,
+          null AS file_name,
+          null AS file_category,
+          null AS file_type,
+          null AS file_description,
+          null AS file_size,
+          null AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          null AS participant_id,
+          sm.sample_id AS sample_id,
+          null as files,
+          null as combined_filters,
+          null AS participant_filters,
+          null AS diagnosis_filters,
+          null as vital_status,
+          COLLECT(DISTINCT {
+              sample_anatomic_site: sm.anatomic_site,
+              participant_age_at_collection: sm.participant_age_at_collection,
+              sample_tumor_status: sm.sample_tumor_status,
+              tumor_classification: sm.tumor_classification
+          }) AS sample_filters,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT stp.institution) as institution,
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
+        UNION ALL
+        MATCH (st:study)<--(p:participant)
+        where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
+        UNWIND apoc.text.split(p.race, ';') AS races
+        with p, ethnicities, races, st, dg, fu, stf, stp
+        RETURN DISTINCT
+          null as id,
+          p.id as pid,
+          null AS file_id,
+          null AS guid,
+          null AS file_name,
+          null AS file_category,
+          null AS file_type,
+          null AS file_description,
+          null AS file_size,
+          null AS md5sum,
+          st.study_id AS study_id,
+          st.phs_accession as phs_accession,
+          st.study_acronym as study_acronym,
+          st.study_short_title as study_short_title,
+          p.participant_id AS participant_id,
+          null AS sample_id,
+          null as files,
+          null as combined_filters,
+          COLLECT(DISTINCT {
+              race: races,
+              sex_at_birth: p.sex_at_birth,
+              ethnicity: ethnicities
+          }) AS participant_filters,
+          COLLECT(DISTINCT {
+              age_at_diagnosis: dg.age_at_diagnosis,
+              diagnosis_anatomic_site: dg.anatomic_site,
+              disease_phase: dg.disease_phase,
+              diagnosis_classification_system: dg.diagnosis_classification_system,
+              diagnosis_verification_status: dg.diagnosis_verification_status,
+              diagnosis_basis: dg.diagnosis_basis,
+              diagnosis_comment: dg.diagnosis_comment,
+              diagnosis_classification: dg.diagnosis_classification
+          }) AS diagnosis_filters,
+          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          null AS sample_filters,
+          COLLECT(DISTINCT stf.grant_id) as grant_id,
+          COLLECT(DISTINCT stp.institution) as institution,
+          null AS library_selection,
+          null AS library_source,
+          null AS library_strategy
       "
