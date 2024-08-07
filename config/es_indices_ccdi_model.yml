@@ -13,8 +13,6 @@ Indices:
         type: keyword
       sex_at_birth:
         type: keyword
-      ethnicity:
-        type: keyword
       diagnosis_filters:
         type: nested
         properties:
@@ -31,10 +29,14 @@ Indices:
           diagnosis_basis:
             type: keyword 
           diagnosis_comment:
-            type: keyword           
-          diagnosis_classification:
+            type: keyword 
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword            
+          diagnosis:
             type: keyword
-      vital_status:
+      last_known_survival_status:
         type: keyword
       sample_file_filters:
         type: nested
@@ -59,7 +61,7 @@ Indices:
             type: keyword
       study_id:
         type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       grant_id:
         type: keyword
@@ -194,18 +196,17 @@ Indices:
                 library_strategy: null
         }) as participant_radiology_file_filters
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-      OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-      OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, fu, st, stf, stp, dg
+      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, su, st, stf, stp, dg
       RETURN DISTINCT
         p.id as id,
         p.id as pid,
         p.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
         p.sex_at_birth as sex_at_birth,
-        apoc.text.split(p.ethnicity, ';') as ethnicity,
         COLLECT(DISTINCT {
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
@@ -213,13 +214,15 @@ Indices:
             diagnosis_classification_system: dg.diagnosis_classification_system,
             diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis, 
-            diagnosis_comment: dg.diagnosis_comment,           
-            diagnosis_classification: dg.diagnosis_classification
+            diagnosis_comment: dg.diagnosis_comment, 
+            tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,          
+            diagnosis: dg.diagnosis
         }) AS diagnosis_filters,
-        COLLECT(DISTINCT fu.vital_status) as vital_status,
+        su.last_known_survival_status as last_known_survival_status,
         apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
         st.study_id as study_id,
-        st.phs_accession as phs_accession,
+        st.dbgap_accession as dbgap_accession,
         COLLECT(DISTINCT stf.grant_id) as grant_id,
         COLLECT(DISTINCT stp.institution) as institution,
         st.study_acronym as study_acronym,
@@ -236,9 +239,8 @@ Indices:
           null as participant_id,
           null as race,
           null as sex_at_birth,
-          null as ethnicity,
           [] AS diagnosis_filters,
-          null as vital_status,
+          null as last_known_survival_status,
           COLLECT(DISTINCT {
               sample_anatomic_site: null,
               participant_age_at_collection: null,
@@ -251,7 +253,7 @@ Indices:
               library_strategy: null
           }) AS sample_file_filters,
           st.study_id as study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           st.study_acronym as study_acronym,
@@ -271,9 +273,8 @@ Indices:
           null as participant_id,
           null as race,
           null as sex_at_birth,
-          null as ethnicity,
-          [] AS diagnosis_filters,
-          null as vital_status,
+          [] AS diagnosis_filters, 
+          null as last_known_survival_status,
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -303,7 +304,7 @@ Indices:
                         ELSE null END
           }) AS sample_file_filters,
           st.study_id as study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           st.study_acronym as study_acronym,
@@ -323,10 +324,6 @@ Indices:
         type: keyword
       sex_at_birth:
         type: keyword
-      ethnicity:
-        type: keyword
-      ethnicity_str:
-        type: keyword
       alternate_participant_id:
         type: keyword
       diagnosis_filters:
@@ -345,10 +342,14 @@ Indices:
           diagnosis_basis:
             type: keyword   
           diagnosis_comment:
-            type: keyword            
-          diagnosis_classification:
             type: keyword
-      vital_status:
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword              
+          diagnosis:
+            type: keyword
+      last_known_survival_status:
         type: keyword
       sample_file_filters:
         type: nested
@@ -373,7 +374,7 @@ Indices:
             type: keyword
       study_id:
         type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       grant_id:
         type: keyword
@@ -517,20 +518,19 @@ Indices:
       OPTIONAL MATCH (p)<-[*..4]-(file)
       WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-      OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+      OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+      OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
       OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
       OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
       OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-      WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, file, fu, st, stf, stp, dg
+      WITH p, sy, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters, file, su, st, stf, stp, dg
       RETURN DISTINCT
         p.id as id,
         p.participant_id as participant_id,
         apoc.text.split(p.race, ';') as race,
         p.race as race_str,
         p.sex_at_birth as sex_at_birth,
-        apoc.text.split(p.ethnicity, ';') as ethnicity,
-        p.ethnicity as ethnicity_str,
-        p.alternate_participant_id as alternate_participant_id,
+        sy.synonym_id as alternate_participant_id,
         COLLECT(DISTINCT {
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
@@ -539,12 +539,14 @@ Indices:
             diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis,
             diagnosis_comment: dg.diagnosis_comment,
-            diagnosis_classification: dg.diagnosis_classification
+            tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,
+            diagnosis: dg.diagnosis
         }) AS diagnosis_filters,
-        COLLECT(DISTINCT fu.vital_status) as vital_status,
+        su.last_known_survival_status as last_known_survival_status,
         apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
         st.study_id as study_id,
-        st.phs_accession as phs_accession,
+        st.dbgap_accession as dbgap_accession,
         COLLECT(DISTINCT stf.grant_id) as grant_id,
         COLLECT(DISTINCT stp.institution) as institution,
         st.study_acronym as study_acronym,
@@ -564,7 +566,7 @@ Indices:
         type: keyword
       participant_id:
         type: keyword
-      diagnosis_classification:
+      diagnosis:
         type: keyword
       disease_phase:
         type: keyword
@@ -575,7 +577,11 @@ Indices:
       diagnosis_basis:
         type: keyword
       diagnosis_comment:
+        type: keyword
+      tumor_grade_source:
         type: keyword  
+      tumor_stage_source:
+        type: keyword    
       diagnosis_anatomic_site:
         type: keyword
       age_at_diagnosis:
@@ -584,9 +590,7 @@ Indices:
         type: keyword
       sex_at_birth:
         type: keyword
-      ethnicity:
-        type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       study_id:
         type: keyword
@@ -594,9 +598,7 @@ Indices:
         type: keyword
       study_short_title:
         type: keyword
-      last_vital_status:
-        type: keyword
-      vital_status:
+      last_known_survival_status:
         type: keyword
       sample_file_filters:
         type: nested
@@ -630,7 +632,7 @@ Indices:
             type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_query: "
-        MATCH (p:participant)
+         MATCH (p:participant)
         optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
         WHERE (cl: cell_line or cl: pdx)
         optional Match (sm2)<--(file)
@@ -756,34 +758,34 @@ Indices:
         MATCH (p)<-[:of_diagnosis]-(dg)
         OPTIONAL MATCH (p)<-[*..4]-(file)
         WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
-        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, fu order by fu.age_at_follow_up desc
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+        with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, su
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, fu, st, stf, stp, dg
+        WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, su, st, stf, stp, dg
         RETURN DISTINCT
           dg.id as id,
           p.id as pid,
           dg.diagnosis_id as diagnosis_id,
-          dg.diagnosis_classification as diagnosis_classification,
+          dg.diagnosis as diagnosis,
           dg.disease_phase as disease_phase,
           dg.diagnosis_classification_system as diagnosis_classification_system,
           dg.diagnosis_verification_status as diagnosis_verification_status,
           dg.diagnosis_basis as diagnosis_basis,
           dg.diagnosis_comment as diagnosis_comment,
+          dg.tumor_grade_source as tumor_grade_source,
+          dg.tumor_stage_source as tumor_stage_source,
           dg.anatomic_site as diagnosis_anatomic_site,
           dg.age_at_diagnosis as age_at_diagnosis,
           p.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
           p.sex_at_birth as sex_at_birth,
-          apoc.text.split(p.ethnicity, ';') as ethnicity,
           st.study_id as study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
-          head(collect(distinct fu.vital_status)) as last_vital_status,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,        
           apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
@@ -801,7 +803,7 @@ Indices:
         type: keyword
       pubmed_ids:
         type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       study_short_title:
         type: keyword
@@ -840,7 +842,7 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p:participant)
         with st, count(p) as num_p
         MATCH (st:study)<-[:of_participant]-(participant)<-[:of_diagnosis]-(dg:diagnosis)
-        with st, num_p, dg.diagnosis_classification as dg_cancers, count(dg.diagnosis_classification) as num_cancers
+        with st, num_p, dg.diagnosis as dg_cancers, count(dg.diagnosis) as num_cancers
         ORDER BY num_cancers desc
         with st, num_p, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
         MATCH (st)<-[:of_participant]-(pa:participant)<-[:of_diagnosis]-(diag:diagnosis)
@@ -871,7 +873,7 @@ Indices:
           st.study_id as study_id,
           apoc.text.join(COLLECT(DISTINCT stf.grant_id), ';') as grant_id,
           apoc.text.join(COLLECT(DISTINCT pub.pubmed_id), ';') as pubmed_ids,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_short_title as study_short_title,
           st.study_acronym as study_acronym,
           apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
@@ -899,8 +901,6 @@ Indices:
         type: keyword
       sex_at_birth:
         type: keyword
-      ethnicity:
-        type: keyword
       sample_anatomic_site:
         type: keyword
       sample_diagnosis_classification:
@@ -921,7 +921,7 @@ Indices:
         type: keyword
       study_id:
         type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       study_acronym:
         type: keyword
@@ -943,10 +943,14 @@ Indices:
           diagnosis_basis:
             type: keyword
           diagnosis_comment:
-            type: keyword  
-          diagnosis_classification:
             type: keyword
-      vital_status:
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword    
+          diagnosis:
+            type: keyword
+      last_known_survival_status:
         type: keyword
       file_filters:
         type: nested
@@ -980,10 +984,10 @@ Indices:
         WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH file, fu, p, st, sm, stf, stp, dg
+        WITH file, su, p, st, sm, stf, stp, dg
         RETURN DISTINCT
           sm.id as id,
           p.id as pid,
@@ -991,7 +995,6 @@ Indices:
           p.participant_id as participant_id,
           apoc.text.split(p.race, ';') as race,
           p.sex_at_birth as sex_at_birth,
-          apoc.text.split(p.ethnicity, ';') as ethnicity,
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_classification as sample_diagnosis_classification,
           sm.diagnosis_classification_system as sample_diagnosis_classification_system,
@@ -1002,7 +1005,7 @@ Indices:
           sm.sample_tumor_status as sample_tumor_status,
           sm.tumor_classification as tumor_classification,
           st.study_id as study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           COLLECT(DISTINCT {
@@ -1013,9 +1016,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           COLLECT(DISTINCT {
               assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
@@ -1050,10 +1055,10 @@ Indices:
         WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
         MATCH (st)<-[:of_participant]-(p:participant)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        WITH sm, file, fu, st, stf, stp, dg
+        WITH sm, file, su, st, stf, stp, dg
         RETURN DISTINCT
           sm.id as id,
           null as pid,
@@ -1061,7 +1066,6 @@ Indices:
           null as participant_id,
           null as race,
           null as sex_at_birth,
-          null as ethnicity,
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_classification as sample_diagnosis_classification,
           sm.diagnosis_classification_system as sample_diagnosis_classification_system,
@@ -1072,7 +1076,7 @@ Indices:
           sm.sample_tumor_status as sample_tumor_status,
           sm.tumor_classification as tumor_classification,
           st.study_id as study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           COLLECT(DISTINCT {
@@ -1083,9 +1087,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su. last_known_survival_status as last_known_survival_status,
           CASE COLLECT(file) WHEN [] THEN []
                     ELSE COLLECT(DISTINCT {
                         assay_method: CASE LABELS(file)[0]
@@ -1140,7 +1146,7 @@ Indices:
         type: keyword
       study_id:
         type: keyword
-      phs_accession:
+      dbgap_accession:
         type: keyword
       study_acronym:
         type: keyword
@@ -1164,8 +1170,6 @@ Indices:
             type: keyword
           sex_at_birth:
             type: keyword
-          ethnicity:
-            type: keyword
           diagnosis:
             type: nested
             properties:
@@ -1182,10 +1186,14 @@ Indices:
               diagnosis_basis:
                 type: keyword 
               diagnosis_comment:
-                type: keyword                  
-              diagnosis_classification:
                 type: keyword
-          vital_status:
+              tumor_grade_source:
+                type: keyword  
+              tumor_stage_source:
+                type: keyword                    
+              diagnosis:
+                type: keyword
+          last_known_survival_status:
             type: keyword
           samples:
             type: nested
@@ -1205,8 +1213,6 @@ Indices:
             type: keyword
           sex_at_birth:
             type: keyword
-          ethnicity:
-            type: keyword
       diagnosis_filters:
         type: nested
         properties:
@@ -1223,10 +1229,14 @@ Indices:
           diagnosis_basis:
             type: keyword
           diagnosis_comment:
-            type: keyword 
-          diagnosis_classification:
             type: keyword
-      vital_status:
+          tumor_grade_source:
+            type: keyword  
+          tumor_stage_source:
+            type: keyword   
+          diagnosis:
+            type: keyword
+      last_known_survival_status:
         type: keyword
       sample_filters:
         type: nested
@@ -1269,10 +1279,9 @@ Indices:
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
@@ -1286,7 +1295,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1294,9 +1303,8 @@ Indices:
           COLLECT(DISTINCT file.id) as files,
           null as combined_filters,
           COLLECT(DISTINCT {
-              race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+            race: races,
+            sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1306,9 +1314,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+            tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -1327,12 +1337,11 @@ Indices:
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        With file, st, p, races, ethnicities, COLLECT(DISTINCT {
+        With file, st, p, races, COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
@@ -1340,13 +1349,15 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters, COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
               sample_tumor_status: sm.sample_tumor_status,
               tumor_classification: sm.tumor_classification
-          }) AS sample_filters, COLLECT(DISTINCT fu.vital_status) as vital_status, stf, stp
+          }) AS sample_filters, su.last_known_survival_status as last_known_survival_status, stf, stp
         RETURN DISTINCT
           file.id as id,
           null as pid,
@@ -1359,7 +1370,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           null AS participant_id,
@@ -1369,14 +1380,13 @@ Indices:
               participant_id: p.participant_id,
               race: races,
               sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities,
               diagnosis: diagnosis_filters,
-              vital_status: vital_status,
+              last_known_survival_status: last_known_survival_status,
               samples: sample_filters
           }) as combined_filters,
           null as participant_filters,
           null as diagnosis_filters,
-          null as vital_status,
+          null as last_known_survival_status,
           null as sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
@@ -1389,12 +1399,11 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sm1, sm, st, races, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1407,7 +1416,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1417,8 +1426,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1428,9 +1436,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
                                       sample_anatomic_site: sm.anatomic_site,
                                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1459,12 +1469,11 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sm1, sm, st, races, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1477,7 +1486,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1487,8 +1496,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1498,9 +1506,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
                                       sample_anatomic_site: sm.anatomic_site,
                                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1530,10 +1540,9 @@ Indices:
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
         RETURN DISTINCT
           file.id as id,
@@ -1547,7 +1556,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1556,8 +1565,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1567,9 +1575,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -1587,12 +1597,11 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sm1, sm, st, races, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1605,7 +1614,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1615,8 +1624,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1626,9 +1634,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
                                       sample_anatomic_site: sm.anatomic_site,
                                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1657,12 +1667,11 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sm1, sm, st, races, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1675,7 +1684,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1685,8 +1694,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1696,9 +1704,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
                                       sample_anatomic_site: sm.anatomic_site,
                                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1727,12 +1737,11 @@ Indices:
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, ethnicities, races, fu, dg, stf, stp
+        with file, p, sm1, sm, st, races, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           p.id as pid,
@@ -1745,7 +1754,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1755,8 +1764,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1766,9 +1774,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,
           CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
                                       sample_anatomic_site: sm.anatomic_site,
                                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1799,10 +1809,10 @@ Indices:
         MATCH (sm)<--(file)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<--(p:participant)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (st)<--(p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        with file, sm, st, fu, dg, stf, stp
+        with file, sm, st, su, dg, stf, stp
         RETURN DISTINCT
           file.id as id,
           null as pid,
@@ -1825,7 +1835,7 @@ Indices:
           file.file_size AS file_size,
           file.md5sum AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           null AS participant_id,
@@ -1841,9 +1851,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
-          }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
+          }) AS diagnosis_filters, 
+          su.last_known_survival_status as last_known_survival_status,        
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -1868,12 +1880,11 @@ Indices:
         MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
         where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with sm1, sm, p, ethnicities, races, st, dg, fu, stf, stp
+        with sm1, sm, p, races, st, dg, su, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -1886,7 +1897,7 @@ Indices:
           null AS file_size,
           null AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1895,8 +1906,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1906,9 +1916,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
-          }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
+          }) AS diagnosis_filters, 
+          su.last_known_survival_status as last_known_survival_status,         
           apoc.coll.union(COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
                               participant_age_at_collection: sm1.participant_age_at_collection,
@@ -1929,12 +1941,11 @@ Indices:
         MATCH (st:study)<--(p:participant)<--(sm:sample)
         where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:single_cell_sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with sm, p, ethnicities, races, st, dg, fu, stf, stp
+        with sm, p, races, st, dg, su, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -1947,7 +1958,7 @@ Indices:
           null AS file_size,
           null AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -1956,8 +1967,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -1967,9 +1977,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
-              diagnosis_classification: dg.diagnosis_classification
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
+              diagnosis: dg.diagnosis
           }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          su.last_known_survival_status as last_known_survival_status,        
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -1999,7 +2011,7 @@ Indices:
           null AS file_size,
           null AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           null AS participant_id,
@@ -2008,7 +2020,7 @@ Indices:
           null as combined_filters,
           null AS participant_filters,
           null AS diagnosis_filters,
-          null as vital_status,
+          null as last_known_survival_status,
           COLLECT(DISTINCT {
               sample_anatomic_site: sm.anatomic_site,
               participant_age_at_collection: sm.participant_age_at_collection,
@@ -2024,12 +2036,11 @@ Indices:
         MATCH (st:study)<--(p:participant)
         where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_follow_up]-(fu:follow_up)
+        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.ethnicity, ';') AS ethnicities
         UNWIND apoc.text.split(p.race, ';') AS races
-        with p, ethnicities, races, st, dg, fu, stf, stp
+        with p, races, st, dg, su, stf, stp
         RETURN DISTINCT
           null as id,
           p.id as pid,
@@ -2042,7 +2053,7 @@ Indices:
           null AS file_size,
           null AS md5sum,
           st.study_id AS study_id,
-          st.phs_accession as phs_accession,
+          st.dbgap_accession as dbgap_accession,
           st.study_acronym as study_acronym,
           st.study_short_title as study_short_title,
           p.participant_id AS participant_id,
@@ -2051,8 +2062,7 @@ Indices:
           null as combined_filters,
           COLLECT(DISTINCT {
               race: races,
-              sex_at_birth: p.sex_at_birth,
-              ethnicity: ethnicities
+              sex_at_birth: p.sex_at_birth
           }) AS participant_filters,
           COLLECT(DISTINCT {
               age_at_diagnosis: dg.age_at_diagnosis,
@@ -2062,9 +2072,11 @@ Indices:
               diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
+              tumor_grade_source: dg.tumor_grade_source,
+              tumor_stage_source: dg.tumor_stage_source,
               diagnosis_classification: dg.diagnosis_classification
-          }) AS diagnosis_filters,
-          COLLECT(DISTINCT fu.vital_status) as vital_status,
+          }) AS diagnosis_filters, 
+          su.last_known_survival_status as last_known_survival_status,         
           null AS sample_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
