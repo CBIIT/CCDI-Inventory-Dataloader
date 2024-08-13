@@ -24,8 +24,6 @@ Indices:
             type: keyword
           diagnosis_classification_system:
             type: keyword
-          diagnosis_verification_status:
-            type: keyword
           diagnosis_basis:
             type: keyword 
           diagnosis_comment:
@@ -212,7 +210,6 @@ Indices:
             diagnosis_anatomic_site: dg.anatomic_site,
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
-            diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis, 
             diagnosis_comment: dg.diagnosis_comment, 
             tumor_grade_source: dg.tumor_grade_source,
@@ -336,8 +333,6 @@ Indices:
           disease_phase:
             type: keyword
           diagnosis_classification_system:
-            type: keyword
-          diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
             type: keyword   
@@ -536,7 +531,6 @@ Indices:
             diagnosis_anatomic_site: dg.anatomic_site,
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
-            diagnosis_verification_status: dg.diagnosis_verification_status,
             diagnosis_basis: dg.diagnosis_basis,
             diagnosis_comment: dg.diagnosis_comment,
             tumor_grade_source: dg.tumor_grade_source,
@@ -571,8 +565,6 @@ Indices:
       disease_phase:
         type: keyword
       diagnosis_classification_system:
-        type: keyword
-      diagnosis_verification_status:
         type: keyword
       diagnosis_basis:
         type: keyword
@@ -771,7 +763,6 @@ Indices:
           dg.diagnosis as diagnosis,
           dg.disease_phase as disease_phase,
           dg.diagnosis_classification_system as diagnosis_classification_system,
-          dg.diagnosis_verification_status as diagnosis_verification_status,
           dg.diagnosis_basis as diagnosis_basis,
           dg.diagnosis_comment as diagnosis_comment,
           dg.tumor_grade_source as tumor_grade_source,
@@ -907,8 +898,6 @@ Indices:
         type: keyword
       sample_diagnosis_classification_system:
         type: keyword
-      sample_diagnosis_verification_status:
-        type: keyword
       sample_diagnosis_basis:
         type: keyword 
       sample_diagnosis_comment:
@@ -937,8 +926,6 @@ Indices:
           disease_phase:
             type: keyword
           diagnosis_classification_system:
-            type: keyword
-          diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
             type: keyword
@@ -998,7 +985,6 @@ Indices:
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_classification as sample_diagnosis_classification,
           sm.diagnosis_classification_system as sample_diagnosis_classification_system,
-          sm.diagnosis_verification_status as sample_diagnosis_verification_status,
           sm.diagnosis_basis as sample_diagnosis_basis,
           sm.diagnosis_comment as sample_diagnosis_comment,
           sm.participant_age_at_collection as participant_age_at_collection,
@@ -1013,7 +999,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1069,7 +1054,6 @@ Indices:
           sm.anatomic_site as sample_anatomic_site,
           sm.diagnosis_classification as sample_diagnosis_classification,
           sm.diagnosis_classification_system as sample_diagnosis_classification_system,
-          sm.diagnosis_verification_status as sample_diagnosis_verification_status,
           sm.diagnosis_basis as sample_diagnosis_basis,
           sm.diagnosis_comment as sample_diagnosis_comment,
           sm.participant_age_at_collection as participant_age_at_collection,
@@ -1084,7 +1068,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1181,8 +1164,6 @@ Indices:
                 type: keyword
               diagnosis_classification_system:
                 type: keyword
-              diagnosis_verification_status:
-                type: keyword
               diagnosis_basis:
                 type: keyword 
               diagnosis_comment:
@@ -1223,8 +1204,6 @@ Indices:
           disease_phase:
             type: keyword
           diagnosis_classification_system:
-            type: keyword
-          diagnosis_verification_status:
             type: keyword
           diagnosis_basis:
             type: keyword
@@ -1311,7 +1290,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1346,7 +1324,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1433,7 +1410,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1503,7 +1479,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1572,7 +1547,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1631,7 +1605,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1701,7 +1674,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1771,7 +1743,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1848,7 +1819,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1913,7 +1883,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -1974,7 +1943,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
@@ -2069,7 +2037,6 @@ Indices:
               diagnosis_anatomic_site: dg.anatomic_site,
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_verification_status: dg.diagnosis_verification_status,
               diagnosis_basis: dg.diagnosis_basis,
               diagnosis_comment: dg.diagnosis_comment,
               tumor_grade_source: dg.tumor_grade_source,
