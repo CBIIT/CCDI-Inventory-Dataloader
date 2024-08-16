@@ -53,8 +53,6 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
-            type: keyword
           library_strategy:
             type: keyword
       study_id:
@@ -75,7 +73,7 @@ Indices:
       optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
       WHERE (cl: cell_line or cl: pdx)
       optional Match (sm2)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file) 
       with p, case COLLECT(distinct sm1) when [] then []
                       else COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
@@ -84,7 +82,6 @@ Indices:
                               tumor_classification: sm1.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -94,15 +91,9 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                                             ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample1,
                           case COLLECT(distinct sm2) 
@@ -114,7 +105,6 @@ Indices:
                               tumor_classification: sm2.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -124,20 +114,14 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                                             ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample2
       with p, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
       OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
       with p, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: sm.anatomic_site,
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -145,22 +129,15 @@ Indices:
                     tumor_classification: sm.tumor_classification,
                     assay_method: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN 'Sequencing'
-                              WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                               WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                               WHEN 'pathology_file' THEN 'Pathology imaging'
                               WHEN 'methylation_array_file' THEN 'Methylation array' END,
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
-                                  WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                  ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN file.library_source
-                                  WHEN 'single_cell_sequencing_file' THEN file.library_source
                                   ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_strategy
-                                  WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                   ELSE null END
                 }) AS general_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -175,7 +152,6 @@ Indices:
                 assay_method: CASE types_1 when null then null else 'Clinical data' end,
                 file_type: types_1,
                 library_selection: null,
-                library_source: null,
                 library_strategy: null
         }) as participant_clinical_measure_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -190,7 +166,6 @@ Indices:
                 assay_method: CASE types_1 when null then null else 'Radiology imaging' end,
                 file_type: types_1,
                 library_selection: null,
-                library_source: null,
                 library_strategy: null
         }) as participant_radiology_file_filters
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
@@ -246,7 +221,6 @@ Indices:
               assay_method: 'Clinical data',
               file_type: file.file_type,
               library_selection: null,
-              library_source: null,
               library_strategy: null
           }) AS sample_file_filters,
           st.study_id as study_id,
@@ -260,7 +234,7 @@ Indices:
         MATCH (st)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
         Where (cl: cell_line or cl: pdx)
         optional Match (sm)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         WITH file, sm, st, stf, stp
@@ -279,7 +253,6 @@ Indices:
               tumor_classification: sm.tumor_classification,
               assay_method: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN 'Sequencing'
-                              WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                               WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                               WHEN 'pathology_file' THEN 'Pathology imaging'
                               WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -289,15 +262,9 @@ Indices:
                         ELSE file.file_type end,
               library_selection: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN file.library_selection
-                        WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                        ELSE null END,
-              library_source: CASE LABELS(file)[0]
-                        WHEN 'sequencing_file' THEN file.library_source
-                        WHEN 'single_cell_sequencing_file' THEN file.library_source
                         ELSE null END,
               library_strategy: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN file.library_strategy
-                        WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                         ELSE null END
           }) AS sample_file_filters,
           st.study_id as study_id,
@@ -363,8 +330,6 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
-            type: keyword
           library_strategy:
             type: keyword
       study_id:
@@ -392,7 +357,7 @@ Indices:
       optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
       WHERE (cl: cell_line or cl: pdx)
       optional Match (sm2)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file) 
       with p, case COLLECT(distinct sm1) when [] then []
                       else COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
@@ -401,7 +366,6 @@ Indices:
                               tumor_classification: sm1.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -411,15 +375,9 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                                             ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample1,
                           case COLLECT(distinct sm2) 
@@ -431,7 +389,6 @@ Indices:
                               tumor_classification: sm2.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -441,20 +398,14 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                                             ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample2
       with p, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
       OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+      WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
       with p, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: sm.anatomic_site,
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -462,22 +413,15 @@ Indices:
                     tumor_classification: sm.tumor_classification,
                     assay_method: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN 'Sequencing'
-                              WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                               WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                               WHEN 'pathology_file' THEN 'Pathology imaging'
                               WHEN 'methylation_array_file' THEN 'Methylation array' END,
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_selection
-                                  WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                  ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN file.library_source
-                                   WHEN 'single_cell_sequencing_file' THEN file.library_source
                                   ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN file.library_strategy
-                                  WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                   ELSE null END
                 }) AS general_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -492,7 +436,6 @@ Indices:
                 assay_method: CASE types_1 when null then null else 'Clinical data' end,
                 file_type: types_1,
                 library_selection: null,
-                library_source: null,
                 library_strategy: null
         }) as participant_clinical_measure_file_filters
       OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -507,11 +450,10 @@ Indices:
                 assay_method: CASE types_1 when null then null else 'Radiology imaging' end,
                 file_type: types_1,
                 library_selection: null,
-                library_source: null,
                 library_strategy: null
         }) as participant_radiology_file_filters
       OPTIONAL MATCH (p)<-[*..4]-(file)
-      WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+      WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
       OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
       OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
       OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
@@ -609,8 +551,6 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
-            type: keyword
           library_strategy:
             type: keyword
       grant_id:
@@ -628,7 +568,7 @@ Indices:
         optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
         WHERE (cl: cell_line or cl: pdx)
         optional Match (sm2)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file) 
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file) 
         with p, case COLLECT(distinct sm1) when [] then []
                       else COLLECT(DISTINCT {
                               sample_anatomic_site: sm1.anatomic_site,
@@ -637,7 +577,6 @@ Indices:
                               tumor_classification: sm1.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -647,15 +586,9 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
-                                            ELSE null END,
+                                               ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample1,
                           case COLLECT(distinct sm2) 
@@ -667,7 +600,6 @@ Indices:
                               tumor_classification: sm2.tumor_classification,
                               assay_method: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN 'Sequencing'
-                                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                         WHEN 'pathology_file' THEN 'Pathology imaging'
                                         WHEN 'methylation_array_file' THEN 'Methylation array'
@@ -677,20 +609,14 @@ Indices:
                                         else file.file_type end,
                               library_selection: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_selection
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                            ELSE null END,
-                              library_source: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                                             ELSE null END,
                               library_strategy: CASE LABELS(file)[0]
                                             WHEN 'sequencing_file' THEN file.library_strategy
-                                            WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                             ELSE null END
                           }) end AS sample2
         with p, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
         OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
         with p, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                       sample_anatomic_site: sm.anatomic_site,
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -698,22 +624,15 @@ Indices:
                       tumor_classification: sm.tumor_classification,
                       assay_method: CASE LABELS(file)[0]
                                 WHEN 'sequencing_file' THEN 'Sequencing'
-                                WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                                 WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                 WHEN 'pathology_file' THEN 'Pathology imaging'
                                 WHEN 'methylation_array_file' THEN 'Methylation array' END,
                       file_type: file.file_type,
                       library_selection: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_selection
-                                    WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                    ELSE null END,
-                      library_source: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN file.library_source
-                                    WHEN 'single_cell_sequencing_file' THEN file.library_source
                                     ELSE null END,
                       library_strategy: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_strategy
-                                    WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                                     ELSE null END
                   }) AS general_file_filters
         OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -728,7 +647,6 @@ Indices:
                   assay_method: CASE types_1 when null then null else 'Clinical data' end,
                   file_type: types_1,
                   library_selection: null,
-                  library_source: null,
                   library_strategy: null
           }) as participant_clinical_measure_file_filters
         OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -743,13 +661,12 @@ Indices:
                   assay_method: CASE types_1 when null then null else 'Radiology imaging' end,
                   file_type: types_1,
                   library_selection: null,
-                  library_source: null,
                   library_strategy: null
           }) as participant_radiology_file_filters
         MATCH (dg:diagnosis)
         MATCH (p)<-[:of_diagnosis]-(dg)
         OPTIONAL MATCH (p)<-[*..4]-(file)
-        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
         OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, su
         OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
@@ -841,7 +758,7 @@ Indices:
         ORDER BY num_sites desc
         with st, num_p, cancers, collect(dg_sites + ' (' + toString(num_sites) + ')') as sites
         MATCH (st)<-[*..5]-(fl)
-        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:single_cell_sequencing_file OR fl:cytogenomic_file)
+        WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
         with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
         ORDER BY num_ft desc
         with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
@@ -853,7 +770,7 @@ Indices:
         WITH st, num_p, cancers, sites, file_types, num_files, num_samples_1, count(distinct sm2.sample_id) as num_samples_2
         WITH st, num_p, cancers, sites, file_types, num_files, num_samples_1 + num_samples_2 as num_samples
         MATCH (st)<-[*..5]-(file)
-        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
         OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         WHERE stp.personnel_type = 'PI'
@@ -948,8 +865,6 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
-            type: keyword
           library_strategy:
             type: keyword
       grant_id:
@@ -968,7 +883,7 @@ Indices:
         MATCH (sm:sample)
         OPTIONAL MATCH (p:participant)<-[*..3]-(sm)
         optional match (sm)<-[*..3]-(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
         MATCH (st:study)<-[:of_participant]-(p)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -1009,7 +924,6 @@ Indices:
           COLLECT(DISTINCT {
               assay_method: CASE LABELS(file)[0]
                         WHEN 'sequencing_file' THEN 'Sequencing'
-                        WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
                         WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                         WHEN 'pathology_file' THEN 'Pathology imaging'
                         WHEN 'methylation_array_file' THEN 'Methylation array' 
@@ -1017,15 +931,10 @@ Indices:
               file_type: file.file_type,
               library_selection: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_selection
-                            WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                            ELSE null END,
-              library_source: CASE LABELS(file)[0]
-                            WHEN 'sequencing_file' THEN file.library_source
-                            WHEN 'single_cell_sequencing_file' THEN file.library_source
                             ELSE null END,
               library_strategy: CASE LABELS(file)[0]
                             WHEN 'sequencing_file' THEN file.library_strategy
-                             WHEN 'single_cell_sequencing_file' THEN file.library_strategy
+
                             ELSE null END
           }) AS file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -1037,7 +946,7 @@ Indices:
         MATCH (st:study)<-[:of_cell_line|of_pdx]-(cl)<--(sm)
         Where (cl:cell_line or cl:pdx)
         optional Match (sm)<--(file)
-        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
         MATCH (st)<-[:of_participant]-(p:participant)
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -1079,7 +988,7 @@ Indices:
                     ELSE COLLECT(DISTINCT {
                         assay_method: CASE LABELS(file)[0]
                                   WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                                  
                                   WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                                   WHEN 'pathology_file' THEN 'Pathology imaging'
                                   WHEN 'methylation_array_file' THEN 'Methylation array' 
@@ -1087,15 +996,11 @@ Indices:
                         file_type: file.file_type,
                         library_selection: CASE LABELS(file)[0]
                                       WHEN 'sequencing_file' THEN file.library_selection
-                                      WHEN 'single_cell_sequencing_file' THEN file.library_selection
-                                      ELSE null END,
-                        library_source: CASE LABELS(file)[0]
-                                      WHEN 'sequencing_file' THEN file.library_source
-                                      WHEN 'single_cell_sequencing_file' THEN file.library_source
+                                      
                                       ELSE null END,
                         library_strategy: CASE LABELS(file)[0]
                                       WHEN 'sequencing_file' THEN file.library_strategy
-                                      WHEN 'single_cell_sequencing_file' THEN file.library_strategy
+         
                                       ELSE null END
                     }) END AS file_filters,
           COLLECT(DISTINCT stf.grant_id) as grant_id,
@@ -1238,12 +1143,6 @@ Indices:
           sort:
             type: keyword
             normalizer: lowercase
-      library_source:
-        type: keyword
-        fields:
-          sort:
-            type: keyword
-            normalizer: lowercase
       library_strategy:
         type: keyword
         fields:
@@ -1306,7 +1205,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,      
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (file:clinical_measure_file)
@@ -1368,7 +1266,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (file:methylation_array_file)
@@ -1437,7 +1334,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (file:pathology_file)
@@ -1506,7 +1402,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
-          file.library_source AS library_source,
           file.library_strategy AS library_strategy
         UNION ALL
         MATCH (file:radiology_file)
@@ -1563,77 +1458,7 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
-        UNION ALL
-        MATCH (file:single_cell_sequencing_file)
-        MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*0..2]-(sm:sample)<-[:of_single_cell_sequencing_file]-(file)
-        MATCH (st:study)<-[:of_participant]-(p)
-        OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
-        OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-        OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-        OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-        OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-        UNWIND apoc.text.split(p.race, ';') AS races
-        with file, p, sm1, sm, st, races, su, dg, stf, stp
-        RETURN DISTINCT
-          file.id as id,
-          p.id as pid,
-          file.single_cell_sequencing_file_id AS file_id,
-          file.dcf_indexd_guid AS guid,
-          file.file_name AS file_name,
-          'Single Cell Sequencing' AS file_category,
-          file.file_type AS file_type,
-          file.file_description AS file_description,
-          file.file_size AS file_size,
-          file.md5sum AS md5sum,
-          st.study_id AS study_id,
-          st.dbgap_accession as dbgap_accession,
-          st.study_acronym as study_acronym,
-          st.study_name as study_name,
-          p.participant_id AS participant_id,
-          CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                    ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
-          COLLECT(DISTINCT file.id) as files,
-          null as combined_filters,
-          COLLECT(DISTINCT {
-              race: races,
-              sex_at_birth: p.sex_at_birth
-          }) AS participant_filters,
-          COLLECT(DISTINCT {
-              age_at_diagnosis: dg.age_at_diagnosis,
-              diagnosis_anatomic_site: dg.anatomic_site,
-              disease_phase: dg.disease_phase,
-              diagnosis_classification_system: dg.diagnosis_classification_system,
-              diagnosis_basis: dg.diagnosis_basis,
-              diagnosis_comment: dg.diagnosis_comment,
-              tumor_grade_source: dg.tumor_grade_source,
-              tumor_stage_source: dg.tumor_stage_source,
-              diagnosis: dg.diagnosis
-          }) AS diagnosis_filters,
-          su.last_known_survival_status as last_known_survival_status,
-          CASE sm1.sample_id WHEN sm.sample_id THEN COLLECT(DISTINCT {
-                                      sample_anatomic_site: sm.anatomic_site,
-                                      participant_age_at_collection: sm.participant_age_at_collection,
-                                      sample_tumor_status: sm.sample_tumor_status,
-                                      tumor_classification: sm.tumor_classification
-                                  })
-                    ELSE apoc.coll.union(COLLECT(DISTINCT {
-                                      sample_anatomic_site: sm1.anatomic_site,
-                                      participant_age_at_collection: sm1.participant_age_at_collection,
-                                      sample_tumor_status: sm1.sample_tumor_status,
-                                      tumor_classification: sm1.tumor_classification
-                                  }), COLLECT(DISTINCT {
-                                      sample_anatomic_site: sm.anatomic_site,
-                                      participant_age_at_collection: sm.participant_age_at_collection,
-                                      sample_tumor_status: sm.sample_tumor_status,
-                                      tumor_classification: sm.tumor_classification
-                                  })) END AS sample_filters,
-          COLLECT(DISTINCT stf.grant_id) as grant_id,
-          COLLECT(DISTINCT stp.institution) as institution,
-          file.library_selection AS library_selection,
-          file.library_source AS library_source,
-          file.library_strategy AS library_strategy
         UNION ALL
         MATCH (file:sequencing_file)
         MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*0..2]-(sm:sample)<-[:of_sequencing_file]-(file)
@@ -1701,7 +1526,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           file.library_selection AS library_selection,
-          file.library_source AS library_source,
           file.library_strategy AS library_strategy
         UNION ALL
         MATCH (file:cytogenomic_file)
@@ -1770,11 +1594,10 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (file)
-        WHERE (file:sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:single_cell_sequencing_file OR file:cytogenomic_file)
+        WHERE (file:sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
         MATCH (st:study)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
         Where (cl: cell_line or cl: pdx)
         MATCH (sm)<--(file)
@@ -1789,7 +1612,6 @@ Indices:
           null as pid,
           CASE LABELS(file)[0]
                 WHEN 'sequencing_file' THEN file.sequencing_file_id
-                WHEN 'single_cell_sequencing_file' THEN file.single_cell_sequencing_file_id
                 WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
                 WHEN 'pathology_file' THEN file.pathology_file_id
                 WHEN 'methylation_array_file' THEN file.methylation_array_file_id END AS file_id,
@@ -1797,7 +1619,7 @@ Indices:
           file.file_name AS file_name,
           CASE LABELS(file)[0]
                 WHEN 'sequencing_file' THEN 'Sequencing'
-                WHEN 'single_cell_sequencing_file' THEN 'Single Cell Sequencing'
+                
                 WHEN 'cytogenomic_file' THEN 'Cytogenomic'
                 WHEN 'pathology_file' THEN 'Pathology imaging'
                 WHEN 'methylation_array_file' THEN 'Methylation array' END AS file_category,
@@ -1836,19 +1658,14 @@ Indices:
           COLLECT(DISTINCT stp.institution) as institution,
           CASE LABELS(file)[0]
                     WHEN 'sequencing_file' THEN file.library_selection
-                    WHEN 'single_cell_sequencing_file' THEN file.library_selection
+                    
                     ELSE null END AS library_selection,
           CASE LABELS(file)[0]
-                    WHEN 'sequencing_file' THEN file.library_source
-                    WHEN 'single_cell_sequencing_file' THEN file.library_source
-                    ELSE null END AS library_source,
-          CASE LABELS(file)[0]
                     WHEN 'sequencing_file' THEN file.library_strategy
-                    WHEN 'single_cell_sequencing_file' THEN file.library_strategy
                     ELSE null END AS library_strategy
         UNION ALL
         MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
-        where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+        where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
@@ -1904,11 +1721,10 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (st:study)<--(p:participant)<--(sm:sample)
-        where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:single_cell_sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+        where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
         OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
         OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
@@ -1959,11 +1775,10 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (st:study)<--(cl)<--(sm:sample)
-        Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:single_cell_sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
+        Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
         OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
         OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
         with sm, st, stf, stp
@@ -1998,7 +1813,6 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
         UNION ALL
         MATCH (st:study)<--(p:participant)
@@ -2048,6 +1862,5 @@ Indices:
           COLLECT(DISTINCT stf.grant_id) as grant_id,
           COLLECT(DISTINCT stp.institution) as institution,
           null AS library_selection,
-          null AS library_source,
           null AS library_strategy
       "
