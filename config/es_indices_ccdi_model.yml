@@ -529,7 +529,7 @@ Indices:
         apoc.text.split(p.race, ';') as race,
         p.race as race_str,
         p.sex_at_birth as sex_at_birth,
-        sy.synonym_id as alternate_participant_id,
+        apoc.text.join(Collect(sy.synonym_id), ',')  as alternate_participant_id,
         COLLECT(DISTINCT {
             age_at_diagnosis: dg.age_at_diagnosis,
             diagnosis_anatomic_site: dg.anatomic_site,
