@@ -754,7 +754,7 @@ Indices:
               apoc.text.split(p.race, ';') as race,
               p.race as race_str,
               p.sex_at_birth as sex_at_birth,
-              COLLECT(DISTINCT sy.synonym_id) as alternate_participant_id,
+              apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
               case when 'Dead' in vital_status then ['Dead']
                     else vital_status end as last_known_survival_status,
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
