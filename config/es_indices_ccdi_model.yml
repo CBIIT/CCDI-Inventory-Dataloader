@@ -1765,7 +1765,10 @@ Indices:
           RETURN DISTINCT
             file.id as id,
             p.id as pid,
-            file.clinical_measure_file_id AS file_id,
+            CASE LABELS(file)[0]
+                  WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
+                  WHEN 'radiology_file' THEN file.radiology_file_id
+                  ELSE null END AS file_id,
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
@@ -2059,7 +2062,11 @@ Indices:
           RETURN DISTINCT
             file.id as id,
             p.id as pid,
-            file.methylation_array_file_id AS file_id,
+            CASE LABELS(file)[0]
+                  WHEN 'sequencing_file' THEN file.sequencing_file_id
+                  WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
+                  WHEN 'pathology_file' THEN file.pathology_file_id
+                  WHEN 'methylation_array_file' THEN file.methylation_array_file_id ELSE null END AS file_id,
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN 'Sequencing'
