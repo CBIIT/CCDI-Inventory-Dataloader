@@ -48,7 +48,9 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
+          library_source_material:
+            type: keyword
+          library_source_molecule:
             type: keyword
           library_strategy:
             type: keyword
@@ -82,7 +84,8 @@ Indices:
                                         ELSE null END,
                       file_type: file.file_type,
                       library_selection: null,
-                      library_source: null,
+                      library_source_material: null,
+                      library_source_molecule: null,
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
@@ -102,9 +105,12 @@ Indices:
                       library_selection: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_selection
                                     ELSE null END,
-                      library_source: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN file.library_source
-                                    ELSE null END,
+                      library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                      library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                       library_strategy: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_strategy
                                     ELSE null END
@@ -149,9 +155,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -178,7 +187,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_2
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_2) as sample_diagnosis_file_filter
@@ -210,9 +220,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -246,9 +259,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -277,7 +293,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_3
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_3) as sample_diagnosis_file_filters
@@ -304,7 +321,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
@@ -357,7 +375,8 @@ Indices:
                 assay_method: 'Clinical data',
                 file_type: file.file_type,
                 library_selection: null,
-                library_source: null,
+                library_source_material: null,
+                library_source_molecule: null,
                 library_strategy: null
             }) AS sample_diagnosis_file_filters,
             st.study_id as study_id,
@@ -408,8 +427,11 @@ Indices:
                 library_selection: CASE LABELS(file)[0]
                           WHEN 'sequencing_file' THEN file.library_selection
                           ELSE null END,
-                library_source: CASE LABELS(file)[0]
-                          WHEN 'sequencing_file' THEN file.library_source
+                library_source_material: CASE LABELS(file)[0]
+                          WHEN 'sequencing_file' THEN file.library_source_material
+                          ELSE null END,
+                library_source_molecule: CASE LABELS(file)[0]
+                          WHEN 'sequencing_file' THEN file.library_source_molecule
                           ELSE null END,
                 library_strategy: CASE LABELS(file)[0]
                           WHEN 'sequencing_file' THEN file.library_strategy
@@ -473,7 +495,9 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
+          library_source_material:
+            type: keyword
+          library_source_molecule:
             type: keyword
           library_strategy:
             type: keyword
@@ -513,8 +537,8 @@ Indices:
                                         WHEN 'radiology_file' THEN 'Radiology imaging'
                                         ELSE null END,
                       file_type: file.file_type,
-                      library_selection: null,
-                      library_source: null,
+                      library_source_material: null,
+                      library_source_molecule: null,
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
@@ -534,8 +558,11 @@ Indices:
                       library_selection: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_selection
                                     ELSE null END,
-                      library_source: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN file.library_source
+                      library_source_material: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_material
+                                    ELSE null END,
+                      library_source_molecule: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_molecule
                                     ELSE null END,
                       library_strategy: CASE LABELS(file)[0]
                                     WHEN 'sequencing_file' THEN file.library_strategy
@@ -581,9 +608,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_material
+                                    ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_molecule
+                                    ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -610,7 +640,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_2
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_2) as sample_diagnosis_file_filter
@@ -642,9 +673,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_material
+                                    ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_molecule
+                                    ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -678,9 +712,12 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
-                              ELSE null END,
+                    library_source_material: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_material
+                                    ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_molecule
+                                    ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
@@ -709,7 +746,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_3
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_3) as sample_diagnosis_file_filters
@@ -736,7 +774,8 @@ Indices:
                                         ELSE null END,
                     file_type: file.file_type,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
@@ -829,7 +868,9 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
+          library_source_material:
+            type: keyword
+          library_source_molecule:
             type: keyword
           library_strategy:
             type: keyword
@@ -870,9 +911,12 @@ Indices:
                                 library_selection: CASE LABELS(file)[0]
                                               WHEN 'sequencing_file' THEN file.library_selection
                                               ELSE null END,
-                                library_source: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN file.library_source
-                                              ELSE null END,
+                                library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                                library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                                 library_strategy: CASE LABELS(file)[0]
                                               WHEN 'sequencing_file' THEN file.library_strategy
                                               ELSE null END
@@ -896,9 +940,12 @@ Indices:
                                 library_selection: CASE LABELS(file)[0]
                                               WHEN 'sequencing_file' THEN file.library_selection
                                               ELSE null END,
-                                library_source: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN file.library_source
-                                              ELSE null END,
+                                library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                                library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                                 library_strategy: CASE LABELS(file)[0]
                                               WHEN 'sequencing_file' THEN file.library_strategy
                                               ELSE null END
@@ -921,9 +968,12 @@ Indices:
                         library_selection: CASE LABELS(file)[0]
                                       WHEN 'sequencing_file' THEN file.library_selection
                                       ELSE null END,
-                        library_source: CASE LABELS(file)[0]
-                                      WHEN 'sequencing_file' THEN file.library_source
-                                      ELSE null END,
+                        library_source_material: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_material
+                                            ELSE null END,
+                        library_source_molecule: CASE LABELS(file)[0]
+                                            WHEN 'sequencing_file' THEN file.library_source_molecule
+                                            ELSE null END,
                         library_strategy: CASE LABELS(file)[0]
                                       WHEN 'sequencing_file' THEN file.library_strategy
                                       ELSE null END
@@ -940,7 +990,8 @@ Indices:
                     assay_method: CASE types_1 when null then null else 'Clinical data' end,
                     file_type: types_1,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
             }) as participant_clinical_measure_file_filters
           OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
@@ -955,7 +1006,8 @@ Indices:
                     assay_method: CASE types_1 when null then null else 'Radiology imaging' end,
                     file_type: types_1,
                     library_selection: null,
-                    library_source: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
                     library_strategy: null
             }) as participant_radiology_file_filters
           MATCH (dg:diagnosis)
@@ -1015,8 +1067,11 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
+                    library_source_material: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_material
+                              ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_molecule
                               ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
@@ -1042,8 +1097,11 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
+                    library_source_material: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_material
+                              ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_molecule
                               ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
@@ -1113,8 +1171,11 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
+                    library_source_material: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_material
+                              ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_molecule
                               ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
@@ -1179,8 +1240,11 @@ Indices:
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                    library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
+                    library_source_material: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_material
+                              ELSE null END,
+                    library_source_molecule: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_molecule
                               ELSE null END,
                     library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
@@ -1374,7 +1438,9 @@ Indices:
             type: keyword
           library_selection:
             type: keyword
-          library_source:
+          library_source_material:
+            type: keyword
+          library_source_molecule:
             type: keyword
           library_strategy:
             type: keyword
@@ -1433,8 +1499,11 @@ Indices:
                 library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
                               ELSE null END,
-                library_source: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source
+                library_source_material: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_material
+                              ELSE null END,
+                library_source_molecule: CASE LABELS(file)[0]
+                              WHEN 'sequencing_file' THEN file.library_source_molecule
                               ELSE null END,
                 library_strategy: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_strategy
@@ -1519,8 +1588,11 @@ Indices:
                           library_selection: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN file.library_selection
                                         ELSE null END,
-                          library_source: CASE LABELS(file)[0]
-                                        WHEN 'sequencing_file' THEN file.library_source
+                          library_source_material: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source_material
+                                        ELSE null END,
+                          library_source_molecule: CASE LABELS(file)[0]
+                                        WHEN 'sequencing_file' THEN file.library_source_molecule
                                         ELSE null END,
                           library_strategy: CASE LABELS(file)[0]
                                         WHEN 'sequencing_file' THEN file.library_strategy
@@ -1655,7 +1727,13 @@ Indices:
           sort:
             type: keyword
             normalizer: lowercase
-      library_source:
+      library_source_material:
+        type: keyword
+        fields:
+          sort:
+            type: keyword
+            normalizer: lowercase
+      library_source_molecule:
         type: keyword
         fields:
           sort:
@@ -1796,7 +1874,8 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,      
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
       - query: |
           MATCH (st:study)<-[:of_clinical_measure_file]-(file:clinical_measure_file)
@@ -1952,7 +2031,8 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
       - query: |
           MATCH (file)
@@ -2098,8 +2178,10 @@ Indices:
             COLLECT(DISTINCT stp.institution) as institution,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_selection
                                         ELSE null END AS library_selection,
-            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source
-                                        ELSE null END AS library_source,
+            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_material
+                                        ELSE null END AS library_source_material,
+            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_molecule
+                                        ELSE null END AS library_source_molecule,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_strategy
                                         ELSE null END AS library_strategy
         page_size: 10000
@@ -2162,9 +2244,10 @@ Indices:
             CASE LABELS(file)[0]
                       WHEN 'sequencing_file' THEN file.library_selection
                       ELSE null END AS library_selection,
-            CASE LABELS(file)[0]
-                      WHEN 'sequencing_file' THEN file.library_source
-                      ELSE null END AS library_source,
+            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_material
+                                        ELSE null END AS library_source_material,
+            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_molecule
+                                        ELSE null END AS library_source_molecule,
             CASE LABELS(file)[0]
                       WHEN 'sequencing_file' THEN file.library_strategy
                       ELSE null END AS library_strategy
@@ -2295,7 +2378,8 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(p:participant)<--(sm:sample)
@@ -2347,7 +2431,8 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(cl)<--(sm:sample)
@@ -2394,7 +2479,8 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(p:participant)
@@ -2446,5 +2532,6 @@ Indices:
             COLLECT(DISTINCT stf.grant_id) as grant_id,
             COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
-            null AS library_source,
+            null AS library_source_material,
+            null AS library_source_molecule,
             null AS library_strategy
