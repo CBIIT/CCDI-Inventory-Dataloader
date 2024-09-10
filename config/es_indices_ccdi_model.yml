@@ -58,10 +58,6 @@ Indices:
         type: keyword
       dbgap_accession:
         type: keyword
-      grant_id:
-        type: keyword
-      institution:
-        type: keyword
       study_acronym:
         type: keyword
       study_name:
@@ -342,8 +338,6 @@ Indices:
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
-              COLLECT(DISTINCT stf.grant_id) as grant_id,
-              COLLECT(DISTINCT stp.institution) as institution,
               st.study_acronym as study_acronym,
               st.study_name as study_name
       - query: |
@@ -381,8 +375,6 @@ Indices:
             }) AS sample_diagnosis_file_filters,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             st.study_acronym as study_acronym,
             st.study_name as study_name
       - query: |
@@ -439,8 +431,6 @@ Indices:
             }) AS sample_diagnosis_file_filters,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             st.study_acronym as study_acronym,
             st.study_name as study_name
     
@@ -504,10 +494,6 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
-        type: keyword
-      grant_id:
-        type: keyword
-      institution:
         type: keyword
       study_acronym:
         type: keyword
@@ -799,8 +785,6 @@ Indices:
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
-              COLLECT(DISTINCT stf.grant_id) as grant_id,
-              COLLECT(DISTINCT stp.institution) as institution,
               st.study_acronym as study_acronym,
               st.study_name as study_name,
               COUNT(DISTINCT file.id) as file_count,
@@ -876,10 +860,6 @@ Indices:
             type: keyword
           library_strategy:
             type: keyword
-      grant_id:
-        type: keyword
-      institution:
-        type: keyword
       file_count:
         type: integer
       files:
@@ -1047,8 +1027,6 @@ Indices:
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,       
             apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
       - query: |
@@ -1144,8 +1122,6 @@ Indices:
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,       
             sample_file_filter AS sample_file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
       - query: |
@@ -1222,8 +1198,6 @@ Indices:
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,       
             sample_file_filter AS sample_file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             size(files) as file_count,
             files as files
       - query: |
@@ -1287,8 +1261,6 @@ Indices:
             st.study_name as study_name,
             null as last_known_survival_status,       
             sample_file_filter AS sample_file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
 
@@ -1458,10 +1430,6 @@ Indices:
             type: keyword
       last_known_survival_status:
         type: keyword
-      grant_id:
-        type: keyword
-      institution:
-        type: keyword
       file_count:
         type: integer
       direct_file_count:
@@ -1553,8 +1521,6 @@ Indices:
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,
             file_filter AS file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             COUNT(DISTINCT file.id) as file_count,
             COUNT(DISTINCT direct_file.id) as direct_file_count,
             COLLECT(DISTINCT file.id) as files
@@ -1617,8 +1583,6 @@ Indices:
                                         WHEN 'sequencing_file' THEN file.library_strategy
                                         ELSE null END
                       }) END AS file_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             COUNT(DISTINCT file.id) as file_count,
             COUNT(DISTINCT file.id) as direct_file_count,
             COLLECT(DISTINCT file.id) as files
@@ -1736,10 +1700,6 @@ Indices:
           diagnosis:
             type: keyword
       last_known_survival_status:
-        type: keyword
-      grant_id:
-        type: keyword
-      institution:
         type: keyword
       library_selection:
         type: keyword
@@ -1890,9 +1850,7 @@ Indices:
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
             case when 'Dead' in COLLECT(DISTINCT su.last_known_survival_status) then ['Dead']
-                  else COLLECT(DISTINCT su.last_known_survival_status) end as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,      
+                  else COLLECT(DISTINCT su.last_known_survival_status) end as last_known_survival_status,     
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2048,8 +2006,6 @@ Indices:
             null as participant_filters,
             null as sample_diagnosis_filters,
             null as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2194,8 +2150,6 @@ Indices:
             sample_diagnosis_filter AS sample_diagnosis_filters,
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_selection
                                         ELSE null END AS library_selection,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_material
@@ -2259,8 +2213,6 @@ Indices:
                 diagnosis: dg.diagnosis
             }) AS sample_diagnosis_filters, 
             null as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             CASE LABELS(file)[0]
                       WHEN 'sequencing_file' THEN file.library_selection
                       ELSE null END AS library_selection,
@@ -2395,8 +2347,6 @@ Indices:
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,         
             sample_diagnosis_filter AS sample_diagnosis_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2448,8 +2398,6 @@ Indices:
             }) AS sample_diagnosis_filters,
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2496,8 +2444,6 @@ Indices:
                 tumor_stage_source: null,
                 diagnosis_classification: null
             }) AS sample_diagnosis_filters,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2549,8 +2495,6 @@ Indices:
             }) AS sample_diagnosis_filters, 
             case when 'Dead' in vital_status then ['Dead']
                   else vital_status end as last_known_survival_status,
-            COLLECT(DISTINCT stf.grant_id) as grant_id,
-            COLLECT(DISTINCT stp.institution) as institution,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
