@@ -1447,9 +1447,9 @@ Indices:
     cypher_queries:
       - query: |
           MATCH (sm:sample)
-          with sm
-          SKIP $skip LIMIT $limit
           MATCH (p:participant)<-[*..3]-(sm)
+          with sm, p
+          SKIP $skip LIMIT $limit
           optional match (p)<--(dg:diagnosis)
           with sm, COLLECT(DISTINCT {
                 age_at_diagnosis: dg.age_at_diagnosis,
