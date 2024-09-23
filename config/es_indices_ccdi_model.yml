@@ -872,8 +872,6 @@ Indices:
     cypher_queries:
       - query: |
           MATCH (p:participant)<--(dg:diagnosis)
-          with p
-          SKIP $skip LIMIT $limit
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
@@ -997,6 +995,8 @@ Indices:
             }) as participant_radiology_file_filters
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
+          with dg, p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters
+          SKIP $skip LIMIT $limit
           OPTIONAL MATCH (p)<-[*..4]-(file)
           WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -1032,7 +1032,7 @@ Indices:
             apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
-        page_size: 1000
+        page_size: 500
       - query: |
           match (p:participant)<--(sm:sample)<--(dg:diagnosis)
           optional match (sm)<-[*..3]-(file)
