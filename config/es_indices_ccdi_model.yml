@@ -344,10 +344,10 @@ WITH p, sample_diagnosis_file_filter,
   COLLECT(DISTINCT su.first_event) as first_event,
   COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status,  st, stf, stp
 WITH p, sample_diagnosis_file_filter, 
-  COLLECT({last_known_survival_status: last_known_survival_status, 
+ {last_known_survival_status: last_known_survival_status, 
    event_free_survival_status: event_free_survival_status, 
    first_event: first_event,
-   age_at_event_free_survival_status: age_at_event_free_survival_status} )AS survival_filters,
+   age_at_event_free_survival_status: age_at_event_free_survival_status}  AS survival_filters,
   st, stf, stp
             RETURN DISTINCT
               p.id as id,
