@@ -883,8 +883,17 @@ Indices:
         type: keyword
       study_name:
         type: keyword
-      last_known_survival_status:
-        type: keyword
+      survival_filters:
+        type: nested
+        properties:
+          last_known_survival_status:
+            type: keyword
+          age_at_event_free_survival_status:
+            type: integer
+          event_free_survival_status:
+            type: keyword
+          first_event:
+            type: keyword
       sample_file_filters:
         type: nested
         properties:
@@ -1051,7 +1060,17 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, st, stf, stp, dg
+          WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, st, stf, stp, dg
+          WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, st, stf, stp, dg
           RETURN DISTINCT
             dg.id as id,
             p.id as pid,
@@ -1074,8 +1093,7 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,       
+            survival_filters as survival_filters,    
             apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
@@ -1147,7 +1165,17 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, p, sm, sample_file_filter, file, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, st, stf, stp
+          WITH dg, p, sm, sample_file_filter, file, COLLECT(DISTINCT CASE 
+              WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+              ELSE su.last_known_survival_status
+          END) AS last_known_survival_status,
+          COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+          COLLECT(DISTINCT su.first_event) as first_event,
+          COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, st, stf, stp
+          WITH dg, p, sm, sample_file_filter, file, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+          event_free_survival_status: event_free_survival_status, 
+          first_event: first_event,
+          age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, st, stf, stp
           RETURN DISTINCT
             dg.id as id,
             p.id as pid,
@@ -1170,8 +1198,7 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,       
+            survival_filters as survival_filters,      
             sample_file_filter AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
@@ -1223,7 +1250,17 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, st, stf, stp
+          WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, st, stf, stp
+          WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, st, stf, stp
           RETURN DISTINCT
             dg.id as id,
             p.id as pid,
@@ -1246,8 +1283,7 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,       
+            survival_filters as survival_filters,      
             sample_file_filter AS sample_file_filters,
             size(files) as file_count,
             files as files
@@ -1310,7 +1346,12 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            null as last_known_survival_status,       
+            COLLECT(DISTINCT {
+                last_known_survival_status: null,
+                age_at_event_free_survival_status: null,
+                event_free_survival_status: null,
+                first_event: null,
+            }) AS survival_filters,   
             sample_file_filter AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
