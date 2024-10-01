@@ -335,20 +335,18 @@ Indices:
             OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-WITH p, sample_diagnosis_file_filter, 
-  COLLECT(DISTINCT CASE 
-      WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
-      ELSE su.last_known_survival_status
-  END) AS last_known_survival_status,
-  COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
-  COLLECT(DISTINCT su.first_event) as first_event,
-  COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status,  st, stf, stp
-WITH p, sample_diagnosis_file_filter, 
- {last_known_survival_status: last_known_survival_status, 
-   event_free_survival_status: event_free_survival_status, 
-   first_event: first_event,
-   age_at_event_free_survival_status: age_at_event_free_survival_status}  AS survival_filters,
-  st, stf, stp
+            WITH p, sample_diagnosis_file_filter,  st, stf, stp,
+            COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status
+            WITH p, sample_diagnosis_file_filter, st, stf, stp,  COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters
             RETURN DISTINCT
               p.id as id,
               p.id as pid,
