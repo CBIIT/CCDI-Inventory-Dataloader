@@ -2172,8 +2172,18 @@ Indices:
                 type: keyword   
               diagnosis:
                 type: keyword
-          last_known_survival_status:
-            type: keyword
+          survival_filters:
+            type: nested
+            properties:
+              last_known_survival_status:
+                type: keyword
+              age_at_event_free_survival_status:
+                type: integer
+              event_free_survival_status:
+                type: keyword
+              first_event:
+                type: keyword
+
       participant_filters:
         type: nested
         properties:
@@ -2338,6 +2348,18 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          with file, sample_diagnosis_filter,COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status
+          with file, sample_diagnosis_filter,COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters
+
           RETURN DISTINCT
             file.id as id,
             p.id as pid,
@@ -2367,8 +2389,7 @@ Indices:
               sex_at_birth: p.sex_at_birth
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
-            case when 'Dead' in COLLECT(DISTINCT su.last_known_survival_status) then ['Dead']
-                  else COLLECT(DISTINCT su.last_known_survival_status) end as last_known_survival_status,     
+            survival_filters as survival_filters,  
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2461,15 +2482,23 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    })) AS sample_diagnosis_filter_6, COLLECT(DISTINCT su.last_known_survival_status) as vital_status
-          with file, p, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter, vital_status
+                                    })) AS sample_diagnosis_filter_6, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status
+          with file, p, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters
           with file, collect(DISTINCT {
                 participant_id: p.participant_id,
                 race: apoc.text.split(p.race, ';'),
                 sex_at_birth: p.sex_at_birth,
                 sample_diagnosis_filters: sample_diagnosis_filter,
-                last_known_survival_status: case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end
+                survival_filters: survival_filters
             }) as combined_filter_1
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
           OPTIONAL MATCH (st)<--(cl)<--(sm:sample)
@@ -2494,7 +2523,7 @@ Indices:
                 race: null,
                 sex_at_birth: null,
                 sample_diagnosis_filters: sample_diagnosis_filter,
-                last_known_survival_status: null
+                survival_filters: survival_filters
           }) as combined_filter_2
           with file, apoc.coll.union(combined_filter_1, combined_filter_2) as combined_filter
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
@@ -2523,7 +2552,7 @@ Indices:
             combined_filter as combined_filters,
             null as participant_filters,
             null as sample_diagnosis_filters,
-            null as last_known_survival_status,
+            null as survival_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2632,7 +2661,17 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with file, p, sample_diagnosis_filter, sm1, sm, st, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, stf, stp
+          with file, p, sample_diagnosis_filter, sm1, sm, st, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, stf, stp
+          with file, p, sample_diagnosis_filter, sm1, sm, st, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, stf, stp
           RETURN DISTINCT
             file.id as id,
             p.id as pid,
@@ -2666,8 +2705,7 @@ Indices:
                 sex_at_birth: p.sex_at_birth
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,
+            survival_filters as survival_filters,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_selection
                                         ELSE null END AS library_selection,
             CASE LABELS(file)[0] WHEN 'sequencing_file' THEN file.library_source_material
@@ -2730,7 +2768,7 @@ Indices:
                 tumor_stage_source: dg.tumor_stage_source,
                 diagnosis: dg.diagnosis
             }) AS sample_diagnosis_filters, 
-            null as last_known_survival_status,
+            null as survival_filters,
             CASE LABELS(file)[0]
                       WHEN 'sequencing_file' THEN file.library_selection
                       ELSE null END AS library_selection,
@@ -2838,7 +2876,17 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with distinct p, sm, st, sample_diagnosis_filter, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, stf, stp
+          with distinct p, sm, st, sample_diagnosis_filter, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, stf, stp
+          with distinct p, sm, st, sample_diagnosis_filter, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, stf, stp
           RETURN DISTINCT
             null as id,
             p.id as pid,
@@ -2862,9 +2910,7 @@ Indices:
                 race: apoc.text.split(p.race, ';'),
                 sex_at_birth: p.sex_at_birth
             }) AS participant_filters,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,         
-            sample_diagnosis_filter AS sample_diagnosis_filters,
+            survival_filters as survival_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2876,7 +2922,17 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with sm, p, st, dg, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, stf, stp
+          with sm, p, st, dg, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, stf, stp
+          with sm, p, st, dg, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, stf, stp
           RETURN DISTINCT
             null as id,
             p.id as pid,
@@ -2914,8 +2970,7 @@ Indices:
                 tumor_stage_source: dg.tumor_stage_source,
                 diagnosis: dg.diagnosis
             }) AS sample_diagnosis_filters,
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,
+            survival_filters as survival_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -2947,7 +3002,7 @@ Indices:
             null as files,
             null as combined_filters,
             null AS participant_filters,
-            null as last_known_survival_status,
+            null as survival_filters,
             COLLECT(DISTINCT {
                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -2973,7 +3028,17 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with p, st, dg, COLLECT(DISTINCT su.last_known_survival_status) as vital_status, stf, stp
+          with p, st, dg, COLLECT(DISTINCT CASE 
+                WHEN su.last_known_survival_status = 'Dead' THEN 'Dead'
+                ELSE su.last_known_survival_status
+            END) AS last_known_survival_status,
+            COLLECT(DISTINCT su.event_free_survival_status) as event_free_survival_status,
+            COLLECT(DISTINCT su.first_event) as first_event,
+            COLLECT(DISTINCT su.age_at_event_free_survival_status) as age_at_event_free_survival_status, stf, stp
+          with p, st, dg, COLLECT(DISTINCT {last_known_survival_status: last_known_survival_status, 
+              event_free_survival_status: event_free_survival_status, 
+              first_event: first_event,
+              age_at_event_free_survival_status: age_at_event_free_survival_status} ) AS survival_filters, stf, stp
           RETURN DISTINCT
             null as id,
             p.id as pid,
@@ -3011,8 +3076,7 @@ Indices:
                 tumor_stage_source: dg.tumor_stage_source,
                 diagnosis_classification: dg.diagnosis_classification
             }) AS sample_diagnosis_filters, 
-            case when 'Dead' in vital_status then ['Dead']
-                  else vital_status end as last_known_survival_status,
+            survival_filters as survival_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
