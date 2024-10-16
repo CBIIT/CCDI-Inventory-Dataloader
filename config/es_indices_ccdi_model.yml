@@ -3384,6 +3384,7 @@ Indices:
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
+          with file, p, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter, survival_filters,  treatment_filters, treatment_response_filters
           with file, collect(DISTINCT {
                 participant_id: p.participant_id,
                 race: apoc.text.split(p.race, ';'),
