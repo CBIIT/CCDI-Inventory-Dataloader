@@ -2272,9 +2272,9 @@ Indices:
           OPTIONAL MATCH (p)<-[*..4]-(file)
           WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-            OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
-            OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, su. tm, tr
+          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+          with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, su, tm, tr
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
@@ -3242,7 +3242,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with file, sample_diagnosis_filter,COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+          with file, p, st, sample_diagnosis_filter,COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
