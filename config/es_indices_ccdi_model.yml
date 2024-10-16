@@ -3048,18 +3048,6 @@ Indices:
                 type: keyword   
               diagnosis:
                 type: keyword
-          survival_filters:
-            type: nested
-            properties:
-              last_known_survival_status:
-                type: keyword
-              age_at_event_free_survival_status:
-                type: integer
-              event_free_survival_status:
-                type: keyword
-              first_event:
-                type: keyword
-
       participant_filters:
         type: nested
         properties:
@@ -3677,7 +3665,7 @@ Indices:
                       WHEN 'sequencing_file' THEN file.library_strategy
                       ELSE null END AS library_strategy
       - query: |
-          MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
+         MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
           where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           with p, sm1, sm, apoc.coll.union(COLLECT(DISTINCT {
@@ -3846,7 +3834,7 @@ Indices:
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
-            st.study_name as study_name,
+            st.study_name as study_name, 
             p.participant_id AS participant_id,
             sm.sample_id AS sample_id,
             null as files,
