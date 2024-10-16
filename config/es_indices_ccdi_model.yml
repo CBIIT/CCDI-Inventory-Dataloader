@@ -413,7 +413,7 @@ Indices:
                 last_known_survival_status: null,
                 age_at_event_free_survival_status: null,
                 event_free_survival_status: null,
-                first_event: null,
+                first_event: null
             }) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: null,
             treatment_agent: null,
@@ -444,7 +444,7 @@ Indices:
                 null as last_known_survival_status,
                 null as age_at_event_free_survival_status,
                 null as event_free_survival_status,
-                null as first_event,
+                null as first_event
             }) AS survival_filters,
             COLLECT(DISTINCT{null as treatment_type,
             tnull as treatment_agent,
@@ -2572,7 +2572,7 @@ Indices:
                 last_known_survival_status: null,
                 age_at_event_free_survival_status: null,
                 event_free_survival_status: null,
-                first_event: null,
+                first_event: null
             }) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: null,
             treatment_agent: null,
@@ -2944,7 +2944,7 @@ Indices:
                 diagnosis: dg.diagnosis
             }) AS diagnosis_filters,
             null AS survival_filters,
-            null as treatment_filters.
+            null as treatment_filters,
             null as treatment_response_filters,
             CASE COLLECT(file) WHEN [] THEN []
                       ELSE COLLECT(DISTINCT {
