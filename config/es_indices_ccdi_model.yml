@@ -3021,6 +3021,33 @@ Indices:
             type: keyword
           sex_at_birth:
             type: keyword
+          survival_filters:
+            type: nested
+            properties:
+              last_known_survival_status:
+                type: keyword
+              age_at_event_free_survival_status:
+                type: integer
+              event_free_survival_status:
+                type: keyword
+              first_event:
+                type: keyword
+          treatment_filters:
+            type: nested
+            properties:
+              treatment_type:
+                type: keyword
+              treatment_agent:
+                type: keyword
+              age_at_treatment_start:
+                type: integer
+          treatment_response_filters:
+            type: nested
+            properties:
+              response_category:
+                type: keyword
+              age_at_response:
+                type: integer
           sample_diagnosis_filters:
             type: nested
             properties:
@@ -3269,6 +3296,8 @@ Indices:
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
             survival_filters as survival_filters,  
+            treatment_filters as treatment_filters,
+            treatment_response_filters as treatment_response_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
@@ -3434,6 +3463,8 @@ Indices:
             null as participant_filters,
             null as sample_diagnosis_filters,
             null as survival_filters,
+            null as treatment_filters,
+            null as treatment_response_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
