@@ -3416,8 +3416,7 @@ Indices:
                 participant_id: null,
                 race: null,
                 sex_at_birth: null,
-                sample_diagnosis_filters: sample_diagnosis_filter,
-                survival_filters: survival_filters
+                sample_diagnosis_filters: sample_diagnosis_filter 
           }) as combined_filter_2
           with file, apoc.coll.union(combined_filter_1, combined_filter_2) as combined_filter
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
