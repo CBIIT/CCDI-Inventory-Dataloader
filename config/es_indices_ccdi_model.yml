@@ -3832,7 +3832,7 @@ Indices:
                 race: apoc.text.split(p.race, ';'),
                 sex_at_birth: p.sex_at_birth
             }) AS participant_filters,
-            sample_diagnosis_filter as sample_diagnosis_filter,
+            sample_diagnosis_filter as sample_diagnosis_filters,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,
