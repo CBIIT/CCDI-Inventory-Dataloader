@@ -18,7 +18,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -357,7 +357,7 @@ Indices:
             COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -411,7 +411,7 @@ Indices:
             }) AS sample_diagnosis_file_filters,
             COLLECT(DISTINCT {
                 last_known_survival_status: null,
-                age_at_event_free_survival_status: null,
+                age_at_last_known_survival_status: null,
                 event_free_survival_status: null,
                 first_event: null
             }) AS survival_filters,
@@ -442,7 +442,7 @@ Indices:
           null AS sex_at_birth,
           COLLECT(DISTINCT {
           last_known_survival_status: null,
-          age_at_event_free_survival_status: null,
+          age_at_last_known_survival_status: null,
           event_free_survival_status: null,
               first_event: null
           }) AS survival_filters,
@@ -519,7 +519,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -867,7 +867,7 @@ Indices:
             COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -905,7 +905,7 @@ Indices:
         type: keyword
       last_known_survival_status:
         type: keyword
-      age_at_event_free_survival_status:
+      age_at_last_known_survival_status:
         type: integer
       event_free_survival_status:
         type: keyword
@@ -1264,7 +1264,7 @@ Indices:
               p.sex_at_birth as sex_at_birth,
               apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
               su.last_known_survival_status as last_known_survival_status,
-              su.age_at_event_free_survival_status as age_at_event_free_survival_status,
+              su.age_at_last_known_survival_status as age_at_last_known_survival_status,
               su.event_free_survival_status as event_free_survival_status,
               su.first_event as first_event,
               treatment_filters as treatment_filters,
@@ -1294,7 +1294,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -1638,7 +1638,7 @@ Indices:
             WITH tm, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, file, st, stf, stp            
             RETURN DISTINCT
@@ -1678,7 +1678,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -2022,7 +2022,7 @@ Indices:
             WITH tr, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
               COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, file, st, stf, stp            
@@ -2095,7 +2095,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -2288,7 +2288,7 @@ Indices:
           WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters, 
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters, 
           COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -2395,7 +2395,7 @@ Indices:
           WITH dg, p, sm, sample_file_filter, file, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters, 
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters, 
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -2482,7 +2482,7 @@ Indices:
           WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -2577,7 +2577,7 @@ Indices:
             st.study_name as study_name,
             COLLECT(DISTINCT {
                 last_known_survival_status: null,
-                age_at_event_free_survival_status: null,
+                age_at_last_known_survival_status: null,
                 event_free_survival_status: null,
                 first_event: null
             }) AS survival_filters,
@@ -2759,7 +2759,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -2895,7 +2895,7 @@ Indices:
           WITH sm, opensearch_data, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters
           WITH sm, apoc.map.merge(opensearch_data, {
             survival_filters: survival_filters
           }) AS opensearch_data
@@ -3033,7 +3033,7 @@ Indices:
             properties:
               last_known_survival_status:
                 type: keyword
-              age_at_event_free_survival_status:
+              age_at_last_known_survival_status:
                 type: integer
               event_free_survival_status:
                 type: keyword
@@ -3121,7 +3121,7 @@ Indices:
         properties:
           last_known_survival_status:
             type: keyword
-          age_at_event_free_survival_status:
+          age_at_last_known_survival_status:
             type: integer
           event_free_survival_status:
             type: keyword
@@ -3267,7 +3267,7 @@ Indices:
           with file, p, st, sample_diagnosis_filter,COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -3402,7 +3402,7 @@ Indices:
                                     })) AS sample_diagnosis_filter_6, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -3585,7 +3585,7 @@ Indices:
           with file, p, sample_diagnosis_filter, sm1, sm, st, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -3804,7 +3804,7 @@ Indices:
           with distinct p, sm, st, sample_diagnosis_filter, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -3853,7 +3853,7 @@ Indices:
           with sm, p, st, dg, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
@@ -3963,7 +3963,7 @@ Indices:
           with p, st, dg, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_event_free_survival_status: su.age_at_event_free_survival_status} ) AS survival_filters,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
