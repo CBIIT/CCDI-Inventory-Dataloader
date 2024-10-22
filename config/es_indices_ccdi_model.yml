@@ -1689,7 +1689,7 @@ Indices:
             age_at_response: tr.age_at_response}) as treatment_response_filters, file, st, stf, stp            
             RETURN DISTINCT
               tm.id as id,
-              p.participant_id as pid,
+              p.id as pid,
               p.participant_id as participant_id,
               apoc.text.split(p.race, ';') as race,
               p.race as race_str,
@@ -2086,7 +2086,7 @@ Indices:
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, file, st, stf, stp            
             RETURN DISTINCT
               tr.id as id,
-              p.participant_id as pid,
+              p.id as pid,
               p.participant_id as participant_id,
               apoc.text.split(p.race, ';') as race,
               p.race as race_str,
