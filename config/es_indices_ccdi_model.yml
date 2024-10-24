@@ -3370,7 +3370,7 @@ Indices:
                                       WHEN 'radiology_file' THEN 'Radiology imaging'
                                       ELSE null END AS file_category,
             file.file_type AS file_type,
-            file_mapping_level: file.file_mapping_level,
+            file.file_mapping_level as file_mapping_level,
             file.file_description AS file_description,
             file.file_size AS file_size,
             file.md5sum AS md5sum,
@@ -3542,7 +3542,7 @@ Indices:
             file.file_access AS file_access,
             'Clinical data' AS file_category,
             file.file_type AS file_type,
-            file_mapping_level: file.file_mapping_level,
+            file.file_mapping_level as file_mapping_level,
             file.file_description AS file_description,
             file.file_size AS file_size,
             file.md5sum AS md5sum,
@@ -3695,7 +3695,7 @@ Indices:
                                     WHEN 'methylation_array_file' THEN 'Methylation array' 
                                     ELSE null END AS file_category,
             file.file_type AS file_type,
-            file_mapping_level: file.file_mapping_level,
+            file.file_mapping_level AS file_mapping_level,
             file.file_description AS file_description,
             file.file_size AS file_size,
             file.md5sum AS md5sum,
@@ -3753,7 +3753,7 @@ Indices:
                   WHEN 'pathology_file' THEN 'Pathology imaging'
                   WHEN 'methylation_array_file' THEN 'Methylation array' ELSE null END AS file_category,
             file.file_type AS file_type,
-            file_mapping_level: file.file_mapping_level,
+            file.file_mapping_level AS file_mapping_level,
             file.file_description AS file_description,
             file.file_size AS file_size,
             file.md5sum AS md5sum,
