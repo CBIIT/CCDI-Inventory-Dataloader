@@ -2754,7 +2754,7 @@ Indices:
             num_p as num_of_participants,
             cancers as diagnosis_cancer,
             sites as diagnosis_anatomic_site,
-            file_types as file_types
+            file_types as file_types,
             num_samples as num_of_samples,
             num_files as num_of_files,
             COLLECT(DISTINCT file_id) as files
