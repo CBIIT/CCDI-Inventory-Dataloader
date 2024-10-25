@@ -1773,13 +1773,6 @@ Indices:
         type: keyword
       study_name:
         type: keyword
-      file_count:
-        type: integer
-      files:
-        type: text
-        fields:
-          keyword:
-            type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -2046,8 +2039,6 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-            OPTIONAL MATCH (p)<-[*..4]-(file)
-            WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
@@ -2061,7 +2052,7 @@ Indices:
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
               COLLECT(DISTINCT{treatment_type: tm.treatment_type,
             treatment_agent: tm.treatment_agent,
-            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, file, st, stf, stp            
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, st, stf, stp            
             RETURN DISTINCT
               tr.id as id,
               p.id as pid,
@@ -2078,9 +2069,7 @@ Indices:
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
               st.study_acronym as study_acronym,
-              st.study_name as study_name,
-              COUNT(DISTINCT file.id) as file_count,
-              COLLECT(DISTINCT file.id) as files
+              st.study_name as study_name
 
   - index_name: diagnosis
     type: neo4j
