@@ -2777,11 +2777,28 @@ Indices:
             }) as sample_file_filter
           optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
           where (cl: cell_line or cl: pdx)
+          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                    participant_age_at_collection: sm.participant_age_at_collection,
+                    sample_tumor_status: sm.sample_tumor_status,
+                    tumor_classification: sm.tumor_classification,
+                    assay_method: 'Clinical data',
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
+                    library_selection: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
+                    library_strategy: null
+            }) end as study_file_filters
+          with dg, sample_file_filter + study_file_filters as sample_file_filters
+          optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
+          where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, sm, sample_file_filter, file, st, stf, stp
+          WITH dg, sm, sample_file_filters, file, st, stf, stp
           RETURN DISTINCT
             dg.id as id,
             null as pid,
@@ -2815,7 +2832,7 @@ Indices:
             age_at_treatment_start: null}) as treatment_filters,
             COLLECT(DISTINCT{response_category: null,
             age_at_response: null}) as treatment_response_filters, 
-            sample_file_filter AS sample_file_filters,
+            sample_file_filters AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
 
