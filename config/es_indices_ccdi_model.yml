@@ -2315,41 +2315,40 @@ Indices:
                     }) AS general_file_filters_1
           with p, opensearch_data, apoc.coll.union(cell_line_pdx_file_filters, general_file_filters_1) as general_file_filters
           OPTIONAL Match (p)<-[*..3]-(sm:sample)
-          OPTIONAL MATCH (p)<-[:of_clinical_measure_file]-(file1:clinical_measure_file)
-          with p, opensearch_data, general_file_filters,sm, COLLECT(DISTINCT {file_type: file1.file_type, file_mapping_level: file1.file_mapping_level}) as file1_items
-          UNWIND (case file1_items when [] then [null] else file1_items end)  AS file1_item
-          with p, opensearch_data, general_file_filters, COLLECT(DISTINCT {
+          OPTIONAL MATCH (p)<--(file)
+          where (file:clinical_measure_file or file:radiology_file)
+          with p, opensearch_data, general_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE file1_item when null then null else 'Clinical data' end,
-                    file_type: file1_item.file_type,
-                    file_mapping_levels: file1_item.file_mapping_level,
+                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
+                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
+                                                  ELSE null END,
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
                     library_source_material: null,
                     library_source_molecule: null,
                     library_strategy: null
-            }) as participant_clinical_measure_file_filters
-          OPTIONAL Match (p)<-[*..3]-(sm:sample)
-          OPTIONAL MATCH (p)<-[:of_radiology_file]-(file1:radiology_file)
-          with p, opensearch_data, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT {file_type: file1.file_type, file_mapping_level: file1.file_mapping_level}) as file1_items
-          UNWIND (case file1_items when [] then [null] else file1_items end)  AS file1_item
-          with p, opensearch_data, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
+            }) end as participant_file_filters
+          optional match (st:study)<--(p)<-[*..3]-(sm:sample)
+          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          with p, opensearch_data, general_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE file1_item when null then null else 'Radiology imaging' end,
-                    file_type: file1_item.file_type,
-                    file_mapping_levels: file1_item.file_mapping_level,
+                    assay_method: 'Clinical data',
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
                     library_source_material: null,
                     library_source_molecule: null,
                     library_strategy: null
-            }) as participant_radiology_file_filters
+            }) end as study_file_filters
           with p, apoc.map.merge(opensearch_data, {
-            sample_file_filters: general_file_filters + participant_clinical_measure_file_filters + participant_radiology_file_filters
+            sample_file_filters: general_file_filters + apoc.coll.union(participant_file_filters, study_file_filters)
           }) AS opensearch_data
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           with p, apoc.map.merge(opensearch_data, {
