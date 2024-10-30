@@ -1267,7 +1267,7 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-            OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+            MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
@@ -1654,8 +1654,8 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
+            MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-            OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
             OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
@@ -2039,9 +2039,9 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
+            MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
-            OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
             OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
