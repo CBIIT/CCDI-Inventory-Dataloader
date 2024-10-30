@@ -2633,10 +2633,73 @@ Indices:
                               ELSE null END
             }) as sample_file_filter
           optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
+          OPTIONAL MATCH (p)<--(file)
+          where (file:clinical_measure_file or file:radiology_file)
+          with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                    participant_age_at_collection: sm.participant_age_at_collection,
+                    sample_tumor_status: sm.sample_tumor_status,
+                    tumor_classification: sm.tumor_classification,
+                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
+                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
+                                                  ELSE null END,
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
+                    library_selection: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
+                    library_strategy: null
+            }) end as participant_file_filters_1,
+            case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
+                    participant_age_at_collection: sm1.participant_age_at_collection,
+                    sample_tumor_status: sm1.sample_tumor_status,
+                    tumor_classification: sm1.tumor_classification,
+                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
+                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
+                                                  ELSE null END,
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
+                    library_selection: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
+                    library_strategy: null
+            }) end as participant_file_filters_2
+          with dg, sample_file_filter, apoc.coll.union(participant_file_filters_1, participant_file_filters_2) as participant_file_filters
+          optional match (st:study)<--(p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
+          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          with dg, sample_file_filter, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                    participant_age_at_collection: sm.participant_age_at_collection,
+                    sample_tumor_status: sm.sample_tumor_status,
+                    tumor_classification: sm.tumor_classification,
+                    assay_method: 'Clinical data',
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
+                    library_selection: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
+                    library_strategy: null
+            }) end as study_file_filters_1, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
+                    participant_age_at_collection: sm1.participant_age_at_collection,
+                    sample_tumor_status: sm1.sample_tumor_status,
+                    tumor_classification: sm1.tumor_classification,
+                    assay_method: 'Clinical data',
+                    file_type: file.file_type,
+                    file_mapping_levels: file.file_mapping_level,
+                    library_selection: null,
+                    library_source_material: null,
+                    library_source_molecule: null,
+                    library_strategy: null
+            }) end as study_file_filters_2
+          with dg, sample_file_filter, participant_file_filters, apoc.coll.union(study_file_filters_1, study_file_filters_2) as study_file_filters
+          with dg, sample_file_filter + apoc.coll.union(participant_file_filters, study_file_filters) as sample_file_filters
+          optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
           WHERE (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, sample_file_filter, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
+          with dg, sample_file_filters, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
           optional match (p:participant)<-[*..4]-(dg)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -2644,7 +2707,7 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+          WITH dg, p, sid, sample_id, sample_file_filters, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
@@ -2678,7 +2741,7 @@ Indices:
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,    
-            sample_file_filter AS sample_file_filters,
+            sample_file_filters AS sample_file_filters,
             size(files) as file_count,
             files as files
       - query: |
