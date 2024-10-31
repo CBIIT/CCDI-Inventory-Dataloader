@@ -101,7 +101,7 @@ class ESLoader:
                 logger.info(f'Page size is set to {page_size}')
                 skip = 0
                 total = page_size
-                while total == page_size:
+                while total > 0:
                     successes, total = self.bulk_load(
                         index_name,
                         self.get_data(
