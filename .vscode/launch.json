@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",  // This points to your current Python file (es_loader.py)
+            "console": "integratedTerminal",  // This ensures it runs in the terminal
+            "args": [
+                "config/es_files.yml",
+                "config/es_loader.yml"
+            ]
+        }
+    ]
+}
