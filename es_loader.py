@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-
+import platform
 import os
 import yaml
 import re
@@ -28,15 +28,25 @@ class ESLoader:
                 region='us-east-1',
                 service='es'
             )
-            self.es_client = Elasticsearch(
-                hosts=[{'host': es_host,
-                        'port': 443}],
-                http_auth=awsauth,
-                use_ssl=True,
-                verify_certs=True,
-                connection_class=RequestsHttpConnection,
-                timeout=timeout_seconds
-            )
+            if platform.system() == "Darwin": 
+                self.es_client = Elasticsearch(
+                    hosts=[{'host': es_host,
+                            'port': 443}],
+                    http_auth=awsauth,
+                    use_ssl=True,
+                    verify_certs=True,
+                    connection_class=RequestsHttpConnection,
+                    timeout=timeout_seconds
+                )
+            else:
+                self.es_client = Elasticsearch(
+                    hosts=[es_host],
+                    http_auth=awsauth,
+                    use_ssl=True,
+                    verify_certs=True,
+                    connection_class=RequestsHttpConnection,
+                    timeout=timeout_seconds
+                )
         else:
             self.es_client = Elasticsearch(hosts=[es_host], timeout=timeout_seconds)
 
