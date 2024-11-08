@@ -102,7 +102,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: null,
@@ -117,7 +117,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -163,7 +163,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -196,7 +196,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -223,7 +223,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -258,7 +258,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -293,7 +293,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -320,7 +320,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -384,7 +384,7 @@ Indices:
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
                 diagnosis: null,
-                data_category: file.data_category,
+                data_category: apoc.text.split(file.data_category, ';'),
                 file_type: file.file_type,
                 file_mapping_level: file.file_mapping_level,
                 library_selection: null,
@@ -451,7 +451,7 @@ Indices:
           tumor_grade_source: dg.tumor_grade_source,
           tumor_stage_source: dg.tumor_stage_source,
           diagnosis: dg.diagnosis,
-          data_category: file.data_category,
+          data_category: apoc.text.split(file.data_category, ';'),
           file_type: CASE LABELS(file)[0]
               WHEN null THEN null
               ELSE file.file_type END,
@@ -589,7 +589,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -603,7 +603,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -649,7 +649,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -682,7 +682,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -709,7 +709,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -744,7 +744,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -779,7 +779,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -806,7 +806,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -959,7 +959,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -973,7 +973,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1019,7 +1019,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1052,7 +1052,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1079,7 +1079,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1114,7 +1114,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1149,7 +1149,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1176,7 +1176,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1329,7 +1329,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1343,7 +1343,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1389,7 +1389,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1422,7 +1422,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1449,7 +1449,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1484,7 +1484,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1519,7 +1519,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1546,7 +1546,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1698,7 +1698,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1712,7 +1712,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      data_category: file.data_category,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1758,7 +1758,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1791,7 +1791,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1818,7 +1818,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1853,7 +1853,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
@@ -1887,7 +1887,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1914,7 +1914,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -2077,7 +2077,7 @@ Indices:
                                 participant_age_at_collection: sm1.participant_age_at_collection,
                                 sample_tumor_status: sm1.sample_tumor_status,
                                 tumor_classification: sm1.tumor_classification,
-                                data_category: file.data_category,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2102,7 +2102,7 @@ Indices:
                                 participant_age_at_collection: sm2.participant_age_at_collection,
                                 sample_tumor_status: sm2.sample_tumor_status,
                                 tumor_classification: sm2.tumor_classification,
-                                data_category: file.data_category,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2128,7 +2128,7 @@ Indices:
                         participant_age_at_collection: sm.participant_age_at_collection,
                         sample_tumor_status: sm.sample_tumor_status,
                         tumor_classification: sm.tumor_classification,
-                        data_category: file.data_category,
+                        data_category: apoc.text.split(file.data_category, ';'),
                         file_type: file.file_type,
                         file_mapping_level: file.file_mapping_level,
                         library_selection: CASE LABELS(file)[0]
@@ -2242,7 +2242,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2268,7 +2268,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2349,7 +2349,7 @@ Indices:
                     participant_age_at_collection: sample.participant_age_at_collection,
                     sample_tumor_status: sample.sample_tumor_status,
                     tumor_classification: sample.tumor_classification,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2424,7 +2424,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    data_category: file.data_category,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2733,7 +2733,7 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (sm)<-[*..3]-(file:sequencing_file)
           WITH sm, opensearch_data, COLLECT(DISTINCT {
-            data_category: file.data_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: file.library_selection,
@@ -2744,7 +2744,7 @@ Indices:
           COLLECT(DISTINCT file.id) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            data_category: file.data_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -2755,7 +2755,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:cytogenomic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            data_category: file.data_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -2766,7 +2766,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:methylation_array_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            data_category: file.data_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -2855,7 +2855,7 @@ Indices:
             null as treatment_response_filters,
             CASE COLLECT(file) WHEN [] THEN []
                       ELSE COLLECT(DISTINCT {
-                          data_category: file.data_category,
+                          data_category: apoc.text.split(file.data_category, ';'),
                           file_type: file.file_type,
                           file_mapping_level: file.file_mapping_level,
                           library_selection: CASE LABELS(file)[0]
