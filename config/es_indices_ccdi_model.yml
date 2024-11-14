@@ -99,6 +99,7 @@ Indices:
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth
           } AS opensearch_data
+          SKIP $skip LIMIT $limit
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
           where (file: clinical_measure_file or file: radiology_file)
