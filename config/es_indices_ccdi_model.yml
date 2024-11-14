@@ -368,8 +368,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters      
@@ -897,8 +897,8 @@ Indices:
             event_free_survival_status: su.event_free_survival_status, 
             first_event: su.first_event,
             age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-          COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-          treatment_agent: tm.treatment_agent,
+          COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+          treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
           age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
           COLLECT(DISTINCT{response_category: tr.response_category,
           age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp
@@ -1284,8 +1284,8 @@ Indices:
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH su, p, sy, sample_diagnosis_file_filter,  
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp            
@@ -1685,8 +1685,8 @@ Indices:
               p.sex_at_birth as sex_at_birth,
               apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
               survival_filters as survival_filters,
-              tm.treatment_type as treatment_type,
-              tm.treatment_agent as treatment_agent,
+              apoc.text.split(tm.treatment_type, ';') as treatment_type,
+              apoc.text.split(tm.treatment_agent, ';') as treatment_agent,
               tm.age_at_treatment_start as age_at_treatment_start,
               treatment_response_filters as treatment_response_filters,
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
@@ -2059,8 +2059,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-              COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+              COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, st, stf, stp            
             RETURN DISTINCT
               tr.id as id,
@@ -2368,8 +2368,8 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           with p, apoc.map.merge(opensearch_data, {
-            treatment_filters: COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            treatment_filters: COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start})
           }) AS opensearch_data
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
@@ -2583,8 +2583,8 @@ Indices:
           match (p:participant)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           with dg, apoc.map.merge(opensearch_data, {
-            treatment_filters: COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            treatment_filters: COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start})
           }) AS opensearch_data
           match (p:participant)<--(sm:sample)<--(dg)
@@ -2720,8 +2720,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp          
@@ -3161,8 +3161,8 @@ Indices:
             survival_filters: survival_filters
           }) AS opensearch_data
           OPTIONAL MATCH (sm)-[*..3]->(:participant)<-[:of_treatment]-(tm:treatment)
-          WITH sm, opensearch_data, COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+          WITH sm, opensearch_data, COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters
           WITH sm, apoc.map.merge(opensearch_data, {
             treatment_filters: treatment_filters
@@ -3534,8 +3534,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
@@ -3671,8 +3671,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
@@ -3856,8 +3856,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp 
@@ -4079,8 +4079,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp
@@ -4130,8 +4130,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp
@@ -4244,8 +4244,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
-            treatment_agent: tm.treatment_agent,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp          
