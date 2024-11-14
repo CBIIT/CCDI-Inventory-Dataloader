@@ -3053,7 +3053,7 @@ Indices:
         type: keyword
       file_access:
         type: keyword
-      file_category:
+      data_category:
         type: keyword
       file_type:
         type: keyword
@@ -3346,9 +3346,7 @@ Indices:
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             file.file_access AS file_access,
-            CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                      WHEN 'radiology_file' THEN 'Radiology imaging'
-                                      ELSE null END AS file_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file.file_type AS file_type,
             file.file_mapping_level as file_mapping_level,
             file.file_description AS file_description,
@@ -3520,7 +3518,7 @@ Indices:
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             file.file_access AS file_access,
-            'Clinical data' AS file_category,
+            apoc.text.split(file.data_category, ';') as data_category,
             file.file_type AS file_type,
             file.file_mapping_level as file_mapping_level,
             file.file_description AS file_description,
@@ -3669,11 +3667,7 @@ Indices:
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             file.file_access AS file_access,
-            CASE LABELS(file)[0] WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array' 
-                                    ELSE null END AS file_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file.file_type AS file_type,
             file.file_mapping_level AS file_mapping_level,
             file.file_description AS file_description,
@@ -3727,11 +3721,7 @@ Indices:
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             file.file_access AS file_access,
-            CASE LABELS(file)[0]
-                  WHEN 'sequencing_file' THEN 'Sequencing'
-                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                  WHEN 'methylation_array_file' THEN 'Methylation array' ELSE null END AS file_category,
+            data_category: apoc.text.split(file.data_category, ';'),
             file.file_type AS file_type,
             file.file_mapping_level AS file_mapping_level,
             file.file_description AS file_description,
@@ -3888,7 +3878,7 @@ Indices:
             null AS guid,
             null AS file_name,
             null AS file_access,
-            null AS file_category,
+            null AS data_category,
             null AS file_type,
             null AS file_mapping_level,
             null AS file_description,
@@ -3939,7 +3929,7 @@ Indices:
             null AS guid,
             null AS file_name,
             null as file_access,
-            null AS file_category,
+            null AS data_category,
             null AS file_type,
             null as file_mapping_level,
             null AS file_description,
@@ -3992,7 +3982,7 @@ Indices:
             null AS guid,
             null AS file_name,
             null AS file_access,
-            null AS file_category,
+            null AS data_category,
             null AS file_type,
             null as file_mapping_level,
             null AS file_description,
@@ -4053,7 +4043,7 @@ Indices:
             null AS guid,
             null AS file_name,
             null AS file_access,
-            null AS file_category,
+            null AS data_category,
             null AS file_type,
             null as file_mapping_level,
             null AS file_description,
