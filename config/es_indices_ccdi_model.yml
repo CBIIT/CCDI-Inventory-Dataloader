@@ -67,7 +67,7 @@ Indices:
             type: keyword            
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -102,9 +102,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: null,
@@ -119,12 +117,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -170,12 +163,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -208,9 +196,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -237,12 +223,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -277,12 +258,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -317,9 +293,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -346,9 +320,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -368,8 +340,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters      
@@ -412,7 +384,7 @@ Indices:
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
                 diagnosis: null,
-                assay_method: 'Clinical data',
+                data_category: apoc.text.split(file.data_category, ';'),
                 file_type: file.file_type,
                 file_mapping_level: file.file_mapping_level,
                 library_selection: null,
@@ -479,12 +451,7 @@ Indices:
           tumor_grade_source: dg.tumor_grade_source,
           tumor_stage_source: dg.tumor_stage_source,
           diagnosis: dg.diagnosis,
-          assay_method: CASE LABELS(file)[0]
-              WHEN 'sequencing_file' THEN 'Sequencing'
-              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-              WHEN 'pathology_file' THEN 'Pathology imaging'
-              WHEN 'methylation_array_file' THEN 'Methylation array'
-              ELSE null END,
+          data_category: apoc.text.split(file.data_category, ';'),
           file_type: CASE LABELS(file)[0]
               WHEN null THEN null
               ELSE file.file_type END,
@@ -580,7 +547,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -613,13 +580,6 @@ Indices:
     cypher_queries:
       - query: |
           MATCH (p:participant)
-          WITH p, {
-            pid: p.id,
-            participant_id: p.participant_id,
-            race: apoc.text.split(p.race, ';'),
-            sex_at_birth: p.sex_at_birth
-          } AS opensearch_data
-          SKIP $skip LIMIT $limit
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
           where (file: clinical_measure_file or file: radiology_file)
@@ -629,9 +589,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -645,12 +603,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -696,12 +649,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -734,9 +682,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -763,12 +709,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -803,12 +744,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -843,9 +779,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -872,9 +806,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -882,45 +814,43 @@ Indices:
                     library_source_molecule: null,
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
-          with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-          OPTIONAL MATCH (p)<-[*..4]-(file)
-          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
-          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
-          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH p, sy, sample_diagnosis_file_filter, 
-          COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
-            event_free_survival_status: su.event_free_survival_status, 
-            first_event: su.first_event,
-            age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-          COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-          treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-          age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
-          COLLECT(DISTINCT{response_category: tr.response_category,
-          age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp
-          RETURN DISTINCT
-            p.id as id,
-            p.participant_id as participant_id,
-            apoc.text.split(p.race, ';') as race,
-            p.race as race_str,
-            p.sex_at_birth as sex_at_birth,
-            apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
-            survival_filters as survival_filters,
-            treatment_filters as treatment_filters,
-            treatment_response_filters as treatment_response_filters,
-            sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
-            st.study_id as study_id,
-            st.dbgap_accession as dbgap_accession,
-            st.study_acronym as study_acronym,
-            st.study_name as study_name,
-            COUNT(DISTINCT file.id) as file_count,
-            COLLECT(DISTINCT file.id) as files
-        page_size: 1000
-          
+            with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
+            OPTIONAL MATCH (p)<-[*..4]-(file)
+            WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+            OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+            OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+            OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+            OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
+            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+            OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+            WITH p, sy, sample_diagnosis_file_filter, 
+            COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+              event_free_survival_status: su.event_free_survival_status, 
+              first_event: su.first_event,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
+            COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp
+            RETURN DISTINCT
+              p.id as id,
+              p.participant_id as participant_id,
+              apoc.text.split(p.race, ';') as race,
+              p.race as race_str,
+              p.sex_at_birth as sex_at_birth,
+              apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
+              survival_filters as survival_filters,
+              treatment_filters as treatment_filters,
+              treatment_response_filters as treatment_response_filters,
+              sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
+              st.study_id as study_id,
+              st.dbgap_accession as dbgap_accession,
+              st.study_acronym as study_acronym,
+              st.study_name as study_name,
+              COUNT(DISTINCT file.id) as file_count,
+              COLLECT(DISTINCT file.id) as files
 
   - index_name: survivals
     type: neo4j
@@ -987,7 +917,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1009,6 +939,13 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      file_count:
+        type: integer
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -1022,9 +959,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1038,12 +973,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1089,12 +1019,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1127,9 +1052,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1156,12 +1079,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1196,12 +1114,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1236,9 +1149,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1265,9 +1176,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1276,7 +1185,9 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-            MATCH (p)<-[:of_survival]-(su:survival)
+            OPTIONAL MATCH (p)<-[*..4]-(file)
+            WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+            OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
@@ -1284,11 +1195,11 @@ Indices:
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH su, p, sy, sample_diagnosis_file_filter,  
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp            
+            age_at_response: tr.age_at_response}) as treatment_response_filters, file, st, stf, stp            
             RETURN DISTINCT
               su.id as id,
               p.id as pid,
@@ -1307,7 +1218,9 @@ Indices:
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
               st.study_acronym as study_acronym,
-              st.study_name as study_name
+              st.study_name as study_name,
+              COUNT(DISTINCT file.id) as file_count,
+              COLLECT(DISTINCT file.id) as files
 
   - index_name: treatments
     type: neo4j
@@ -1374,7 +1287,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1396,6 +1309,13 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      file_count:
+        type: integer
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -1409,9 +1329,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1425,12 +1343,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1476,12 +1389,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1514,9 +1422,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1543,12 +1449,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1583,12 +1484,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1623,9 +1519,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1652,9 +1546,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1663,8 +1555,10 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-            MATCH (p)<-[:of_treatment]-(tm:treatment)
+            OPTIONAL MATCH (p)<-[*..4]-(file)
+            WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+            OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
             OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
@@ -1675,7 +1569,7 @@ Indices:
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp            
+            age_at_response: tr.age_at_response}) as treatment_response_filters, file, st, stf, stp            
             RETURN DISTINCT
               tm.id as id,
               p.id as pid,
@@ -1685,15 +1579,17 @@ Indices:
               p.sex_at_birth as sex_at_birth,
               apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
               survival_filters as survival_filters,
-              apoc.text.split(tm.treatment_type, ';') as treatment_type,
-              apoc.text.split(tm.treatment_agent, ';') as treatment_agent,
+              tm.treatment_type as treatment_type,
+              tm.treatment_agent as treatment_agent,
               tm.age_at_treatment_start as age_at_treatment_start,
               treatment_response_filters as treatment_response_filters,
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
               st.study_acronym as study_acronym,
-              st.study_name as study_name
+              st.study_name as study_name,
+              COUNT(DISTINCT file.id) as file_count,
+              COLLECT(DISTINCT file.id) as files
 
   - index_name: treatment_responses
     type: neo4j
@@ -1760,7 +1656,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1782,6 +1678,13 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      file_count:
+        type: integer
+      files:
+        type: text
+        fields:
+          keyword:
+            type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -1795,9 +1698,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1811,12 +1712,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1862,12 +1758,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1900,9 +1791,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1929,12 +1818,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1969,12 +1853,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
@@ -2008,9 +1887,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -2037,9 +1914,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -2048,9 +1923,11 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
             with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
-            MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+            OPTIONAL MATCH (p)<-[*..4]-(file)
+            WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+            OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
             OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
@@ -2059,9 +1936,9 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-              COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, st, stf, stp            
+              COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters, file, st, stf, stp            
             RETURN DISTINCT
               tr.id as id,
               p.id as pid,
@@ -2078,7 +1955,9 @@ Indices:
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
               st.study_acronym as study_acronym,
-              st.study_name as study_name
+              st.study_name as study_name,
+              COUNT(DISTINCT file.id) as file_count,
+              COLLECT(DISTINCT file.id) as files
 
   - index_name: diagnosis
     type: neo4j
@@ -2163,7 +2042,7 @@ Indices:
             type: keyword
           tumor_classification:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -2187,30 +2066,18 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
-          Match (p:participant)<--(:diagnosis)
-          WITH distinct p, {
-            pid: p.id,
-            participant_id: p.participant_id,
-            race: apoc.text.split(p.race, ';'),
-            sex_at_birth: p.sex_at_birth
-          } AS opensearch_data
-          SKIP $skip LIMIT $limit
+          MATCH (p:participant)<--(dg:diagnosis)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with p, opensearch_data, case COLLECT(distinct sm1) when [] then []
+          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file) 
+          with p, case COLLECT(distinct sm1) when [] then []
                         else COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                                 participant_age_at_collection: sm1.participant_age_at_collection,
                                 sample_tumor_status: sm1.sample_tumor_status,
                                 tumor_classification: sm1.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2228,19 +2095,14 @@ Indices:
                                               WHEN 'sequencing_file' THEN file.library_strategy
                                               ELSE null END
                             }) end AS sample1,
-                            case COLLECT(distinct sm2)
+                            case COLLECT(distinct sm2) 
                             when [] then []
                             else COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                                 participant_age_at_collection: sm2.participant_age_at_collection,
                                 sample_tumor_status: sm2.sample_tumor_status,
                                 tumor_classification: sm2.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2258,55 +2120,15 @@ Indices:
                                               WHEN 'sequencing_file' THEN file.library_strategy
                                               ELSE null END
                             }) end AS sample2
-          with p, opensearch_data, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters_1
-          optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
-          WHERE (cl: cell_line or cl: pdx)
-          optional Match (sm1)<--(file)
+          with p, apoc.coll.union(sample1,sample2) as cell_line_pdx_file_filters
+          OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)<--(file)
           WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with p, opensearch_data, cell_line_pdx_file_filters_1, case COLLECT(distinct sm2) when [] then []
-                            else COLLECT(DISTINCT {
-                                sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
-                                participant_age_at_collection: sm2.participant_age_at_collection,
-                                sample_tumor_status: sm2.sample_tumor_status,
-                                tumor_classification: sm2.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
-                                file_type: CASE LABELS(file)[0]
-                                          When null then null
-                                          else file.file_type end,
-                                file_mapping_level: file.file_mapping_level,
-                                library_selection: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN file.library_selection
-                                              ELSE null END,
-                                library_source_material: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source_material
-                                            ELSE null END,
-                                library_source_molecule: CASE LABELS(file)[0]
-                                            WHEN 'sequencing_file' THEN file.library_source_molecule
-                                            ELSE null END,
-                                library_strategy: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN file.library_strategy
-                                              ELSE null END
-                            }) end AS cell_line_pdx_file_filters_2
-          with p, opensearch_data, apoc.coll.union(cell_line_pdx_file_filters_1, cell_line_pdx_file_filters_2) as cell_line_pdx_file_filters
-          OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
-          optional match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with p, opensearch_data, cell_line_pdx_file_filters, COLLECT(DISTINCT {
+          with p, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                         participant_age_at_collection: sm.participant_age_at_collection,
                         sample_tumor_status: sm.sample_tumor_status,
                         tumor_classification: sm.tumor_classification,
-                        assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                        data_category: apoc.text.split(file.data_category, ';'),
                         file_type: file.file_type,
                         file_mapping_level: file.file_mapping_level,
                         library_selection: CASE LABELS(file)[0]
@@ -2321,75 +2143,70 @@ Indices:
                         library_strategy: CASE LABELS(file)[0]
                                       WHEN 'sequencing_file' THEN file.library_strategy
                                       ELSE null END
-                    }) AS general_file_filters_1
-          with p, opensearch_data, apoc.coll.union(cell_line_pdx_file_filters, general_file_filters_1) as general_file_filters
-          OPTIONAL Match (p)<-[*..3]-(sm:sample)
-          OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
-          with p, opensearch_data, general_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+                    }) AS general_file_filters
+          OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
+          OPTIONAL MATCH (p)<-[:of_clinical_measure_file]-(file1:clinical_measure_file)
+          with p, cell_line_pdx_file_filters, general_file_filters,sm, COLLECT(DISTINCT file1.file_type) as file1_types, COLLECT(DISTINCT file1.data_category) as file1_categories, COLLECT(DISTINCT file1.file_mapping_levels) as file1_file_mapping_levels
+          UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
+          UNWIND (case file1_categories when [] then [null] else file1_categories end)  AS categories_1
+          UNWIND (case file1_file_mapping_levels when [] then [null] else file1_file_mapping_levels end)  AS levels_1
+          with p, cell_line_pdx_file_filters, general_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
+                    data_category: categories_1,
+                    file_type: types_1,
+                    file_mapping_levels: levels_1,
                     library_selection: null,
                     library_source_material: null,
                     library_source_molecule: null,
                     library_strategy: null
-            }) end as participant_file_filters
-          optional match (st:study)<--(p)<-[*..3]-(sm:sample)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
-          with p, opensearch_data, general_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
+            }) as participant_clinical_measure_file_filters
+          OPTIONAL Match (p)<-[:of_sample]-(sm:sample)
+          OPTIONAL MATCH (p)<-[:of_radiology_file]-(file1:radiology_file)
+          with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, sm, COLLECT(DISTINCT file1.file_type) as file1_types, COLLECT(DISTINCT file1.data_category) as file1_categories, COLLECT(DISTINCT file1.file_mapping_level) as file1_file_mapping_levels
+          UNWIND (case file1_types when [] then [null] else file1_types end)  AS types_1
+          UNWIND (case file1_categories when [] then [null] else file1_categories end)  AS categories_1
+          UNWIND (case file1_file_mapping_levels when [] then [null] else file1_file_mapping_levels end)  AS levels_1
+          with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
+                    data_category: categories_1,
+                    file_type: types_1,
+                    file_mapping_level: levels_1,
                     library_selection: null,
                     library_source_material: null,
                     library_source_molecule: null,
                     library_strategy: null
-            }) end as study_file_filters
-          with p, apoc.map.merge(opensearch_data, {
-            sample_file_filters: general_file_filters + apoc.coll.union(participant_file_filters, study_file_filters)
-          }) AS opensearch_data
-          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-          with p, apoc.map.merge(opensearch_data, {
-            survival_filters: COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status,
-              event_free_survival_status: su.event_free_survival_status,
-              first_event: su.first_event,
-              age_at_last_known_survival_status: su.age_at_last_known_survival_status})
-          }) AS opensearch_data
-          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
-          with p, apoc.map.merge(opensearch_data, {
-            treatment_filters: COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-            age_at_treatment_start: tm.age_at_treatment_start})
-          }) AS opensearch_data
-          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          with p, apoc.map.merge(opensearch_data, {
-            treatment_response_filters: COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response})
-          }) AS opensearch_data
-          OPTIONAL MATCH (p)<-[*..4]-(file)
-          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with p, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
-                    }) AS opensearch_data
+            }) as participant_radiology_file_filters
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
+          with dg, p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters, participant_radiology_file_filters
+          SKIP $skip LIMIT $limit
+          OPTIONAL MATCH (p)<-[*..4]-(file)
+          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+          with p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, dg, file, su, tm, tr
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
-          WITH dg, p, opensearch_data , st
+          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          WITH p, cell_line_pdx_file_filters, general_file_filters, participant_clinical_measure_file_filters,participant_radiology_file_filters, file, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+              event_free_survival_status: su.event_free_survival_status, 
+              first_event: su.first_event,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters, 
+          COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
+            COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp, dg
           RETURN DISTINCT
             dg.id as id,
-            opensearch_data.pid as pid,
+            p.id as pid,
             null as sid,
             null as sample_id,
             dg.diagnosis_id as diagnosis_id,
@@ -2402,60 +2219,30 @@ Indices:
             apoc.text.split(dg.anatomic_site, ';') as diagnosis_anatomic_site,
             dg.anatomic_site as diagnosis_anatomic_site_str,
             dg.age_at_diagnosis as age_at_diagnosis,
-            opensearch_data.participant_id as participant_id,
-            opensearch_data.race as race,
-            opensearch_data.sex_at_birth as sex_at_birth,
+            p.participant_id as participant_id,
+            apoc.text.split(p.race, ';') as race,
+            p.sex_at_birth as sex_at_birth,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            opensearch_data.survival_filters as survival_filters, 
-            opensearch_data.treatment_filters as treatment_filters,
-            opensearch_data.treatment_response_filters as treatment_response_filters,  
-            opensearch_data.sample_file_filters AS sample_file_filters,
-            opensearch_data.file_count as file_count,
-            opensearch_data.files as files
-        page_size: 100
+            survival_filters as survival_filters, 
+            treatment_filters as treatment_filters,
+            treatment_response_filters as treatment_response_filters,  
+            apoc.coll.union(cell_line_pdx_file_filters, general_file_filters) + participant_clinical_measure_file_filters + participant_radiology_file_filters AS sample_file_filters,
+            COUNT(DISTINCT file.id) as file_count,
+            COLLECT(DISTINCT file.id) as files
+        page_size: 500
       - query: |
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg:diagnosis)
-          with distinct dg, {
-            id: dg.id,
-            pid: p.id,
-            sid: sm.id,
-            sample_id: sm.sample_id,
-            diagnosis_id: dg.diagnosis_id,
-            diagnosis: dg.diagnosis,
-            disease_phase: dg.disease_phase,
-            diagnosis_classification_system: dg.diagnosis_classification_system,
-            diagnosis_basis: dg.diagnosis_basis,
-            tumor_grade_source: dg.tumor_grade_source,
-            tumor_stage_source: dg.tumor_stage_source,
-            diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
-            diagnosis_anatomic_site_str: dg.anatomic_site,
-            age_at_diagnosis: dg.age_at_diagnosis,
-            participant_id: p.participant_id,
-            race: apoc.text.split(p.race, ';'),
-            sex_at_birth: p.sex_at_birth,
-            study_id: st.study_id,
-            dbgap_accession: st.dbgap_accession,
-            study_acronym: st.study_acronym,
-            study_name: st.study_name
-          } as opensearch_data
-          SKIP $skip LIMIT $limit
-          match (p:participant)<--(sm:sample)<--(dg)
+          match (p:participant)<--(sm:sample)<--(dg:diagnosis)
           optional match (sm)<-[*..3]-(file)
           where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, opensearch_data, COLLECT(DISTINCT {
+          with dg, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2476,17 +2263,12 @@ Indices:
           where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, opensearch_data, sample_file_filter_1, COLLECT(DISTINCT {
+          with dg, sample_file_filter_1, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2502,106 +2284,53 @@ Indices:
                               WHEN 'sequencing_file' THEN file.library_strategy
                               ELSE null END
             }) as sample_file_filter_2
-          with dg, opensearch_data, apoc.coll.union(sample_file_filter_1, sample_file_filter_2) as sample_file_filter
-          match (p:participant)<--(sm1:sample)<--(dg)
-          optional match (sm1)<--(cl)<--(sm:sample)
-          where (cl: cell_line or cl: pdx)
-          optional match (sm1)<--(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, opensearch_data, sample_file_filter, COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
-                    file_type: file.file_type,
-                    file_mapping_level: file.file_mapping_level,
-                    library_selection: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_selection
-                              ELSE null END,
-                    library_source_material: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source_material
-                              ELSE null END,
-                    library_source_molecule: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_source_molecule
-                              ELSE null END,
-                    library_strategy: CASE LABELS(file)[0]
-                              WHEN 'sequencing_file' THEN file.library_strategy
-                              ELSE null END
-            }) as sample_file_filter_3
-          with dg, opensearch_data, apoc.coll.union(sample_file_filter, sample_file_filter_3) as sample_file_filters
-          match (p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
-          with dg, opensearch_data, sample_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as participant_file_filters
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
-          with dg, opensearch_data, sample_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as study_file_filters
-          with dg, opensearch_data, sample_file_filters, apoc.coll.union(participant_file_filters, study_file_filters) as non_sample_file_filters
-          with dg, apoc.map.merge(opensearch_data, {
-            sample_file_filters: sample_file_filters + non_sample_file_filters
-          }) AS opensearch_data
-          match (p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
-          with dg, apoc.map.merge(opensearch_data, {
-            survival_filters: COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status,
-              event_free_survival_status: su.event_free_survival_status,
-              first_event: su.first_event,
-              age_at_last_known_survival_status: su.age_at_last_known_survival_status})
-          }) AS opensearch_data
-          match (p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
-          with dg, apoc.map.merge(opensearch_data, {
-            treatment_filters: COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-            age_at_treatment_start: tm.age_at_treatment_start})
-          }) AS opensearch_data
-          match (p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          with dg, apoc.map.merge(opensearch_data, {
-            treatment_response_filters: COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response})
-          }) AS opensearch_data
+          with dg, apoc.coll.union(sample_file_filter_1, sample_file_filter_2) as sample_file_filter
           match (p:participant)<--(sm:sample)<--(dg)
           optional match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
-                    }) AS opensearch_data         
-          RETURN opensearch_data
-        page_size: 100
+          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          WITH dg, p, sm, sample_file_filter, file, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+              event_free_survival_status: su.event_free_survival_status, 
+              first_event: su.first_event,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters, 
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
+            COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp         
+          RETURN DISTINCT
+            dg.id as id,
+            p.id as pid,
+            sm.id as sid,
+            sm.sample_id as sample_id,
+            dg.diagnosis_id as diagnosis_id,
+            dg.diagnosis as diagnosis,
+            dg.disease_phase as disease_phase,
+            dg.diagnosis_classification_system as diagnosis_classification_system,
+            dg.diagnosis_basis as diagnosis_basis,
+            dg.tumor_grade_source as tumor_grade_source,
+            dg.tumor_stage_source as tumor_stage_source,
+            apoc.text.split(dg.anatomic_site, ';') as diagnosis_anatomic_site,
+            dg.anatomic_site as diagnosis_anatomic_site_str,
+            dg.age_at_diagnosis as age_at_diagnosis,
+            p.participant_id as participant_id,
+            apoc.text.split(p.race, ';') as race,
+            p.sex_at_birth as sex_at_birth,
+            st.study_id as study_id,
+            st.dbgap_accession as dbgap_accession,
+            st.study_acronym as study_acronym,
+            st.study_name as study_name,
+            survival_filters as survival_filters, 
+            treatment_filters as treatment_filters,
+            treatment_response_filters as treatment_response_filters,     
+            sample_file_filter AS sample_file_filters,
+            COUNT(DISTINCT file.id) as file_count,
+            COLLECT(DISTINCT file.id) as files
       - query: |
           MATCH (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)<--(dg:diagnosis)
           WHERE (cl: cell_line or cl: pdx)
@@ -2620,12 +2349,7 @@ Indices:
                     participant_age_at_collection: sample.participant_age_at_collection,
                     sample_tumor_status: sample.sample_tumor_status,
                     tumor_classification: sample.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2642,73 +2366,10 @@ Indices:
                               ELSE null END
             }) as sample_file_filter
           optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
-          with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as participant_file_filters_1,
-            case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
-                    participant_age_at_collection: sm1.participant_age_at_collection,
-                    sample_tumor_status: sm1.sample_tumor_status,
-                    tumor_classification: sm1.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as participant_file_filters_2
-          with dg, sample_file_filter, apoc.coll.union(participant_file_filters_1, participant_file_filters_2) as participant_file_filters
-          optional match (st:study)<--(p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
-          with dg, sample_file_filter, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as study_file_filters_1, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
-                    participant_age_at_collection: sm1.participant_age_at_collection,
-                    sample_tumor_status: sm1.sample_tumor_status,
-                    tumor_classification: sm1.tumor_classification,
-                    assay_method: 'Clinical data',
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as study_file_filters_2
-          with dg, sample_file_filter, participant_file_filters, apoc.coll.union(study_file_filters_1, study_file_filters_2) as study_file_filters
-          with dg, sample_file_filter + apoc.coll.union(participant_file_filters, study_file_filters) as sample_file_filters
-          optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
           WHERE (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, sample_file_filters, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
+          with dg, sample_file_filter, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
           optional match (p:participant)<-[*..4]-(dg)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -2716,12 +2377,12 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, p, sid, sample_id, sample_file_filters, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+          WITH dg, p, sid, sample_id, sample_file_filter, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, st, stf, stp          
@@ -2750,7 +2411,7 @@ Indices:
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,    
-            sample_file_filters AS sample_file_filters,
+            sample_file_filter AS sample_file_filters,
             size(files) as file_count,
             files as files
       - query: |
@@ -2763,12 +2424,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2786,28 +2442,11 @@ Indices:
             }) as sample_file_filter
           optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
           where (cl: cell_line or cl: pdx)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
-          with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
-                    sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                    participant_age_at_collection: sm.participant_age_at_collection,
-                    sample_tumor_status: sm.sample_tumor_status,
-                    tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
-                    file_type: file.file_type,
-                    file_mapping_levels: file.file_mapping_level,
-                    library_selection: null,
-                    library_source_material: null,
-                    library_source_molecule: null,
-                    library_strategy: null
-            }) end as study_file_filters
-          with dg, sample_file_filter + study_file_filters as sample_file_filters
-          optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
-          where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH dg, sm, sample_file_filters, file, st, stf, stp
+          WITH dg, sm, sample_file_filter, file, st, stf, stp
           RETURN DISTINCT
             dg.id as id,
             null as pid,
@@ -2841,7 +2480,7 @@ Indices:
             age_at_treatment_start: null}) as treatment_filters,
             COLLECT(DISTINCT{response_category: null,
             age_at_response: null}) as treatment_response_filters, 
-            sample_file_filters AS sample_file_filters,
+            sample_file_filter AS sample_file_filters,
             COUNT(DISTINCT file.id) as file_count,
             COLLECT(DISTINCT file.id) as files
 
@@ -2997,7 +2636,7 @@ Indices:
       file_filters:
         type: nested
         properties:
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -3094,7 +2733,7 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (sm)<-[*..3]-(file:sequencing_file)
           WITH sm, opensearch_data, COLLECT(DISTINCT {
-            assay_method: 'Sequencing',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: file.library_selection,
@@ -3105,7 +2744,7 @@ Indices:
           COLLECT(DISTINCT file.id) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Pathology imaging',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3116,7 +2755,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:cytogenomic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Cytogenomic',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3127,7 +2766,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:methylation_array_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Methylation array',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3161,8 +2800,8 @@ Indices:
             survival_filters: survival_filters
           }) AS opensearch_data
           OPTIONAL MATCH (sm)-[*..3]->(:participant)<-[:of_treatment]-(tm:treatment)
-          WITH sm, opensearch_data, COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+          WITH sm, opensearch_data, COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters
           WITH sm, apoc.map.merge(opensearch_data, {
             treatment_filters: treatment_filters
@@ -3216,12 +2855,7 @@ Indices:
             null as treatment_response_filters,
             CASE COLLECT(file) WHEN [] THEN []
                       ELSE COLLECT(DISTINCT {
-                          assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array' 
-                                    ELSE null END,
+                          data_category: apoc.text.split(file.data_category, ';'),
                           file_type: file.file_type,
                           file_mapping_level: file.file_mapping_level,
                           library_selection: CASE LABELS(file)[0]
@@ -3534,8 +3168,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
@@ -3671,8 +3305,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
@@ -3856,8 +3490,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp 
@@ -4079,8 +3713,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp
@@ -4130,8 +3764,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp
@@ -4244,8 +3878,8 @@ Indices:
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
               age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
-            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            COLLECT(DISTINCT{treatment_type: tm.treatment_type,
+            treatment_agent: tm.treatment_agent,
             age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp          
