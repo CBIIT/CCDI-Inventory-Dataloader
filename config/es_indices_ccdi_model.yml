@@ -67,7 +67,7 @@ Indices:
             type: keyword            
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -102,9 +102,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: null,
@@ -119,12 +117,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -170,12 +163,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -208,9 +196,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -237,12 +223,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -277,12 +258,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -317,9 +293,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -346,9 +320,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -412,7 +384,7 @@ Indices:
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
                 diagnosis: null,
-                assay_method: 'Clinical data',
+                data_category: apoc.text.split(file.data_category, ';'),
                 file_type: file.file_type,
                 file_mapping_level: file.file_mapping_level,
                 library_selection: null,
@@ -479,12 +451,7 @@ Indices:
           tumor_grade_source: dg.tumor_grade_source,
           tumor_stage_source: dg.tumor_stage_source,
           diagnosis: dg.diagnosis,
-          assay_method: CASE LABELS(file)[0]
-              WHEN 'sequencing_file' THEN 'Sequencing'
-              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-              WHEN 'pathology_file' THEN 'Pathology imaging'
-              WHEN 'methylation_array_file' THEN 'Methylation array'
-              ELSE null END,
+          data_category: apoc.text.split(file.data_category, ';'),
           file_type: CASE LABELS(file)[0]
               WHEN null THEN null
               ELSE file.file_type END,
@@ -580,7 +547,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -629,9 +596,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -645,12 +610,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -696,12 +656,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -734,9 +689,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -763,12 +716,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -803,12 +751,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -843,9 +786,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -872,9 +813,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -987,7 +926,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1022,9 +961,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1038,12 +975,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1089,12 +1021,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1127,9 +1054,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1156,12 +1081,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1196,12 +1116,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1236,9 +1151,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1265,9 +1178,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1374,7 +1285,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1409,9 +1320,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1425,12 +1334,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1476,12 +1380,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1514,9 +1413,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1543,12 +1440,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1583,12 +1475,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1623,9 +1510,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1652,9 +1537,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1760,7 +1643,7 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -1795,9 +1678,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_source_material: null,
@@ -1811,12 +1692,7 @@ Indices:
                       participant_age_at_collection: sm.participant_age_at_collection,
                       sample_tumor_status: sm.sample_tumor_status,
                       tumor_classification: sm.tumor_classification,
-                      assay_method: CASE LABELS(file)[0]
-                                              WHEN 'sequencing_file' THEN 'Sequencing'
-                                              WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                              WHEN 'pathology_file' THEN 'Pathology imaging'
-                                              WHEN 'methylation_array_file' THEN 'Methylation array'
-                                              ELSE null END,
+                      data_category: apoc.text.split(file.data_category, ';'),
                       file_type: file.file_type,
                       file_mapping_level: file.file_mapping_level,
                       library_selection: CASE LABELS(file)[0]
@@ -1862,12 +1738,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1900,9 +1771,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -1929,12 +1798,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -1969,12 +1833,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array'
-                                    ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     library_selection: CASE LABELS(file)[0]
                               WHEN 'sequencing_file' THEN file.library_selection
@@ -2008,9 +1867,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -2037,9 +1894,7 @@ Indices:
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                        WHEN 'radiology_file' THEN 'Radiology imaging'
-                                        ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: null,
@@ -2163,7 +2018,7 @@ Indices:
             type: keyword
           tumor_classification:
             type: keyword
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -2205,12 +2060,7 @@ Indices:
                                 participant_age_at_collection: sm1.participant_age_at_collection,
                                 sample_tumor_status: sm1.sample_tumor_status,
                                 tumor_classification: sm1.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2235,12 +2085,7 @@ Indices:
                                 participant_age_at_collection: sm2.participant_age_at_collection,
                                 sample_tumor_status: sm2.sample_tumor_status,
                                 tumor_classification: sm2.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2269,12 +2114,7 @@ Indices:
                                 participant_age_at_collection: sm2.participant_age_at_collection,
                                 sample_tumor_status: sm2.sample_tumor_status,
                                 tumor_classification: sm2.tumor_classification,
-                                assay_method: CASE LABELS(file)[0]
-                                          WHEN 'sequencing_file' THEN 'Sequencing'
-                                          WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                          WHEN 'pathology_file' THEN 'Pathology imaging'
-                                          WHEN 'methylation_array_file' THEN 'Methylation array'
-                                          ELSE null END,
+                                data_category: apoc.text.split(file.data_category, ';'),
                                 file_type: CASE LABELS(file)[0]
                                           When null then null
                                           else file.file_type end,
@@ -2301,12 +2141,7 @@ Indices:
                         participant_age_at_collection: sm.participant_age_at_collection,
                         sample_tumor_status: sm.sample_tumor_status,
                         tumor_classification: sm.tumor_classification,
-                        assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                        data_category: apoc.text.split(file.data_category, ';'),
                         file_type: file.file_type,
                         file_mapping_level: file.file_mapping_level,
                         library_selection: CASE LABELS(file)[0]
@@ -2331,9 +2166,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2348,7 +2181,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2450,12 +2283,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2481,12 +2309,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2513,12 +2336,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2543,9 +2361,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2560,7 +2376,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2620,12 +2436,7 @@ Indices:
                     participant_age_at_collection: sample.participant_age_at_collection,
                     sample_tumor_status: sample.sample_tumor_status,
                     tumor_classification: sample.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2649,9 +2460,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2664,9 +2473,7 @@ Indices:
                     participant_age_at_collection: sm1.participant_age_at_collection,
                     sample_tumor_status: sm1.sample_tumor_status,
                     tumor_classification: sm1.tumor_classification,
-                    assay_method: CASE labels(file)[0] WHEN 'clinical_measure_file' THEN 'Clinical data'
-                                                  WHEN 'radiology_file' THEN 'Radiology imaging'
-                                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2682,7 +2489,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2694,7 +2501,7 @@ Indices:
                     participant_age_at_collection: sm1.participant_age_at_collection,
                     sample_tumor_status: sm1.sample_tumor_status,
                     tumor_classification: sm1.tumor_classification,
-                    assay_method: 'Clinical data',
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2763,12 +2570,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: CASE LABELS(file)[0]
-                                  WHEN 'sequencing_file' THEN 'Sequencing'
-                                  WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                  WHEN 'pathology_file' THEN 'Pathology imaging'
-                                  WHEN 'methylation_array_file' THEN 'Methylation array'
-                                  ELSE null END,
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_level: file.file_mapping_level,
                     library_selection: CASE LABELS(file)[0]
@@ -2792,7 +2594,7 @@ Indices:
                     participant_age_at_collection: sm.participant_age_at_collection,
                     sample_tumor_status: sm.sample_tumor_status,
                     tumor_classification: sm.tumor_classification,
-                    assay_method: 'Clinical data',
+                    data_category: apoc.text.split(file.data_category, ';'),
                     file_type: file.file_type,
                     file_mapping_levels: file.file_mapping_level,
                     library_selection: null,
@@ -2997,7 +2799,7 @@ Indices:
       file_filters:
         type: nested
         properties:
-          assay_method:
+          data_category:
             type: keyword
           file_type:
             type: keyword
@@ -3094,7 +2896,7 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (sm)<-[*..3]-(file:sequencing_file)
           WITH sm, opensearch_data, COLLECT(DISTINCT {
-            assay_method: 'Sequencing',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: file.library_selection,
@@ -3105,7 +2907,7 @@ Indices:
           COLLECT(DISTINCT file.id) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Pathology imaging',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3116,7 +2918,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:cytogenomic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Cytogenomic',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3127,7 +2929,7 @@ Indices:
           apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:methylation_array_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
-            assay_method: 'Methylation array',
+            data_category: apoc.text.split(file.data_category, ';'),
             file_type: file.file_type,
             file_mapping_level: file.file_mapping_level,
             library_selection: null,
@@ -3216,12 +3018,7 @@ Indices:
             null as treatment_response_filters,
             CASE COLLECT(file) WHEN [] THEN []
                       ELSE COLLECT(DISTINCT {
-                          assay_method: CASE LABELS(file)[0]
-                                    WHEN 'sequencing_file' THEN 'Sequencing'
-                                    WHEN 'cytogenomic_file' THEN 'Cytogenomic'
-                                    WHEN 'pathology_file' THEN 'Pathology imaging'
-                                    WHEN 'methylation_array_file' THEN 'Methylation array' 
-                                    ELSE null END,
+                          data_category: apoc.text.split(file.data_category, ';'),
                           file_type: file.file_type,
                           file_mapping_level: file.file_mapping_level,
                           library_selection: CASE LABELS(file)[0]
