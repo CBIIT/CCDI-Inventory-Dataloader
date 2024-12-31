@@ -102,7 +102,7 @@ Indices:
           SKIP $skip LIMIT $limit
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file:generic_file or file: radiology_file)
           with distinct p, sm, file
           with p, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -118,7 +118,7 @@ Indices:
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
-          where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
           with p, sample_clinical_radiology_file_filter, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -156,7 +156,7 @@ Indices:
               })) as sample_diagnosis_file_filter
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (sm)<--(file)
-            where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+            where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
             with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -189,7 +189,7 @@ Indices:
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_1) as sample_diagnosis_file_filters
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (p)<--(file)
-            where (file: clinical_measure_file or file: radiology_file)
+            where (file: clinical_measure_file or file:generic_file or file: radiology_file)
             with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -215,7 +215,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm1)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -250,7 +250,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm2)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -286,7 +286,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file:generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                     participant_age_at_collection: sm1.participant_age_at_collection,
@@ -313,7 +313,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file:generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                     participant_age_at_collection: sm2.participant_age_at_collection,
@@ -417,11 +417,59 @@ Indices:
             st.study_name as study_name
       - query: |
           MATCH (st:study)
+          MATCH (st)<-[:of_generic_file]-(file:generic_file)
+          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          WITH file, st, stf, stp
+          RETURN DISTINCT
+            null as id,
+            null as pid,
+            null as participant_id,
+            null as race,
+            null as sex_at_birth,
+            COLLECT(DISTINCT {
+                sample_anatomic_site: null,
+                participant_age_at_collection: null,
+                sample_tumor_status: null,
+                tumor_classification: null,
+                age_at_diagnosis: null,
+                diagnosis_anatomic_site: null,
+                disease_phase: null,
+                diagnosis_classification_system: null,
+                diagnosis_basis: null, 
+                tumor_grade_source: null,
+                tumor_stage_source: null,          
+                diagnosis: null,
+                data_category: apoc.text.split(file.data_category, ';'),
+                file_type: file.file_type,
+                file_mapping_level: file.file_mapping_level,
+                library_selection: null,
+                library_source_material: null,
+                library_source_molecule: null,
+                library_strategy: null
+            }) AS sample_diagnosis_file_filters,
+            COLLECT(DISTINCT {
+                last_known_survival_status: null,
+                age_at_last_known_survival_status: null,
+                event_free_survival_status: null,
+                first_event: null
+            }) AS survival_filters,
+            COLLECT(DISTINCT{treatment_type: null,
+            treatment_agent: null,
+            age_at_treatment_start: null}) as treatment_filters,
+            COLLECT(DISTINCT{response_category: null,
+            age_at_response: null}) as treatment_response_filters,            
+            st.study_id as study_id,
+            st.dbgap_accession as dbgap_accession,
+            st.study_acronym as study_acronym,
+            st.study_name as study_name
+      - query: |
+          MATCH (st:study)
           MATCH (st)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
           WHERE (cl:cell_line OR cl:pdx)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
           OPTIONAL MATCH (sm)<--(file)
-          WHERE (file:sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file:sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH file, dg, sm, st, stf, stp
@@ -597,7 +645,7 @@ Indices:
           SKIP $skip LIMIT $limit
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with distinct p, sm, file
           with p, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -612,7 +660,7 @@ Indices:
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
-          where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
           with p, sample_clinical_radiology_file_filter, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -650,7 +698,7 @@ Indices:
               })) as sample_diagnosis_file_filter
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (sm)<--(file)
-            where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+            where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
             with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -683,7 +731,7 @@ Indices:
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_1) as sample_diagnosis_file_filters
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (p)<--(file)
-            where (file: clinical_measure_file or file: radiology_file)
+            where (file: clinical_measure_file or file: generic_file or file: radiology_file)
             with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -709,7 +757,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm1)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -744,7 +792,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm2)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -780,7 +828,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                     participant_age_at_collection: sm1.participant_age_at_collection,
@@ -807,7 +855,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                     participant_age_at_collection: sm2.participant_age_at_collection,
@@ -831,7 +879,7 @@ Indices:
                 }) AS sample_diagnosis_filters_4
           with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
           OPTIONAL MATCH (p)<-[*..4]-(file)
-          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
@@ -962,7 +1010,7 @@ Indices:
           MATCH (p:participant)
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with distinct p, sm, file
           with p, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -977,7 +1025,7 @@ Indices:
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
-          where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
           with p, sample_clinical_radiology_file_filter, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1015,7 +1063,7 @@ Indices:
               })) as sample_diagnosis_file_filter
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (sm)<--(file)
-            where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+            where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
             with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1048,7 +1096,7 @@ Indices:
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_1) as sample_diagnosis_file_filters
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (p)<--(file)
-            where (file: clinical_measure_file or file: radiology_file)
+            where (file: clinical_measure_file or file: generic_file or file: radiology_file)
             with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1074,7 +1122,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm1)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -1109,7 +1157,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm2)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -1145,7 +1193,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                     participant_age_at_collection: sm1.participant_age_at_collection,
@@ -1172,7 +1220,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                     participant_age_at_collection: sm2.participant_age_at_collection,
@@ -1321,7 +1369,7 @@ Indices:
           MATCH (p:participant)
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with distinct p, sm, file
           with p, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -1336,7 +1384,7 @@ Indices:
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
-          where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
           with p, sample_clinical_radiology_file_filter, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1374,7 +1422,7 @@ Indices:
               })) as sample_diagnosis_file_filter
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (sm)<--(file)
-            where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+            where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
             with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1407,7 +1455,7 @@ Indices:
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_1) as sample_diagnosis_file_filters
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (p)<--(file)
-            where (file: clinical_measure_file or file: radiology_file)
+            where (file: clinical_measure_file or file: generic_file or file: radiology_file)
             with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1433,7 +1481,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm1)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -1468,7 +1516,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm2)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -1504,7 +1552,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                     participant_age_at_collection: sm1.participant_age_at_collection,
@@ -1531,7 +1579,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                     participant_age_at_collection: sm2.participant_age_at_collection,
@@ -1679,7 +1727,7 @@ Indices:
           MATCH (p:participant)
           optional match (p)<--(sm:sample)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with distinct p, sm, file
           with p, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -1694,7 +1742,7 @@ Indices:
                       library_strategy: null
               }) as sample_clinical_radiology_file_filter
           optional match (p)<--(sm:sample)<--(file)
-          where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
           with p, sample_clinical_radiology_file_filter, collect(DISTINCT {
                       sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                       participant_age_at_collection: sm.participant_age_at_collection,
@@ -1732,7 +1780,7 @@ Indices:
               })) as sample_diagnosis_file_filter
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (sm)<--(file)
-            where (file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+            where (file: sequencing_file or file: generic_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
             with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1765,7 +1813,7 @@ Indices:
             with p, apoc.coll.union(sample_diagnosis_file_filter, sample_diagnosis_filters_1) as sample_diagnosis_file_filters
             optional match (p)<--(sm:sample)<--(dg:diagnosis)
             optional match (p)<--(file)
-            where (file: clinical_measure_file or file: radiology_file)
+            where (file: clinical_measure_file or file: generic_file or file: radiology_file)
             with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -1791,7 +1839,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm1)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -1826,7 +1874,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           optional Match (sm2)<--(dg:diagnosis)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -1861,7 +1909,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                     participant_age_at_collection: sm1.participant_age_at_collection,
@@ -1888,7 +1936,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(dg:diagnosis)
           optional match (p)<--(file)
-          where (file: clinical_measure_file or file: radiology_file)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file)
           with p, sample_diagnosis_file_filters, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
                     participant_age_at_collection: sm2.participant_age_at_collection,
@@ -2061,7 +2109,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm2)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, opensearch_data, case COLLECT(distinct sm1) when [] then []
                         else COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -2115,7 +2163,7 @@ Indices:
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, opensearch_data, cell_line_pdx_file_filters_1, case COLLECT(distinct sm2) when [] then []
                             else COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm2.anatomic_site, ';'),
@@ -2143,7 +2191,7 @@ Indices:
           with p, opensearch_data, apoc.coll.union(cell_line_pdx_file_filters_1, cell_line_pdx_file_filters_2) as cell_line_pdx_file_filters
           OPTIONAL MATCH (p)<-[:of_sample]-(sm:sample)
           optional match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, opensearch_data, cell_line_pdx_file_filters, COLLECT(DISTINCT {
                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -2168,7 +2216,7 @@ Indices:
           with p, opensearch_data, apoc.coll.union(cell_line_pdx_file_filters, general_file_filters_1) as general_file_filters
           OPTIONAL Match (p)<-[*..3]-(sm:sample)
           OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file)
           with p, opensearch_data, general_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2183,7 +2231,8 @@ Indices:
                     library_strategy: null
             }) end as participant_file_filters
           optional match (st:study)<--(p)<-[*..3]-(sm:sample)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          OPTIONAL MATCH (st)<--(file)
+          where (file: clinical_measure_file  or file: generic_file)
           with p, opensearch_data, general_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2219,7 +2268,7 @@ Indices:
             age_at_response: tr.age_at_response})
           }) AS opensearch_data
           OPTIONAL MATCH (p)<-[*..4]-(file)
-          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, apoc.map.merge(opensearch_data, {
                       file_count: COUNT(DISTINCT file.id),
                       files: COLLECT(DISTINCT file.id)
@@ -2285,7 +2334,7 @@ Indices:
           SKIP $skip LIMIT $limit
           match (p:participant)<--(sm:sample)<--(dg)
           optional match (sm)<-[*..3]-(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, opensearch_data, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2311,7 +2360,7 @@ Indices:
           optional match (sm1)<--(cl)<--(sm:sample)
           where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, opensearch_data, sample_file_filter_1, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2338,7 +2387,7 @@ Indices:
           optional match (sm1)<--(cl)<--(sm:sample)
           where (cl: cell_line or cl: pdx)
           optional match (sm1)<--(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, opensearch_data, sample_file_filter, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2363,7 +2412,7 @@ Indices:
           with dg, opensearch_data, apoc.coll.union(sample_file_filter, sample_file_filter_3) as sample_file_filters
           match (p:participant)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file)
           with dg, opensearch_data, sample_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2378,7 +2427,8 @@ Indices:
                     library_strategy: null
             }) end as participant_file_filters
           match (st:study)<--(p:participant)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          OPTIONAL MATCH (st)<--(file)
+          where (file: clinical_measure_file or file: generic_file)
           with dg, opensearch_data, sample_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2419,7 +2469,7 @@ Indices:
           }) AS opensearch_data
           match (p:participant)<--(sm:sample)<--(dg)
           optional match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, apoc.map.merge(opensearch_data, {
                       file_count: COUNT(DISTINCT file.id),
                       files: COLLECT(DISTINCT file.id)
@@ -2430,9 +2480,9 @@ Indices:
           MATCH (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm2:sample)<--(dg:diagnosis)
           WHERE (cl: cell_line or cl: pdx)
           optional Match (sm1)<--(file1)
-          WHERE (file1: sequencing_file OR file1:pathology_file OR file1:methylation_array_file OR file1:cytogenomic_file)
+          WHERE (file1: sequencing_file or file1: generic_file OR file1:pathology_file OR file1:methylation_array_file OR file1:cytogenomic_file)
           optional Match (sm2)<--(file2)
-          WHERE (file2: sequencing_file OR file2:pathology_file OR file2:methylation_array_file OR file2:cytogenomic_file)
+          WHERE (file2: sequencing_file or file2: generic_file OR file2:pathology_file OR file2:methylation_array_file OR file2:cytogenomic_file)
           with dg, collect(distinct sm1) as sm1_list, collect(distinct sm2) as sm2_list, collect(distinct file1) as file1_list, collect(distinct file2) as file2_list
           with dg, apoc.coll.union(sm1_list, sm2_list) as samples, apoc.coll.union(file1_list, file2_list) as files
           unwind samples as sample
@@ -2462,7 +2512,7 @@ Indices:
             }) as sample_file_filter
           optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (p)<--(file)
-          where (file:clinical_measure_file or file:radiology_file)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file)
           with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2491,7 +2541,8 @@ Indices:
             }) end as participant_file_filters_2
           with dg, sample_file_filter, apoc.coll.union(participant_file_filters_1, participant_file_filters_2) as participant_file_filters
           optional match (st:study)<--(p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          OPTIONAL MATCH (st)<--(file)
+          where (file: clinical_measure_file or file: generic_file)
           with dg, sample_file_filter, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2522,7 +2573,7 @@ Indices:
           optional match (p:participant)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
           WHERE (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, sample_file_filters, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
           optional match (p:participant)<-[*..4]-(dg)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -2572,7 +2623,7 @@ Indices:
           match (st:study)<--(cl)<--(sm:sample)<--(dg:diagnosis)
           where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2596,7 +2647,8 @@ Indices:
             }) as sample_file_filter
           optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
           where (cl: cell_line or cl: pdx)
-          OPTIONAL MATCH (st)<--(file:clinical_measure_file)
+          OPTIONAL MATCH (st)<--(file)
+          where (file: clinical_measure_file or file: generic_file)
           with dg, sample_file_filter, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
                     sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                     participant_age_at_collection: sm.participant_age_at_collection,
@@ -2614,7 +2666,7 @@ Indices:
           optional match (st:study)<--(cl)<--(sm:sample)<--(dg)
           where (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH dg, sm, sample_file_filters, file, st, stf, stp
@@ -2717,7 +2769,7 @@ Indices:
           ORDER BY num_sites desc
           with st, num_p, cancers, collect(dg_site + ' (' + toString(num_sites) + ')') as sites
           MATCH (st)<-[*..5]-(fl)
-          WHERE (fl:clinical_measure_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
+          WHERE (fl:clinical_measure_file or fl: generic_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
           with st, num_p, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
           ORDER BY num_ft desc
           with st, num_p, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
@@ -2729,7 +2781,7 @@ Indices:
           WITH st, num_p, cancers, sites, file_types, num_files, num_samples_1, count(distinct sm2.sample_id) as num_samples_2
           WITH st, num_p, cancers, sites, file_types, num_files, num_samples_1 + num_samples_2 as num_samples
           MATCH (st)<-[*..5]-(file)
-          WHERE (file:clinical_measure_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           WHERE stp.personnel_type = 'PI'
@@ -2913,6 +2965,17 @@ Indices:
             library_strategy: file.library_strategy
           }) AS file_filter,
           COLLECT(DISTINCT file.id) AS files
+          OPTIONAL MATCH (sm)<-[*..3]-(file:generic_file)
+          WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
+            data_category: apoc.text.split(file.data_category, ';'),
+            file_type: file.file_type,
+            file_mapping_level: file.file_mapping_level,
+            library_selection: null,
+            library_source_material: null,
+            library_source_molecule: null,
+            library_strategy: null
+          })) AS file_filter,
+          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -2990,7 +3053,7 @@ Indices:
           MATCH (st:study)<-[:of_cell_line|of_pdx]-(cl)<--(sm)
           Where (cl:cell_line or cl:pdx)
           optional Match (sm)<--(file)
-          WHERE (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (sm)<-[:of_diagnosis]-(dg:diagnosis)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
@@ -3242,7 +3305,7 @@ Indices:
     cypher_queries:
       - query: |
           MATCH (file)
-          where (file:clinical_measure_file or file:radiology_file)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file)
           MATCH (p:participant)<--(file)
           optional MATCH (p)<-[*0..3]-(sm:sample)
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
@@ -3349,6 +3412,7 @@ Indices:
             p.id as pid,
             CASE LABELS(file)[0]
                   WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
+                  WHEN 'generic_file' THEN file.generic_file_id
                   WHEN 'radiology_file' THEN file.radiology_file_id
                   ELSE null END AS file_id,
             file.dcf_indexd_guid AS guid,
@@ -3550,8 +3614,177 @@ Indices:
             null AS library_source_molecule,
             null AS library_strategy
       - query: |
+          MATCH (st:study)<-[:of_generic_file]-(file:generic_file)
+          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          optional MATCH (p)<-[*0..3]-(sm:sample)
+          OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
+          with file, p, COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                                        participant_age_at_collection: sm.participant_age_at_collection,
+                                        sample_tumor_status: sm.sample_tumor_status,
+                                        tumor_classification: sm.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    }) AS sample_diagnosis_filter_1
+          match (st:study)<--(p)
+          match (st)<--(file)
+          optional MATCH (p)<-[:of_sample]-(sm:sample)
+          OPTIONAL MATCH (sm)<--(dg:diagnosis)
+          with file, p, sample_diagnosis_filter_1, COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                                        participant_age_at_collection: sm.participant_age_at_collection,
+                                        sample_tumor_status: sm.sample_tumor_status,
+                                        tumor_classification: sm.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    }) AS sample_diagnosis_filter_2
+          with file, p, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
+          match (st:study)<--(p)
+          match (st)<--(file)
+          optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
+          OPTIONAL MATCH (sm1)<--(dg:diagnosis)
+          with file, p, sample_diagnosis_filter_3, COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                                        participant_age_at_collection: sm.participant_age_at_collection,
+                                        sample_tumor_status: sm.sample_tumor_status,
+                                        tumor_classification: sm.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    }) AS sample_diagnosis_filter_4
+          with file, p, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
+          MATCH (st:study)<-[:of_generic_file]-(file)
+          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
+          OPTIONAL MATCH (sm)<--(dg:diagnosis)
+          OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
+          OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
+          OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
+          with file, p, sample_diagnosis_filter_5, apoc.coll.union(COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
+                                        participant_age_at_collection: sm1.participant_age_at_collection,
+                                        sample_tumor_status: sm1.sample_tumor_status,
+                                        tumor_classification: sm1.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    }), COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                                        participant_age_at_collection: sm.participant_age_at_collection,
+                                        sample_tumor_status: sm.sample_tumor_status,
+                                        tumor_classification: sm.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    })) AS sample_diagnosis_filter_6, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+              event_free_survival_status: su.event_free_survival_status, 
+              first_event: su.first_event,
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
+            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+            treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
+            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
+            COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) as treatment_response_filters
+          with file, p, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter, survival_filters,  treatment_filters, treatment_response_filters
+          with file, collect(DISTINCT {
+                participant_id: p.participant_id,
+                race: apoc.text.split(p.race, ';'),
+                sex_at_birth: p.sex_at_birth,
+                sample_diagnosis_filters: sample_diagnosis_filter,
+                survival_filters: survival_filters,
+                treatment_filters: treatment_filters,
+                treatment_response_filters: treatment_response_filters
+            }) as combined_filter_1
+          MATCH (st:study)<-[:of_generic_file]-(file)
+          OPTIONAL MATCH (st)<--(cl)<--(sm:sample)
+          where (cl: cell_line or cl: pdx)
+          OPTIONAL MATCH (sm)<--(dg:diagnosis)
+          with file, combined_filter_1, COLLECT(DISTINCT {
+                                        sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                                        participant_age_at_collection: sm.participant_age_at_collection,
+                                        sample_tumor_status: sm.sample_tumor_status,
+                                        tumor_classification: sm.tumor_classification,
+                                        age_at_diagnosis: dg.age_at_diagnosis,
+                                        diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                                        disease_phase: dg.disease_phase,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_basis: dg.diagnosis_basis,
+                                        tumor_grade_source: dg.tumor_grade_source,
+                                        tumor_stage_source: dg.tumor_stage_source,
+                                        diagnosis: dg.diagnosis
+                                    }) as sample_diagnosis_filter
+          with file, combined_filter_1, collect({
+                participant_id: null,
+                race: null,
+                sex_at_birth: null,
+                sample_diagnosis_filters: sample_diagnosis_filter 
+          }) as combined_filter_2
+          with file, apoc.coll.union(combined_filter_1, combined_filter_2) as combined_filter
+          MATCH (st:study)<-[:of_generic_file]-(file)
+          OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
+          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          With file, st, combined_filter, stf, stp
+          RETURN DISTINCT
+            file.id as id,
+            null as pid,
+            file.generic_file_id AS file_id,
+            file.dcf_indexd_guid AS guid,
+            file.file_name AS file_name,
+            file.file_access AS file_access,
+            apoc.text.split(file.data_category, ';') as data_category,
+            file.file_type AS file_type,
+            file.file_mapping_level as file_mapping_level,
+            file.file_description AS file_description,
+            file.file_size AS file_size,
+            file.md5sum AS md5sum,
+            st.study_id AS study_id,
+            st.dbgap_accession as dbgap_accession,
+            st.study_acronym as study_acronym,
+            st.study_name as study_name,
+            null AS participant_id,
+            null AS sample_id,
+            COLLECT(DISTINCT file.id) as files,
+            combined_filter as combined_filters,
+            null as participant_filters,
+            null as sample_diagnosis_filters,
+            null as survival_filters,
+            null as treatment_filters,
+            null as treatment_response_filters,
+            null AS library_selection,
+            null AS library_source_material,
+            null AS library_source_molecule,
+            null AS library_strategy
+      - query: |
           MATCH (file)
-          where (file: sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          where (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           MATCH (p:participant)<-[*..3]-(sm:sample)<--(file)
           with file, sm, p
           SKIP $skip LIMIT $limit
@@ -3669,6 +3902,7 @@ Indices:
             p.id as pid,
             CASE LABELS(file)[0]
                   WHEN 'sequencing_file' THEN file.sequencing_file_id
+                  WHEN 'generic_file' THEN file.generic_file_id
                   WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
                   WHEN 'pathology_file' THEN file.pathology_file_id
                   WHEN 'methylation_array_file' THEN file.methylation_array_file_id ELSE null END AS file_id,
@@ -3709,7 +3943,7 @@ Indices:
         page_size: 10000
       - query: |
           MATCH (file)
-          WHERE (file:sequencing_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WHERE (file:sequencing_file or file:generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           MATCH (st:study)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
           Where (cl: cell_line or cl: pdx)
           MATCH (sm)<--(file)
@@ -3723,6 +3957,7 @@ Indices:
             null as pid,
             CASE LABELS(file)[0]
                   WHEN 'sequencing_file' THEN file.sequencing_file_id
+                  WHEN 'generic_file' THEN file.generic_file_id
                   WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
                   WHEN 'pathology_file' THEN file.pathology_file_id
                   WHEN 'methylation_array_file' THEN file.methylation_array_file_id ELSE null END AS file_id,
@@ -3773,7 +4008,7 @@ Indices:
                       ELSE null END AS library_strategy
       - query: |
          MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
-          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           with p, sm1, sm, apoc.coll.union(COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -3803,7 +4038,7 @@ Indices:
                                 diagnosis: dg.diagnosis
                             })) as sample_diagnosis_filter_1
           MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
-          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (sm1)<--(dg:diagnosis)
           with p, sm1, sm, sample_diagnosis_filter_1, apoc.coll.union(COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -3834,7 +4069,7 @@ Indices:
                             })) AS sample_diagnosis_filter_2
           with p, sm1, sm, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
           MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
-          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+          where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
           with p, sm1, sm, sample_diagnosis_filter_3, apoc.coll.union(COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
@@ -3914,7 +4149,7 @@ Indices:
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(p:participant)<--(sm:sample)
-          where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+          where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:generic_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[*..2]-(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -3978,7 +4213,7 @@ Indices:
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(cl)<--(sm:sample)
-          Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
+          Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
           optional match (sm)<--(dg:diagnosis)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
@@ -4028,7 +4263,7 @@ Indices:
             null AS library_strategy
       - query: |
           MATCH (st:study)<--(p:participant)
-          where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file))
+          where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
