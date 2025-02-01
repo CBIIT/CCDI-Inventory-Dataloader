@@ -1,5 +1,278 @@
 # Indices settings
 Indices:
+  - index_name: cohorts
+    type: neo4j
+    mapping:
+      id:
+        type: keyword
+      participant_id:
+        type: keyword
+        normalizer: lowercase
+      race:
+        type: keyword
+      sex_at_birth:
+        type: keyword
+      dbgap_accession:
+        type: keyword
+      diagnosis_str:
+        type: keyword
+      # Diagnosis records
+      diagnoses:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          diagnosis_id:
+            type: keyword
+          age_at_diagnosis:
+            type: integer
+          anatomic_site:
+            type: keyword
+          diagnosis:
+            type: keyword
+          diagnosis_basis:
+            type: keyword
+          diagnosis_classification_system:
+            type: keyword
+          diagnosis_comment:
+            type: keyword
+          disease_phase:
+            type: keyword
+          toronto_childhood_cancer_staging:
+            type: keyword
+          tumor_classification:
+            type: keyword
+          tumor_grade:
+            type: keyword
+          tumor_stage_clinical_m:
+            type: keyword
+          tumor_stage_clinical_n:
+            type: keyword
+          tumor_stage_clinical_t:
+            type: keyword
+      # Survival records
+      survivals:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          survival_id:
+            type: keyword
+          age_at_event_free_survival_status:
+            type: integer
+          age_at_last_known_survival_status:
+            type: integer
+          cause_of_death:
+            type: keyword
+          event_free_survival_status:
+            type: keyword
+          first_event:
+            type: keyword
+          last_known_survival_status:
+            type: keyword
+      # Treatment records
+      treatments:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          treatment_id:
+            type: keyword
+          age_at_treatment_end:
+            type: integer
+          age_at_treatment_start:
+            type: integer
+          treatment_agent: # list
+            type: keyword
+          treatment_type:
+            type: keyword
+      # Treatment Response records
+      treatment_responses:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          treatment_response_id:
+            type: keyword
+          age_at_response:
+            type: integer
+          response:
+            type: keyword
+          response_category:
+            type: keyword
+          response_system:
+            type: keyword
+      samples:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          sample_id:
+            type: keyword
+          anatomic_site:
+            type: keyword
+          participant_age_at_collection:
+            type: integer
+          sample_tumor_status:
+            type: keyword
+          tumor_classification:
+            type: keyword
+          sample_description:
+            type: keyword
+      files:
+        type: nested
+        properties:
+          id:
+            type: keyword
+          file_id:
+            type: keyword
+          file_name:
+            type: keyword
+          data_category:
+            type: keyword
+          file_type:
+            type: keyword
+          file_description:
+            type: keyword
+          file_size:
+            type: keyword
+          md5sum:
+            type: keyword
+          file_access:
+            type: keyword
+          dcf_indexd_guid:
+            type: keyword
+          library_selection:
+            type: keyword
+          library_strategy:
+            type: keyword
+          library_source_material:
+            type: keyword
+          library_source_molecule:
+            type: keyword
+    cypher_queries:
+      - query: |
+          MATCH (p:participant)-[:of_participant]->(stu:study)
+          WITH p, stu
+          SKIP $skip LIMIT $limit
+          OPTIONAL MATCH (d:diagnosis)-[*..4]->(p)
+          OPTIONAL MATCH (sur:survival)-[:of_survival]->(p)
+          OPTIONAL MATCH (t:treatment)-[:of_treatment]->(p)
+          OPTIONAL MATCH (tresp:treatment_response)-[:of_treatment_response]->(p)
+          OPTIONAL MATCH (s:sample)-[*..4]->(p)
+          OPTIONAL MATCH (file)-[*..4]->(p)
+          where (file: clinical_measure_file or file: generic_file or file: radiology_file or file: sequencing_file or file: methylation_array_file or file: pathology_file or file: cytogenomic_file)
+          RETURN
+            p.id AS id,
+            p.participant_id AS participant_id,
+            apoc.text.split(p.race, ';') AS race,
+            p.sex_at_birth AS sex_at_birth,
+            stu.dbgap_accession AS dbgap_accession,
+            apoc.text.join(COLLECT(distinct d.diagnosis), ';') AS diagnosis_str,
+            (CASE
+              WHEN COUNT(DISTINCT d) > 0 THEN COLLECT(DISTINCT {
+                id: d.id,
+                diagnosis_id: d.diagnosis_id,
+                age_at_diagnosis: d.age_at_diagnosis,
+                anatomic_site: d.anatomic_site,
+                diagnosis: d.diagnosis,
+                diagnosis_basis: d.diagnosis_basis,
+                diagnosis_classification_system: d.diagnosis_classification_system,
+                diagnosis_comment: d.diagnosis_comment,
+                disease_phase: d.disease_phase,
+                toronto_childhood_cancer_staging: d.toronto_childhood_cancer_staging,
+                tumor_classification: d.tumor_classification,
+                tumor_grade: d.tumor_grade,
+                tumor_stage_clinical_m: d.tumor_stage_clinical_m,
+                tumor_stage_clinical_n: d.tumor_stage_clinical_n,
+                tumor_stage_clinical_t: d.tumor_stage_clinical_t
+              })
+              ELSE []
+            END) AS diagnoses,
+            (CASE
+              WHEN COUNT(DISTINCT sur) > 0 THEN COLLECT(DISTINCT {
+                id: sur.id,
+                survival_id: sur.survival_id,
+                age_at_event_free_survival_status: sur.age_at_event_free_survival_status,
+                age_at_last_known_survival_status: sur.age_at_last_known_survival_status,
+                cause_of_death: sur.cause_of_death,
+                event_free_survival_status: sur.event_free_survival_status,
+                first_event: sur.first_event,
+                last_known_survival_status: sur.last_known_survival_status
+              })
+              ELSE []
+            END) AS survivals,
+            (CASE
+              WHEN COUNT(DISTINCT t) > 0 THEN COLLECT(DISTINCT {
+                id: t.id,
+                treatment_id: t.treatment_id,
+                age_at_treatment_end: t.age_at_treatment_end,
+                age_at_treatment_start: t.age_at_treatment_start,
+                treatment_agent: apoc.text.split(t.treatment_agent, ';'),
+                treatment_type: t.treatment_type
+              })
+              ELSE []
+            END) AS treatments,
+            (CASE
+              WHEN COUNT(DISTINCT tresp) > 0 THEN COLLECT(DISTINCT {
+                id: tresp.id,
+                treatment_response_id: tresp.treatment_response_id,
+                age_at_response: tresp.age_at_response,
+                response: tresp.response,
+                response_category: tresp.response_category,
+                response_system: tresp.response_system
+              })
+              ELSE []
+            END) AS treatment_responses,
+            (CASE
+              WHEN COUNT(DISTINCT s) > 0 THEN COLLECT(DISTINCT {
+                id: s.id,
+                sample_id: s.sample_id,
+                anatomic_site: s.anatomic_site,
+                participant_age_at_collection: s.participant_age_at_collection,
+                sample_tumor_status: s.sample_tumor_status,
+                tumor_classification: s.tumor_classification,
+                sample_description: s.sample_description
+              })
+              ELSE []
+            END) AS samples,
+            (CASE
+              WHEN COUNT(DISTINCT file) > 0 THEN COLLECT(DISTINCT {
+                id: file.id,
+                file_id: CASE LABELS(file)[0]
+                      WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
+                      WHEN 'generic_file' THEN file.generic_file_id
+                      WHEN 'radiology_file' THEN file.radiology_file_id
+                      WHEN 'sequencing_file' THEN file.sequencing_file_id
+                      WHEN 'methylation_array_file' THEN file.methylation_array_file_id
+                      WHEN 'pathology_file' THEN file.pathology_file_id
+                      WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
+                      ELSE null END,
+                dcf_indexd_guid: file.dcf_indexd_guid,
+                file_name: file.file_name,
+                file_access: file.file_access,
+                data_category: apoc.text.split(file.data_category, ';'),
+                file_type: file.file_type,
+                file_description: file.file_description,
+                file_size: file.file_size,
+                md5sum: file.md5sum,
+                library_selection: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_selection
+                                    ELSE null END,
+                library_source_material: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_material
+                                    ELSE null END,
+                library_source_molecule: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_source_molecule
+                                    ELSE null END,
+                library_strategy: CASE LABELS(file)[0]
+                                    WHEN 'sequencing_file' THEN file.library_strategy
+                                    ELSE null END
+              })
+              ELSE []
+            END) AS files
+        page_size: 100
+
   - index_name: study_participants
     type: neo4j
     mapping:
