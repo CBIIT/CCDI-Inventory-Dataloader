@@ -804,7 +804,6 @@ Indices:
           st.study_name AS study_name
 
 
-    
 
   - index_name: participants
     type: neo4j
@@ -821,6 +820,24 @@ Indices:
       sex_at_birth:
         type: keyword
       alternate_participant_id:
+        type: keyword
+      diagnosis_str:
+        type: keyword
+      diagnosis_anatomic_site_str:
+        type: keyword
+      age_at_diagnosis_str:
+        type: keyword
+      treatment_agent_str:
+        type: keyword
+      treatment_type_str:
+        type: keyword
+      age_at_treatment_start_str:
+        type: keyword
+      first_event_str:
+        type: keyword
+      last_known_survival_status_str:
+        type: keyword
+      age_at_last_known_survival_status_str:
         type: keyword
       survival_filters:
         type: nested
@@ -1160,6 +1177,7 @@ Indices:
           OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
+          OPTIONAL MATCH (d:diagnosis)-[:of_diagnosis]->(p)
           WITH p, sy, sample_diagnosis_file_filter, 
           COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
             event_free_survival_status: su.event_free_survival_status, 
@@ -1169,7 +1187,16 @@ Indices:
           treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
           age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
           COLLECT(DISTINCT{response_category: tr.response_category,
-          age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp
+          age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp,
+          apoc.text.join(COLLECT(distinct d.diagnosis), ';') AS diagnosis_str,
+          apoc.text.join(COLLECT(distinct d.anatomic_site), ';') AS diagnosis_anatomic_site_str,
+          apoc.text.join(COLLECT(distinct toString(case d.age_at_diagnosis when -999 then 'Not Reported' else coalesce(d.age_at_diagnosis, '') end)), ';') AS age_at_diagnosis_str,
+          apoc.text.join(COLLECT(distinct tm.treatment_agent), ';') AS treatment_agent_str,
+          apoc.text.join(COLLECT(distinct tm.treatment_type), ';') AS treatment_type_str,
+          apoc.text.join(COLLECT(distinct toString(case tm.age_at_treatment_start when -999 then 'Not Reported' else coalesce(tm.age_at_treatment_start, '') end)), ';') AS age_at_treatment_start_str,
+          apoc.text.join(COLLECT(distinct su.first_event), ';') AS first_event_str,
+          apoc.text.join(COLLECT(distinct su.last_known_survival_status), ';') AS last_known_survival_status_str,
+          apoc.text.join(COLLECT(distinct toString(case su.age_at_last_known_survival_status when -999 then 'Not Reported' else coalesce(su.age_at_last_known_survival_status, '') end)), ';') AS age_at_last_known_survival_status_str
           RETURN DISTINCT
             p.id as id,
             p.participant_id as participant_id,
@@ -1177,6 +1204,15 @@ Indices:
             p.race as race_str,
             p.sex_at_birth as sex_at_birth,
             apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
+            diagnosis_str as diagnosis_str,
+            diagnosis_anatomic_site_str as diagnosis_anatomic_site_str,
+            age_at_diagnosis_str as age_at_diagnosis_str,
+            treatment_agent_str as treatment_agent_str,
+            treatment_type_str as treatment_type_str,
+            age_at_treatment_start_str as age_at_treatment_start_str,
+            first_event_str as first_event_str,
+            last_known_survival_status_str as last_known_survival_status_str,
+            age_at_last_known_survival_status_str as age_at_last_known_survival_status_str,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,
