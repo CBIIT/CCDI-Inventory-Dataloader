@@ -1,4 +1,138 @@
 PropDefinitions:
+  #treatment
+  dose:
+    Desc: The amount of exposure that a subject actually receives.
+    Term:
+      - Origin: caDSR
+        Code: '6642895'
+        Value: Dose
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false 
+  #treatment
+  dose_unit:
+    Desc: The unit of measure for the dosage form related to agents used as part of a procedure.
+    Term:
+      - Origin: caDSR
+        Code: '6824805'
+        Value: Dose Units
+        Version: "5.00"
+    Type: string
+    Req: false
+    Private: false
+  #treatment
+  dose_route:
+    Desc: The text that describe the dosage route.
+    Term:
+      - Origin: caDSR
+        Code: '2179582'
+        Value: Dose Route Text
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false 
+  #treatment
+  dose_frequency:
+    Desc: The text that represents the planned dosage frequency for a agent.
+    Term:
+      - Origin: caDSR
+        Code: '2179580'
+        Value: Dose Frequency Text
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false 
+  #synonym
+  associated_id:
+    Desc: Text to identify the other name or alias of a person.
+    Term:
+      - Origin: caDSR
+        Code: '3773730'
+        Value: Person Other Name Text
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false  
+  #synonym
+  domain_description:
+    Desc: A textual description of a storage location for digital data.
+    Term:
+      - Origin: caDSR
+        Code: '14612686'
+        Value: Research Activity Alternate Identifier Repository Text
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false 
+  #synonym
+  domain_category:
+    Desc: A textual description of a storage location for digital data.
+    Term:
+      - Origin: caDSR
+        Code: '14612686'
+        Value: Research Activity Alternate Identifier Repository Text
+        Version: "1.00"
+    Type: string
+    Req: false
+    Private: false
+  #synonym
+  data_location:
+    Desc: Data location.
+    Term: 
+      - Origin: caDSR
+        Code: '11556141'
+        Value: Electronic File Pathname Text
+        Version: "2.00"
+    Type: string
+    Req: false
+    Private: false 
+  #study
+  study_status:
+    Desc: The status of the study.
+    Term:
+      - Origin: caDSR
+        Code: '15607838'
+        Value: Administrative Activity Study Status
+        Version: "1.00"
+    Enum:
+      - Active
+      - Completed
+      - Provisional
+    Req: true
+    Strict: true
+    Private: false
+  #study
+  study_period_start:
+    Desc: The year in which the study started.
+    Term: 
+      - Origin: caDSR
+        Code: '15607845'
+        Value: Administrative Activity Study Period Start Year Date
+        Version: "1.00"
+    Type: integer
+    Req: false
+    Private: false
+  #study
+  study_period_stop:
+    Desc: The year in which the study ended.
+    Term: 
+      - Origin: caDSR
+        Code: '15607913'
+        Value: Administrative Activity Study Period End Year Date
+        Version: "1.00"
+    Type: integer
+  #pathology_file
+  slim_url:
+    Desc: File path to IDS SLIM viewer
+    Term: 
+      - Origin: caDSR
+        Code: '11556141'
+        Value: Electronic File Pathname Text
+        Version: "2.00"
+    Type: string
+    Req: false
+    Private: false
   #diagnosis
   laterality:
     Desc: Designates the side of the body where disease is found.
@@ -26,7 +160,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '15157224'
         Value: Subject Diagnosis Year Number
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false
@@ -92,7 +226,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2413274'
         Value: Equipment Manufacturer Model Name Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Key: false
@@ -180,7 +314,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2903393'
         Value: Image Pixel Spacing Float or Fixed-point Millimeter Number
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Key: false
@@ -192,7 +326,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3113185'
         Value: Image Plane Slice Thickness Float or Fixed-point Millimeter Number
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Key: false
@@ -517,9 +651,10 @@ PropDefinitions:
       - Origin: caDSR
         Code: '8028962'
         Value: Biospecimen Preservation Procedure Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "-80 degrees C"
+      - "Cytospin Slide"
       - "Cryopreservation in dry ice (dead tissue)"
       - "Cryopreservation in liquid nitrogen (dead tissue)"
       - "Cryopreservation of live cells in liquid nitrogen"
@@ -554,6 +689,7 @@ PropDefinitions:
         - "IHC"
         - "In situ hybridization"
         - "mIHC"
+        - "Wright-Giemsa"
         - "Other"
     Req: true
     Strict: false
@@ -1094,7 +1230,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3070936'
         Value: Study End Point Event Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Progression"
       - "Relapse"
@@ -1113,7 +1249,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3070936'
         Value: Study End Point Event Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Censored"
       - "Not Censored"
@@ -1129,7 +1265,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3229334'
         Value: Study End Point Event Occurrence Day Count
-        Version: "1.00"
+        Version: "1.10"
     Type: integer
     Req: false
     Private: false
@@ -1156,7 +1292,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3125302'
         Value: adverse event
-        Version: "1.00"
+        Version: "1.10"
     Type:
       value_type: list
       item_type:
@@ -2205,7 +2341,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142401'
         Value: Molecular Analysis Test Method Name
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Comparative Genomic Hybridization"
       - "Cytogenetics, NOS"
@@ -2356,7 +2492,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2179671'
         Value: Lab Test Result Unit of Measure Code
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false
@@ -2467,7 +2603,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142405'
         Value: Molecular Analysis Cytoband Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false
@@ -2489,7 +2625,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142511'
         Value: Molecular Analysis Histone Gene Family Category
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "H1"
       - "H2A"
@@ -2665,7 +2801,7 @@ PropDefinitions:
     Desc: The text term used to describe the type of analyte used for molecular testing.
     Term:
       - Origin: caDSR
-        Code: '6142394'
+        Code: '15063661'
         Value: Molecular Analysis Analyte Type
         Version: "1.00"
     Enum:
@@ -2701,7 +2837,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142402'
         Value: Molecular Analysis Gene Variant Type
-        Version: "1.00"
+        Version: "2.00"
     Type:
       value_type: list
       item_type:
@@ -2739,7 +2875,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142510'
         Value: Molecular Analysis Genetic Zygosity Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Heterozygous"
       - "Hemizygous"
@@ -2757,7 +2893,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6142389'
         Value: Risk Factor 
-        Version: "1.00"
+        Version: "2.00"
     Type:
       value_type: list
       item_type:
@@ -3150,7 +3286,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2690165'
         Value: Family Member Relationship Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Adopted Daughter"
       - "Adopted Son"
@@ -3376,10 +3512,6 @@ PropDefinitions:
         Code: '14616474'
         Value: PDX Tumor Preparation Text
         Version: "1.00"
-      - Origin: PubMedCentral
-        Code: 'PMC5738926'
-        Value: PDX-MI Minimal Information for Patient-Derived Tumor Xenograft Models
-        Version: "1.00"
     Type: string
     Req: true
     Private: false
@@ -3568,7 +3700,7 @@ PropDefinitions:
     Private: false 
   #diagnosis, sample
   diagnosis_basis: 
-    Desc: 'The origin of the diagnosis.'
+    Desc: The underlying scientific foundation used to determine the diagnosis.
     Term:
       - Origin: caDSR
         Code: '14714146'
@@ -3837,20 +3969,19 @@ PropDefinitions:
       item_type:
         - "Clinical"
         - "Copy Number Variation"
-        - "COG Clinical Report"
+        - "COG Clinical Data"
         - "Gene Expression"
-        - "Gene Fusion Clinical Report"
+        - "Gene Fusion Clinical Data"
         - "Generic"
-        - "IGM Clinical Report"
         - "IGM Clinical Sequence"
         - "Methylation Array"
-        - "Methylation Clinical Report"
+        - "Methylation Clinical Data"
         - "Pathology Imaging"
         - "Radiology Imaging"
         - "Sequencing"
         - "Simple Nucleotide Variation"
         - "Structural Variation"
-        - "Tumor Normal Clinical Report"
+        - "Tumor Normal Clinical Data"
     Req: true
     Strict: false
     Private: false
@@ -3946,7 +4077,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556150'
         Value: Electronic Data File MD5 Checksum Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -3979,7 +4110,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556141'
         Value: Electronic File Pathname Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -3990,7 +4121,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555664'
         Value: Electronic Data File Access Level Text 
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -4001,7 +4132,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555664'
         Value: Electronic Data File Access Level Text 
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false 
@@ -4012,7 +4143,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11555664'
         Value: Electronic Data File Access Level Text 
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "Controlled"
       - "Open"
@@ -4182,7 +4313,7 @@ PropDefinitions:
     Desc: A unique sequence of alphanumeric characters used to identify the specimen at it's point of origin.
     Term:
       - Origin: caDSR
-        Code: '6921892'
+        Code: '15100774'
         Value: Biospecimen Source Laboratory Identifier
         Version: "1.00"
     Type: string
@@ -4568,7 +4699,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '14473376'
         Value: Subject Age At Specimen Collection Day Count
-        Version: "1.00"
+        Version: "2.00"
     Type: integer
     Req: true  
     Private: false
@@ -4643,29 +4774,13 @@ PropDefinitions:
       - 'Not Applicable'
     Req: true
     Strict: false
-    Private: false
-#  biosample_accession:
-#    Desc: An alphanumeric identifier (SAMN accession number) assigned to a set of descriptive information for biological materials used to generate data that has been or will be submitted to archives provided by the National Center for Biotechnology Information (NCBI).  The alphanumeric identifier assigned to the specimen to uniquely identify it.
-#    Term:
-#      - Origin: caDSR
-#        Code: '2230047'
-#        Value: Specimen Accession Number
-#      - Origin: NCIt
-#        Code: 'C175889'
-#        Value: BioSample Accession Number 
-#    Type: string
-#    Req: false
-#    Private: false    
+    Private: false 
   #sample
   sample_description:
     Desc: Text description of a sample or specimen.
     Term:
       - Origin: caDSR
-        Code: '2003907'
-        Value: Sample Description Text
-        Version: "1.00"
-      - Origin: caDSR
-        Code: '5432687'
+        Code: '14688604'
         Value: Tissue Sample Description
         Version: "1.00"
     Type: string
@@ -4721,7 +4836,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6273393'
         Value: Sequencing Library Technique Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "AMPLICON"
       - "Archer Fusion"
@@ -4962,7 +5077,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529031'
         Value: Genome Assembly NCBI Genetic Reference Sequence Identifier
-        Version: "1.00"
+        Version: "2.00"
       - Origin: NCIt
         Code: 'C164388'
         Value: Genetic Reference Sequence
@@ -4988,11 +5103,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11529072'
         Value: Nucleotide Sequence Alignment Software Name Text
-        Version: "1.00"
-      - Origin: NCIt
-        Code: 'C175896'
-        Value: Sequence Alignment Software Name 
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false    
@@ -5003,7 +5114,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '6347743'
         Value: Sequencing Library Creation Method Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "5-Methylcytidine Antibody"
       - "Affinity Enrichment"
@@ -5086,7 +5197,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11459810'
         Value: Study Name Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -5097,7 +5208,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11459812'
         Value: Study Short Name Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -5108,7 +5219,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3444002'
         Value: Study Research Identification Descriptive Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -5119,7 +5230,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11556141'
         Value: Electronic File Pathname Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false  # 02/22/2022 adeforge, not required?
     Private: false
@@ -5130,20 +5241,17 @@ PropDefinitions:
       - Origin: caDSR
         Code: '12373576'
         Value: Research Activity Experimental Method Type 
-        Version: "1.00"
+        Version: "2.00"
     Type:
       value_type: list
       item_type:
         - "Archer Fusion"
-        - "Bisulfite-Seq"
         - "DNA-Seq"
+        - "Methylation Analysis"
         - "Methylation Array"
         - "Pathological"
         - "Radiological"
-        - "RNA-Seq"
-        - "scRNA-Seq"
-        - "WGA"
-        - "WXS"  
+        - "RNA-Seq" 
     Req: false
     Strict: true
     Private: false  
@@ -5173,10 +5281,6 @@ PropDefinitions:
   size_of_data_being_uploaded:
     Desc: The measure (in bytes) of how much space a data file takes up on a storage medium.
     Term:
-      - Origin: caDSR
-        Code: '12373576'
-        Value: Data File Size Value
-        Version: "1.00"
       - Origin: NCIt
         Code: 'C171192'
         Value: Electronic Data File Size Integer
@@ -5254,12 +5358,6 @@ PropDefinitions:
     Strict: true
     Private: false
   # study_admin
-  data_types: # generate from a DB query of list of data_types vs. template based entry?, generate from a query of list from enumerated values
-    Desc: The types of data files that can be found in the study.
-    Type: string
-    Req: false
-    Private: false
-  # study_admin
   file_types_and_format: 
     Desc: A defined organization or layout representing and structuring data in a computer file.
     Term:
@@ -5289,7 +5387,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524545'
         Value: Funding Agency Organization Name Text 
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -5300,7 +5398,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524546'
         Value: Funding Agency Program Name Text 
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false
@@ -5311,7 +5409,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '3434057'
         Value: Grant Funding Identifier Number
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: true
     Private: false
@@ -5334,7 +5432,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '11524548'
         Value: Clinical Trial Treatment Arm Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false
@@ -5356,7 +5454,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2413202'
         Value: Clinical Trial Protocol Identifier 64 Character Text
-        Version: "1.00"
+        Version: "2.00"
     Type: string
     Req: false
     Private: false        
@@ -5390,7 +5488,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '2201713'
         Value: Person Affiliation Role Text Type
-        Version: "1.00"
+        Version: "2.00"
     Enum:
       - "PI"
       - "Co-PI"
@@ -5428,7 +5526,7 @@ PropDefinitions:
       - Origin: caDSR
         Code: '10624734'
         Value: Person ORCID Text
-        Version: "2.00"
+        Version: "3.00"
     Type: string
     Req: true
     Private: false
@@ -6022,6 +6120,7 @@ PropDefinitions:
       - "Osteoblastoma"
       - "Osteoid Osteoma"
       - "Osteosarcoma"
+      - "Other"
       - "Other CNS Embryonal tumors"
       - "Other low-grade B-cell lymphomas of the CNS"
       - "Other, NOS or NEC"
