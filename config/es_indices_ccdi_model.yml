@@ -14,6 +14,8 @@ Indices:
         type: keyword
       dbgap_accession:
         type: keyword
+      study_status:
+        type: keyword
       diagnosis_str:
         type: keyword
       # Diagnosis records
@@ -168,6 +170,7 @@ Indices:
             apoc.text.split(p.race, ';') AS race,
             p.sex_at_birth AS sex_at_birth,
             stu.dbgap_accession AS dbgap_accession,
+            stu.study_status AS study_status,
             apoc.text.join(COLLECT(distinct d.diagnosis), ';') AS diagnosis_str,
             (CASE
               WHEN COUNT(DISTINCT d) > 0 THEN COLLECT(DISTINCT {
@@ -357,6 +360,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -637,6 +642,7 @@ Indices:
             sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name
         page_size: 1000
@@ -686,6 +692,7 @@ Indices:
             age_at_response: null}) as treatment_response_filters,            
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name
       - query: |
@@ -734,6 +741,7 @@ Indices:
             age_at_response: null}) as treatment_response_filters,            
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name
       - query: |
@@ -800,6 +808,7 @@ Indices:
           }) AS sample_diagnosis_file_filters,
           st.study_id AS study_id,
           st.dbgap_accession AS dbgap_accession,
+          st.study_status AS study_status,
           st.study_acronym AS study_acronym,
           st.study_name AS study_name
 
@@ -910,6 +919,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -1219,6 +1230,7 @@ Indices:
             sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             COUNT(DISTINCT file.id) as file_count,
@@ -1308,6 +1320,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -1582,6 +1596,7 @@ Indices:
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
+              st.study_status AS study_status,
               st.study_acronym as study_acronym,
               st.study_name as study_name
 
@@ -1667,6 +1682,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -1940,6 +1957,7 @@ Indices:
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
+              st.study_status AS study_status,
               st.study_acronym as study_acronym,
               st.study_name as study_name
 
@@ -2025,6 +2043,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -2297,6 +2317,7 @@ Indices:
               sample_diagnosis_file_filter AS sample_diagnosis_file_filters,
               st.study_id as study_id,
               st.dbgap_accession as dbgap_accession,
+              st.study_status AS study_status,
               st.study_acronym as study_acronym,
               st.study_name as study_name
 
@@ -2338,6 +2359,8 @@ Indices:
       sex_at_birth:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_id:
         type: keyword
@@ -2606,6 +2629,7 @@ Indices:
             opensearch_data.sex_at_birth as sex_at_birth,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             opensearch_data.survival_filters as survival_filters, 
@@ -2637,6 +2661,7 @@ Indices:
             sex_at_birth: p.sex_at_birth,
             study_id: st.study_id,
             dbgap_accession: st.dbgap_accession,
+            study_status: st.study_status,
             study_acronym: st.study_acronym,
             study_name: st.study_name
           } as opensearch_data
@@ -2920,6 +2945,7 @@ Indices:
             p.sex_at_birth as sex_at_birth,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             survival_filters as survival_filters,
@@ -2999,6 +3025,7 @@ Indices:
             null as sex_at_birth,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             COLLECT(DISTINCT {
@@ -3028,6 +3055,8 @@ Indices:
       pubmed_ids:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_name:
         type: keyword
@@ -3102,6 +3131,7 @@ Indices:
             apoc.text.join(COLLECT(DISTINCT stf.grant_id), ';') as grant_id,
             apoc.text.join(COLLECT(DISTINCT pub.pubmed_id), ';') as pubmed_ids,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_name as study_name,
             st.study_acronym as study_acronym,
             apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
@@ -3141,6 +3171,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -3333,6 +3365,7 @@ Indices:
           WITH sm, apoc.map.merge(opensearch_data, {
             study_id: st.study_id,
             dbgap_accession: st.dbgap_accession,
+            study_status: st.study_status,
             study_acronym: st.study_acronym,
             study_name: st.study_name
           }) AS opensearch_data
@@ -3393,6 +3426,7 @@ Indices:
             sm.tumor_classification as tumor_classification,
             st.study_id as study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             apoc.text.join(COLLECT(distinct dg.diagnosis), ';') as diagnosis_str,
@@ -3463,6 +3497,8 @@ Indices:
       study_id:
         type: keyword
       dbgap_accession:
+        type: keyword
+      study_status:
         type: keyword
       study_acronym:
         type: keyword
@@ -3750,6 +3786,7 @@ Indices:
             file.md5sum AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             p.participant_id AS participant_id,
@@ -3922,6 +3959,7 @@ Indices:
             file.md5sum AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
@@ -4091,6 +4129,7 @@ Indices:
             file.md5sum AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
@@ -4241,6 +4280,7 @@ Indices:
             file.md5sum AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             p.participant_id AS participant_id,
@@ -4296,6 +4336,7 @@ Indices:
             file.md5sum AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
@@ -4453,6 +4494,7 @@ Indices:
             null AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             p.participant_id AS participant_id,
@@ -4504,6 +4546,7 @@ Indices:
             null AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name, 
             p.participant_id AS participant_id,
@@ -4557,6 +4600,7 @@ Indices:
             null AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
@@ -4618,6 +4662,7 @@ Indices:
             null AS md5sum,
             st.study_id AS study_id,
             st.dbgap_accession as dbgap_accession,
+            st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             p.participant_id AS participant_id,
