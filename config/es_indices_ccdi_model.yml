@@ -167,7 +167,7 @@ Indices:
           RETURN
             p.id AS id,
             p.participant_id AS participant_id,
-            apoc.text.split(p.race, ';') AS race,
+            p.race AS race,
             p.sex_at_birth AS sex_at_birth,
             stu.dbgap_accession AS dbgap_accession,
             stu.study_status AS study_status,
@@ -254,7 +254,7 @@ Indices:
                 dcf_indexd_guid: file.dcf_indexd_guid,
                 file_name: file.file_name,
                 file_access: file.file_access,
-                data_category: apoc.text.split(file.data_category, ';'),
+                data_category: file.data_category,
                 file_type: file.file_type,
                 file_description: file.file_description,
                 file_size: file.file_size,
