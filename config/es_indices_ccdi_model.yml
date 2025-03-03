@@ -828,6 +828,21 @@ Indices:
         type: keyword
       alternate_participant_id:
         type: keyword
+      cpi_data:
+        type: nested
+        properties:
+          associated_id:
+            type: keyword
+          repository_of_synonym_id:
+            type: keyword
+          domain_description:
+            type: keyword
+          domain_category:
+            type: keyword
+          data_location:
+            type: keyword
+          data_type:
+            type: keyword
       diagnosis_str:
         type: keyword
       diagnosis_comment_str:
@@ -1179,6 +1194,8 @@ Indices:
                     library_strategy: null
                 }) AS sample_diagnosis_filters_4
           with p, apoc.coll.union(sample_diagnosis_file_filters, sample_diagnosis_filters_4) as sample_diagnosis_file_filter
+          OPTIONAL MATCH (std:study)
+          with p, sample_diagnosis_file_filter, COLLECT(DISTINCT std.study_id) as study_list
           OPTIONAL MATCH (p)<-[*..4]-(file)
           WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -1189,7 +1206,7 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           OPTIONAL MATCH (d:diagnosis)-[:of_diagnosis]->(p)
-          WITH p, sy, sample_diagnosis_file_filter, 
+          WITH p, sample_diagnosis_file_filter, 
           COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
             event_free_survival_status: su.event_free_survival_status, 
             first_event: su.first_event,
@@ -1199,6 +1216,13 @@ Indices:
           age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
           COLLECT(DISTINCT{response_category: tr.response_category,
           age_at_response: tr.age_at_response}) as treatment_response_filters,file, st, stf, stp,
+          apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
+          CASE COLLECT(sy.synonym_id) WHEN [] THEN [] ELSE COLLECT(DISTINCT{associated_id: sy.associated_id,
+                repository_of_synonym_id: sy.repository_of_synonym_id,
+                domain_description: sy.domain_description,
+                domain_category: sy.domain_category,
+                data_location: sy.data_location,
+                data_type: CASE WHEN sy.repository_of_synonym_id IN study_list THEN 'internal' ELSE 'external' END}) END as cpi_data,
           apoc.text.join(COLLECT(distinct d.diagnosis), ';') AS diagnosis_str,
           apoc.text.join(COLLECT(distinct d.diagnosis_comment), ';') AS diagnosis_comment_str,
           apoc.text.join(apoc.coll.toSet(apoc.text.split(apoc.text.join(COLLECT(distinct d.anatomic_site), ';'), ';')), ';') AS diagnosis_anatomic_site_str,
@@ -1215,7 +1239,8 @@ Indices:
             apoc.text.split(p.race, ';') as race,
             p.race as race_str,
             p.sex_at_birth as sex_at_birth,
-            apoc.text.join(Collect(distinct sy.synonym_id), ',') as alternate_participant_id,
+            alternate_participant_id as alternate_participant_id,
+            cpi_data as cpi_data,
             diagnosis_str as diagnosis_str,
             diagnosis_comment_str as diagnosis_comment_str,
             diagnosis_anatomic_site_str as diagnosis_anatomic_site_str,
