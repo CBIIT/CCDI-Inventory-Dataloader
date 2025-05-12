@@ -3095,6 +3095,8 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      study_description:
+        type: keyword
       study_acronym:
         type: keyword
       PIs:
@@ -3168,6 +3170,7 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_name as study_name,
+            st.study_description as study_description,
             st.study_acronym as study_acronym,
             apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
             num_p as num_of_participants,
