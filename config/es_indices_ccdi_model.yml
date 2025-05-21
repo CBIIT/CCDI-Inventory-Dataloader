@@ -865,6 +865,24 @@ Indices:
         type: keyword
       age_at_last_known_survival_status_str:
         type: keyword
+      participant_id_gs:
+        type: search_as_you_type
+      diagnosis_str_gs:
+        type: search_as_you_type
+      study_id_gs:
+        type: search_as_you_type
+      age_at_diagnosis_str_gs:
+        type: search_as_you_type
+      treatment_type_str_gs:
+        type: search_as_you_type
+      sex_at_birth_gs:
+        type: search_as_you_type
+      treatment_agent_str_gs:
+        type: search_as_you_type
+      race_str_gs:
+        type: search_as_you_type
+      last_known_survival_status_str_gs:
+        type: search_as_you_type
       survival_filters:
         type: nested
         properties:
@@ -1259,6 +1277,15 @@ Indices:
             first_event_str as first_event_str,
             last_known_survival_status_str as last_known_survival_status_str,
             age_at_last_known_survival_status_str as age_at_last_known_survival_status_str,
+            p.participant_id as participant_id_gs,
+            diagnosis_str as diagnosis_str_gs,
+            st.study_id as study_id_gs,
+            age_at_diagnosis_str as age_at_diagnosis_str_gs,
+            treatment_type_str as treatment_type_str_gs,
+            p.sex_at_birth as sex_at_birth_gs,
+            treatment_agent_str as treatment_agent_str_gs,
+            p.race as race_str_gs,
+            last_known_survival_status_str as last_known_survival_status_str_gs,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,
