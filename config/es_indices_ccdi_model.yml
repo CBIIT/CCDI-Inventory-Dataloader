@@ -3128,6 +3128,12 @@ Indices:
         type: keyword
       PIs:
         type: keyword
+      study_id_gs:
+        type: search_as_you_type
+      study_name_gs:
+        type: search_as_you_type
+      study_status_gs:
+        type: search_as_you_type
       num_of_participants:
         type: integer
       num_of_diagnoses:
@@ -3204,6 +3210,9 @@ Indices:
             st.study_description as study_description,
             st.study_acronym as study_acronym,
             apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
+            st.study_id as study_id_gs,
+            st.study_name as study_name_gs,
+            st.study_status as study_status_gs,
             num_p as num_of_participants,
             num_diag as num_of_diagnoses,
             cancers as diagnosis_cancer,
@@ -3256,6 +3265,20 @@ Indices:
         type: keyword
       age_at_diagnosis_str:
         type: keyword
+      sample_id_gs:
+        type: search_as_you_type
+      participant_id_gs:
+        type: search_as_you_type
+      study_id_gs:
+        type: search_as_you_type
+      sample_anatomic_site_str_gs:
+        type: search_as_you_type
+      sample_tumor_status_gs:
+        type: search_as_you_type
+      diagnosis_str_gs:
+        type: search_as_you_type
+      tumor_classification_gs:
+        type: search_as_you_type
       diagnosis_filters:
         type: nested
         properties:
@@ -3335,16 +3358,21 @@ Indices:
           WITH sm, {
             id: sm.id,
             sample_id: sm.sample_id,
+            sample_id_gs: sm.sample_id,
             sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
             sample_anatomic_site_str: sm.anatomic_site,
+            sample_anatomic_site_str_gs: sm.anatomic_site,
             participant_age_at_collection: sm.participant_age_at_collection,
             sample_tumor_status: sm.sample_tumor_status,
-            tumor_classification: sm.tumor_classification
+            sample_tumor_status_gs: sm.sample_tumor_status,
+            tumor_classification: sm.tumor_classification,
+            tumor_classification_gs: sm.tumor_classification
           } AS opensearch_data
           MATCH (sm)-[*..3]->(p:participant)
           WITH sm, apoc.map.merge(opensearch_data, {
             pid: p.id,
             participant_id: p.participant_id,
+            participant_id_gs: p.participant_id,
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth
           }) AS opensearch_data
@@ -3436,6 +3464,7 @@ Indices:
           MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(st:study)
           WITH sm, apoc.map.merge(opensearch_data, {
             study_id: st.study_id,
+            study_id_gs: st.study_id,
             dbgap_accession: st.dbgap_accession,
             study_status: st.study_status,
             study_acronym: st.study_acronym,
@@ -3469,6 +3498,7 @@ Indices:
           OPTIONAL MATCH (sm)<-[*..3]-(dg:diagnosis)
           WITH sm, apoc.map.merge(opensearch_data, {
             diagnosis_str: apoc.text.join(COLLECT(distinct dg.diagnosis), ';'),
+            diagnosis_str_gs: apoc.text.join(COLLECT(distinct dg.diagnosis), ';'),
             diagnosis_comment_str: apoc.text.join(COLLECT(distinct dg.diagnosis_comment), ';'),
             diagnosis_anatomic_site_str: apoc.text.join(apoc.coll.toSet(apoc.text.split(apoc.text.join(COLLECT(distinct dg.anatomic_site), ';'), ';')), ';'),
             age_at_diagnosis_str: apoc.text.join(COLLECT(distinct toString(case dg.age_at_diagnosis when -999 then 'Not Reported' else coalesce(dg.age_at_diagnosis, '') end)), ';')
@@ -3506,6 +3536,13 @@ Indices:
             apoc.text.join(COLLECT(distinct dg.diagnosis_comment), ';') as diagnosis_comment_str,
             apoc.text.join(apoc.coll.toSet(apoc.text.split(apoc.text.join(COLLECT(distinct dg.anatomic_site), ';'), ';')), ';') as diagnosis_anatomic_site_str,
             apoc.text.join(COLLECT(distinct toString(case dg.age_at_diagnosis when -999 then 'Not Reported' else coalesce(dg.age_at_diagnosis, '') end)), ';') as age_at_diagnosis_str,
+            sm.sample_id as sample_id_gs,
+            null as participant_id_gs,
+            st.study_id as study_id_gs,
+            sm.anatomic_site as sample_anatomic_site_str_gs,
+            sm.sample_tumor_status as sample_tumor_status_gs,
+            apoc.text.join(COLLECT(distinct dg.diagnosis), ';') as diagnosis_str_gs,
+            sm.tumor_classification as tumor_classification_gs,
             COLLECT(DISTINCT {
                 age_at_diagnosis: dg.age_at_diagnosis,
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
