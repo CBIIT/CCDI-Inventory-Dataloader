@@ -3630,8 +3630,6 @@ Indices:
         type: search_as_you_type
       file_type_gs:
         type: search_as_you_type
-      file_size_gs:
-        type: search_as_you_type
       file_name_gs:
         type: search_as_you_type
       data_category_gs:
