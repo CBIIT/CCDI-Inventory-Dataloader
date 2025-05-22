@@ -1217,6 +1217,7 @@ Indices:
           OPTIONAL MATCH (std:study)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT std.study_id) as study_list
           optional match (sy:synonym)-->(p)
+          where sy.domain_description <> "" and sy.domain_category <> "" and sy.data_location <> ""
           optional match (par:participant)-->(st:study)
           where par.participant_id = sy.associated_id and st.study_id = sy.repository_of_synonym_id
           with p, sample_diagnosis_file_filter, CASE COLLECT(sy.synonym_id) WHEN [] THEN [] ELSE collect(apoc.map.merge({associated_id: sy.associated_id,
