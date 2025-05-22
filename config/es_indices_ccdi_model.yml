@@ -865,6 +865,24 @@ Indices:
         type: keyword
       age_at_last_known_survival_status_str:
         type: keyword
+      participant_id_gs:
+        type: search_as_you_type
+      diagnosis_str_gs:
+        type: search_as_you_type
+      study_id_gs:
+        type: search_as_you_type
+      age_at_diagnosis_str_gs:
+        type: search_as_you_type
+      treatment_type_str_gs:
+        type: search_as_you_type
+      sex_at_birth_gs:
+        type: search_as_you_type
+      treatment_agent_str_gs:
+        type: search_as_you_type
+      race_str_gs:
+        type: search_as_you_type
+      last_known_survival_status_str_gs:
+        type: search_as_you_type
       survival_filters:
         type: nested
         properties:
@@ -1199,6 +1217,7 @@ Indices:
           OPTIONAL MATCH (std:study)
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT std.study_id) as study_list
           optional match (sy:synonym)-->(p)
+          where sy.domain_description <> "" and sy.domain_category <> "" and sy.data_location <> ""
           optional match (par:participant)-->(st:study)
           where par.participant_id = sy.associated_id and st.study_id = sy.repository_of_synonym_id
           with p, sample_diagnosis_file_filter, CASE COLLECT(sy.synonym_id) WHEN [] THEN [] ELSE collect(apoc.map.merge({associated_id: sy.associated_id,
@@ -1259,6 +1278,15 @@ Indices:
             first_event_str as first_event_str,
             last_known_survival_status_str as last_known_survival_status_str,
             age_at_last_known_survival_status_str as age_at_last_known_survival_status_str,
+            p.participant_id as participant_id_gs,
+            diagnosis_str as diagnosis_str_gs,
+            st.study_id as study_id_gs,
+            age_at_diagnosis_str as age_at_diagnosis_str_gs,
+            treatment_type_str as treatment_type_str_gs,
+            p.sex_at_birth as sex_at_birth_gs,
+            treatment_agent_str as treatment_agent_str_gs,
+            p.race as race_str_gs,
+            last_known_survival_status_str as last_known_survival_status_str_gs,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
             treatment_response_filters as treatment_response_filters,
@@ -3101,6 +3129,12 @@ Indices:
         type: keyword
       PIs:
         type: keyword
+      study_id_gs:
+        type: search_as_you_type
+      study_name_gs:
+        type: search_as_you_type
+      study_status_gs:
+        type: search_as_you_type
       num_of_participants:
         type: integer
       num_of_diagnoses:
@@ -3177,6 +3211,9 @@ Indices:
             st.study_description as study_description,
             st.study_acronym as study_acronym,
             apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
+            st.study_id as study_id_gs,
+            st.study_name as study_name_gs,
+            st.study_status as study_status_gs,
             num_p as num_of_participants,
             num_diag as num_of_diagnoses,
             cancers as diagnosis_cancer,
@@ -3229,6 +3266,20 @@ Indices:
         type: keyword
       age_at_diagnosis_str:
         type: keyword
+      sample_id_gs:
+        type: search_as_you_type
+      participant_id_gs:
+        type: search_as_you_type
+      study_id_gs:
+        type: search_as_you_type
+      sample_anatomic_site_str_gs:
+        type: search_as_you_type
+      sample_tumor_status_gs:
+        type: search_as_you_type
+      diagnosis_str_gs:
+        type: search_as_you_type
+      tumor_classification_gs:
+        type: search_as_you_type
       diagnosis_filters:
         type: nested
         properties:
@@ -3308,16 +3359,21 @@ Indices:
           WITH sm, {
             id: sm.id,
             sample_id: sm.sample_id,
+            sample_id_gs: sm.sample_id,
             sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
             sample_anatomic_site_str: sm.anatomic_site,
+            sample_anatomic_site_str_gs: sm.anatomic_site,
             participant_age_at_collection: sm.participant_age_at_collection,
             sample_tumor_status: sm.sample_tumor_status,
-            tumor_classification: sm.tumor_classification
+            sample_tumor_status_gs: sm.sample_tumor_status,
+            tumor_classification: sm.tumor_classification,
+            tumor_classification_gs: sm.tumor_classification
           } AS opensearch_data
           MATCH (sm)-[*..3]->(p:participant)
           WITH sm, apoc.map.merge(opensearch_data, {
             pid: p.id,
             participant_id: p.participant_id,
+            participant_id_gs: p.participant_id,
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth
           }) AS opensearch_data
@@ -3409,6 +3465,7 @@ Indices:
           MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(st:study)
           WITH sm, apoc.map.merge(opensearch_data, {
             study_id: st.study_id,
+            study_id_gs: st.study_id,
             dbgap_accession: st.dbgap_accession,
             study_status: st.study_status,
             study_acronym: st.study_acronym,
@@ -3442,6 +3499,7 @@ Indices:
           OPTIONAL MATCH (sm)<-[*..3]-(dg:diagnosis)
           WITH sm, apoc.map.merge(opensearch_data, {
             diagnosis_str: apoc.text.join(COLLECT(distinct dg.diagnosis), ';'),
+            diagnosis_str_gs: apoc.text.join(COLLECT(distinct dg.diagnosis), ';'),
             diagnosis_comment_str: apoc.text.join(COLLECT(distinct dg.diagnosis_comment), ';'),
             diagnosis_anatomic_site_str: apoc.text.join(apoc.coll.toSet(apoc.text.split(apoc.text.join(COLLECT(distinct dg.anatomic_site), ';'), ';')), ';'),
             age_at_diagnosis_str: apoc.text.join(COLLECT(distinct toString(case dg.age_at_diagnosis when -999 then 'Not Reported' else coalesce(dg.age_at_diagnosis, '') end)), ';')
@@ -3479,6 +3537,13 @@ Indices:
             apoc.text.join(COLLECT(distinct dg.diagnosis_comment), ';') as diagnosis_comment_str,
             apoc.text.join(apoc.coll.toSet(apoc.text.split(apoc.text.join(COLLECT(distinct dg.anatomic_site), ';'), ';')), ';') as diagnosis_anatomic_site_str,
             apoc.text.join(COLLECT(distinct toString(case dg.age_at_diagnosis when -999 then 'Not Reported' else coalesce(dg.age_at_diagnosis, '') end)), ';') as age_at_diagnosis_str,
+            sm.sample_id as sample_id_gs,
+            null as participant_id_gs,
+            st.study_id as study_id_gs,
+            sm.anatomic_site as sample_anatomic_site_str_gs,
+            sm.sample_tumor_status as sample_tumor_status_gs,
+            apoc.text.join(COLLECT(distinct dg.diagnosis), ';') as diagnosis_str_gs,
+            sm.tumor_classification as tumor_classification_gs,
             COLLECT(DISTINCT {
                 age_at_diagnosis: dg.age_at_diagnosis,
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
@@ -3555,6 +3620,20 @@ Indices:
         type: keyword
       sample_id:
         type: keyword
+      participant_id_gs:
+        type: search_as_you_type
+      sample_id_gs:
+        type: search_as_you_type
+      study_id_gs:
+        type: search_as_you_type
+      file_description_gs:
+        type: search_as_you_type
+      file_type_gs:
+        type: search_as_you_type
+      file_name_gs:
+        type: search_as_you_type
+      data_category_gs:
+        type: search_as_you_type
       files:
         type: text
         fields:
@@ -3838,6 +3917,13 @@ Indices:
             st.study_name as study_name,
             p.participant_id AS participant_id,
             null AS sample_id,
+            p.participant_id as participant_id_gs,
+            null as sample_id_gs,
+            st.study_id as study_id_gs,
+            file.file_description as file_description_gs,
+            file.file_type as file_type_gs,
+            file.file_name as file_name_gs,
+            file.data_category as data_category_gs,
             COLLECT(DISTINCT file.id) as files,
             null as combined_filters,
             COLLECT(DISTINCT {
@@ -4011,6 +4097,13 @@ Indices:
             st.study_name as study_name,
             null AS participant_id,
             null AS sample_id,
+            null as participant_id_gs,
+            null as sample_id_gs,
+            st.study_id as study_id_gs,
+            file.file_description as file_description_gs,
+            file.file_type as file_type_gs,
+            file.file_name as file_name_gs,
+            file.data_category as data_category_gs,
             COLLECT(DISTINCT file.id) as files,
             combined_filter as combined_filters,
             null as participant_filters,
@@ -4181,6 +4274,13 @@ Indices:
             st.study_name as study_name,
             null AS participant_id,
             null AS sample_id,
+            null as participant_id_gs,
+            null as sample_id_gs,
+            st.study_id as study_id_gs,
+            file.file_description as file_description_gs,
+            file.file_type as file_type_gs,
+            file.file_name as file_name_gs,
+            file.data_category as data_category_gs,
             COLLECT(DISTINCT file.id) as files,
             combined_filter as combined_filters,
             null as participant_filters,
@@ -4333,6 +4433,14 @@ Indices:
             p.participant_id AS participant_id,
             CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
                       ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
+            p.participant_id as participant_id_gs,
+            CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
+                      ELSE sm1.sample_id + ',' + sm.sample_id END as sample_id_gs,
+            st.study_id as study_id_gs,
+            file.file_description as file_description_gs,
+            file.file_type as file_type_gs,
+            file.file_name as file_name_gs,
+            file.data_category as data_category_gs,
             COLLECT(DISTINCT file.id) as files,
             null as combined_filters,
             COLLECT(DISTINCT {
@@ -4388,6 +4496,13 @@ Indices:
             st.study_name as study_name,
             null AS participant_id,
             sm.sample_id AS sample_id,
+            null as participant_id_gs,
+            sm.sample_id as sample_id_gs,
+            st.study_id as study_id_gs,
+            file.file_description as file_description_gs,
+            file.file_type as file_type_gs,
+            file.file_name as file_name_gs,
+            file.data_category as data_category_gs,
             COLLECT(DISTINCT file.id) as files,
             null as combined_filters,
             null AS participant_filters,
@@ -4546,6 +4661,13 @@ Indices:
             st.study_name as study_name,
             p.participant_id AS participant_id,
             sm.sample_id AS sample_id,
+            p.participant_id as participant_id_gs,
+            sm.sample_id as sample_id_gs,
+            st.study_id as study_id_gs,
+            null as file_description_gs,
+            null as file_type_gs,
+            null as file_name_gs,
+            null as data_category_gs,
             null as files,
             null as combined_filters,
             COLLECT(DISTINCT {
@@ -4598,6 +4720,13 @@ Indices:
             st.study_name as study_name, 
             p.participant_id AS participant_id,
             sm.sample_id AS sample_id,
+            p.participant_id as participant_id_gs,
+            sm.sample_id as sample_id_gs,
+            st.study_id as study_id_gs,
+            null as file_description_gs,
+            null as file_type_gs,
+            null as file_name_gs,
+            null as data_category_gs,
             null as files,
             null as combined_filters,
             COLLECT(DISTINCT {
@@ -4652,6 +4781,13 @@ Indices:
             st.study_name as study_name,
             null AS participant_id,
             sm.sample_id AS sample_id,
+            null as participant_id_gs,
+            sm.sample_id as sample_id_gs,
+            st.study_id as study_id_gs,
+            null as file_description_gs,
+            null as file_type_gs,
+            null as file_name_gs,
+            null as data_category_gs,
             null as files,
             null as combined_filters,
             null AS participant_filters,
@@ -4714,6 +4850,13 @@ Indices:
             st.study_name as study_name,
             p.participant_id AS participant_id,
             null AS sample_id,
+            p.participant_id as participant_id_gs,
+            null as sample_id_gs,
+            st.study_id as study_id_gs,
+            null as file_description_gs,
+            null as file_type_gs,
+            null as file_name_gs,
+            null as data_category_gs,
             null as files,
             null as combined_filters,
             COLLECT(DISTINCT {
@@ -4748,46 +4891,44 @@ Indices:
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       node_kw:
         type: keyword
-  #Handles information stored in model file
-
+  # Model properties index
   - index_name: model_properties
     type: model
     subtype: property
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       property:
-        type: keyword
+        type: search_as_you_type
       property_kw:
         type: keyword
       property_description:
-        type: keyword
+        type: search_as_you_type
       property_required:
-        type: keyword
+        type: search_as_you_type
       property_type:
-        type: keyword
-  #Handles information stored in model file
-
+        type: search_as_you_type
+  # Model values index
   - index_name: model_values
     type: model
     subtype: value
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       property:
-        type: keyword
+        type: search_as_you_type
       property_description:
-        type: keyword
+        type: search_as_you_type
       property_required:
-        type: keyword
+        type: search_as_you_type
       property_type:
-        type: keyword
+        type: search_as_you_type
       value:
-        type: keyword
+        type: search_as_you_type
       value_kw:
         type: keyword
