@@ -4891,46 +4891,44 @@ Indices:
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       node_kw:
         type: keyword
-  #Handles information stored in model file
-
+  # Model properties index
   - index_name: model_properties
     type: model
     subtype: property
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       property:
-        type: keyword
+        type: search_as_you_type
       property_kw:
         type: keyword
       property_description:
-        type: keyword
+        type: search_as_you_type
       property_required:
-        type: keyword
+        type: search_as_you_type
       property_type:
-        type: keyword
-  #Handles information stored in model file
-
+        type: search_as_you_type
+  # Model values index
   - index_name: model_values
     type: model
     subtype: value
     # type mapping for each property of the index
     mapping:
       node:
-        type: keyword
+        type: search_as_you_type
       property:
-        type: keyword
+        type: search_as_you_type
       property_description:
-        type: keyword
+        type: search_as_you_type
       property_required:
-        type: keyword
+        type: search_as_you_type
       property_type:
-        type: keyword
+        type: search_as_you_type
       value:
-        type: keyword
+        type: search_as_you_type
       value_kw:
         type: keyword
