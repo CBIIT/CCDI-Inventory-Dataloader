@@ -34,6 +34,8 @@ Indices:
             type: keyword
           diagnosis_basis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           diagnosis_classification_system:
             type: keyword
           diagnosis_comment:
@@ -185,6 +187,7 @@ Indices:
                 disease_phase: d.disease_phase,
                 toronto_childhood_cancer_staging: d.toronto_childhood_cancer_staging,
                 tumor_classification: d.tumor_classification,
+                diagnosis_category: d.diagnosis_category,
                 tumor_grade: d.tumor_grade,
                 tumor_stage_clinical_m: d.tumor_stage_clinical_m,
                 tumor_stage_clinical_n: d.tumor_stage_clinical_n,
@@ -342,6 +345,8 @@ Indices:
           tumor_stage_source:
             type: keyword            
           diagnosis:
+            type: keyword
+          diagnosis_category:
             type: keyword
           data_category:
             type: keyword
@@ -601,6 +606,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -667,6 +673,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null, 
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
@@ -716,6 +723,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null, 
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
@@ -784,6 +792,7 @@ Indices:
           diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
           disease_phase: dg.disease_phase,
           diagnosis_classification_system: dg.diagnosis_classification_system,
+          diagnosis_category: dg.diagnosis_category,
           diagnosis_basis: dg.diagnosis_basis,
           tumor_grade_source: dg.tumor_grade_source,
           tumor_stage_source: dg.tumor_stage_source,
@@ -937,6 +946,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1027,6 +1038,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1044,6 +1056,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1077,6 +1090,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1104,6 +1118,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1139,6 +1154,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1174,6 +1190,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1201,6 +1218,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1366,6 +1384,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1442,6 +1462,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1459,6 +1480,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1492,7 +1514,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
-                    diagnosis_basis: dg.diagnosis_basis, 
+                    diagnosis_category: dg.diagnosis_category,
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
@@ -1519,6 +1541,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1554,6 +1577,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1589,6 +1613,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1616,6 +1641,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1728,6 +1754,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1804,6 +1832,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1821,6 +1850,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1854,6 +1884,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1881,6 +1912,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1916,6 +1948,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1951,6 +1984,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1978,6 +2012,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2089,6 +2124,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -2165,6 +2202,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -2182,6 +2220,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2215,6 +2254,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2242,6 +2282,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2277,6 +2318,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2311,6 +2353,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2338,6 +2381,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: dg.diagnosis_category,
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2400,6 +2444,8 @@ Indices:
       sample_id:
         type: keyword
       diagnosis:
+        type: keyword
+      diagnosis_category:
         type: keyword
       disease_phase:
         type: keyword
@@ -2681,6 +2727,7 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            dg.diagnosis_category as diagnosis_category,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -2713,6 +2760,7 @@ Indices:
             diagnosis: dg.diagnosis,
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
+            diagnosis_category: dg.diagnosis_category,
             diagnosis_basis: dg.diagnosis_basis,
             tumor_grade_source: dg.tumor_grade_source,
             tumor_stage_source: dg.tumor_stage_source,
@@ -2997,6 +3045,7 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            dg.diagnosis_category as diagnosis_category,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -3077,6 +3126,7 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            dg.diagnosis_category as diagnosis_category,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -3299,6 +3349,8 @@ Indices:
             type: keyword    
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
       file_filters:
         type: nested
         properties:
@@ -3384,6 +3436,7 @@ Indices:
             diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
+            diagnosis_category: dg.diagnosis_category,
             diagnosis_basis: dg.diagnosis_basis,
             tumor_grade_source: dg.tumor_grade_source,
             tumor_stage_source: dg.tumor_stage_source,
@@ -3396,6 +3449,7 @@ Indices:
               diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
+              diagnosis_category: dg.diagnosis_category,
               diagnosis_basis: dg.diagnosis_basis,
               tumor_grade_source: dg.tumor_grade_source,
               tumor_stage_source: dg.tumor_stage_source,
@@ -3549,6 +3603,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
@@ -3702,6 +3757,8 @@ Indices:
                 type: keyword   
               diagnosis:
                 type: keyword
+              diagnosis_category:
+                type: keyword
       participant_filters:
         type: nested
         properties:
@@ -3735,6 +3792,8 @@ Indices:
           tumor_stage_source:
             type: keyword   
           diagnosis:
+            type: keyword
+          diagnosis_category:
             type: keyword
       survival_filters:
         type: nested
@@ -3804,6 +3863,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3821,6 +3881,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3839,6 +3900,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3857,6 +3919,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3870,6 +3933,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3952,6 +4016,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3970,6 +4035,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3989,10 +4055,12 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     }) AS sample_diagnosis_filter_4
           with file, p, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
@@ -4129,6 +4197,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4147,6 +4216,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4166,6 +4236,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4187,7 +4258,7 @@ Indices:
                                         age_at_diagnosis: dg.age_at_diagnosis,
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
-                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,                                        
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4201,6 +4272,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4240,7 +4312,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     }) as sample_diagnosis_filter
           with file, combined_filter_1, collect({
                 participant_id: null,
@@ -4308,6 +4381,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4324,6 +4398,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: dg.diagnosis_category,
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4344,7 +4419,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4353,11 +4429,12 @@ Indices:
                                         age_at_diagnosis: dg.age_at_diagnosis,
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
-                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,  
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     })) AS sample_diagnosis_filter_4
           with file, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
           optional MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)<--(file)
@@ -4374,7 +4451,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4387,7 +4465,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: dg.diagnosis_category
                                     })) AS sample_diagnosis_filter_6
           with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
           MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*0..2]-(sm:sample)<--(file)
@@ -4518,7 +4597,8 @@ Indices:
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
-                diagnosis: dg.diagnosis
+                diagnosis: dg.diagnosis,
+                diagnosis_category: dg.diagnosis_category
             }) AS sample_diagnosis_filters, 
             null as survival_filters,
             null as treatment_filters,
@@ -4545,11 +4625,12 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: dg.diagnosis_category
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4562,7 +4643,8 @@ Indices:
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: dg.diagnosis_category
                             })) as sample_diagnosis_filter_1
           MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
           where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
@@ -4575,11 +4657,12 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: dg.diagnosis_category
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4588,11 +4671,12 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: dg.diagnosis_category
                             })) AS sample_diagnosis_filter_2
           with p, sm1, sm, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
           MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
@@ -4610,7 +4694,8 @@ Indices:
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: dg.diagnosis_category 
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4745,7 +4830,8 @@ Indices:
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
-                diagnosis: dg.diagnosis
+                diagnosis: dg.diagnosis,
+                diagnosis_category: dg.diagnosis_category
             }) AS sample_diagnosis_filters,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
@@ -4803,6 +4889,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null,
                 tumor_grade_source: null,
                 tumor_stage_source: null,
@@ -4872,6 +4959,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: dg.diagnosis_category,
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
