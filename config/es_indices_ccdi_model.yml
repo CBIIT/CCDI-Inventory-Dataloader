@@ -156,7 +156,7 @@ Indices:
             type: keyword
     cypher_queries:
       - query: |
-          MATCH (p:participant)-[:of_participant]->(stu:study)
+          MATCH (p:participant)-[:of_participant]->(cg:consent_group)-[:of_consent_group]->(stu:study)
           WITH p, stu
           SKIP $skip LIMIT $limit
           OPTIONAL MATCH (d:diagnosis)-[*..4]->(p)
@@ -629,7 +629,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH p, sample_diagnosis_file_filter,  st, stf, stp,
@@ -1242,7 +1242,7 @@ Indices:
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT std.study_id) as study_list
           optional match (sy:synonym)-->(p)
           where sy.domain_description <> "" and sy.domain_category <> "" and sy.data_location <> "" and sy.repository_of_synonym_id <> "NCCR"
-          optional match (par:participant)-->(st:study)
+          optional match (par:participant)-->(cg:consent_group)-->(st:study)
           where par.participant_id = sy.associated_id and st.study_id = sy.repository_of_synonym_id
           with p, sample_diagnosis_file_filter, CASE COLLECT(sy.synonym_id) WHEN [] THEN [] ELSE collect(apoc.map.merge({associated_id: sy.associated_id,
                 repository_of_synonym_id: sy.repository_of_synonym_id,
@@ -1258,7 +1258,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           OPTIONAL MATCH (d:diagnosis)-[:of_diagnosis]->(p)
@@ -1665,7 +1665,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH su, p, sy, sample_diagnosis_file_filter,  
@@ -2036,7 +2036,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH tm, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -2405,7 +2405,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH tr, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -2722,7 +2722,7 @@ Indices:
                     }) AS opensearch_data
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           WITH dg, p, opensearch_data , st
           RETURN DISTINCT
             dg.id as id,
@@ -2756,7 +2756,7 @@ Indices:
             opensearch_data.files as files
         page_size: 100
       - query: |
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg:diagnosis)
+          match (st:study)<--(cg:consent_group)<--(p:participant)<--(sm:sample)<--(dg:diagnosis)
           with distinct dg, {
             id: dg.id,
             pid: p.id,
@@ -2877,7 +2877,7 @@ Indices:
                     library_source_molecule: null,
                     library_strategy: null
             }) end as participant_file_filters
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg)
+          match (st:study)<--(cg:consent_group)<--(p:participant)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (st)<--(file)
           where (file: clinical_measure_file or file: generic_file)
           with dg, opensearch_data, sample_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
@@ -3030,7 +3030,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH dg, p, sid, sample_id, sample_file_filters, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -3222,7 +3222,7 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
-          MATCH (st:study)<-[:of_participant]-(p:participant)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
           with st, count(p) as num_p
           MATCH (st:study)<-[*..5]-(dg:diagnosis)
           with st, num_p, count(dg) as num_diag
@@ -3242,10 +3242,10 @@ Indices:
           with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
           ORDER BY num_ft desc
           with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
-          OPTIONAL MATCH (st)<-[:of_participant|of_cell_line|of_pdx]-(pcp)<-[:of_sample]-(sm1:sample)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant|of_cell_line|of_pdx]-(pcp)<-[:of_sample]-(sm1:sample)
           WHERE (pcp:participant or pcp:cell_line or pcp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, count(distinct sm1.sample_id) as num_samples_1
-          OPTIONAL MATCH (st)<-[:of_participant]-(participant)<-[:of_sample]-(sm1:sample)<--(cp)<--(sm2:sample)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(participant)<-[:of_sample]-(sm1:sample)<--(cp)<--(sm2:sample)
           WHERE (cp:cell_line or cp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples_1, count(distinct sm2.sample_id) as num_samples_2
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples_1 + num_samples_2 as num_samples
@@ -3522,7 +3522,7 @@ Indices:
             files: files,
             file_count: SIZE(files)
           }) AS opensearch_data
-          MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(st:study)
+          MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(cg:consent_group)-[:of_consent_group]->(st:study)
           WITH sm, apoc.map.merge(opensearch_data, {
             study_id: st.study_id,
             study_id_gs: st.study_id,
@@ -3947,7 +3947,7 @@ Indices:
                                     })) AS sample_diagnosis_filter_6
           with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
           MATCH (p:participant)<--(file)
-          MATCH (st:study)<-[:of_participant]-(p)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -4476,7 +4476,7 @@ Indices:
                                     })) AS sample_diagnosis_filter_6
           with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
           MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*0..2]-(sm:sample)<--(file)
-          MATCH (st:study)<-[:of_participant]-(p)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
