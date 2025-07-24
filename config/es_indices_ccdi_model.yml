@@ -1520,6 +1520,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_basis: dg.diagnosis_basis,
                     diagnosis_category: dg.diagnosis_category,
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
