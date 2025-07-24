@@ -34,6 +34,8 @@ Indices:
             type: keyword
           diagnosis_basis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           diagnosis_classification_system:
             type: keyword
           diagnosis_comment:
@@ -154,7 +156,7 @@ Indices:
             type: keyword
     cypher_queries:
       - query: |
-          MATCH (p:participant)-[:of_participant]->(stu:study)
+          MATCH (p:participant)-[:of_participant]->(cg:consent_group)-[:of_consent_group]->(stu:study)
           WITH p, stu
           SKIP $skip LIMIT $limit
           OPTIONAL MATCH (d:diagnosis)-[*..4]->(p)
@@ -185,6 +187,7 @@ Indices:
                 disease_phase: d.disease_phase,
                 toronto_childhood_cancer_staging: d.toronto_childhood_cancer_staging,
                 tumor_classification: d.tumor_classification,
+                diagnosis_category: d.diagnosis_category,
                 tumor_grade: d.tumor_grade,
                 tumor_stage_clinical_m: d.tumor_stage_clinical_m,
                 tumor_stage_clinical_n: d.tumor_stage_clinical_n,
@@ -343,6 +346,8 @@ Indices:
             type: keyword            
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -427,6 +432,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -444,6 +450,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -477,6 +484,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -504,6 +512,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -539,6 +548,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -574,6 +584,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -601,6 +612,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -617,7 +629,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH p, sample_diagnosis_file_filter,  st, stf, stp,
@@ -667,6 +679,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null, 
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
@@ -716,6 +729,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null, 
                 tumor_grade_source: null,
                 tumor_stage_source: null,          
@@ -784,6 +798,7 @@ Indices:
           diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
           disease_phase: dg.disease_phase,
           diagnosis_classification_system: dg.diagnosis_classification_system,
+          diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
           diagnosis_basis: dg.diagnosis_basis,
           tumor_grade_source: dg.tumor_grade_source,
           tumor_stage_source: dg.tumor_stage_source,
@@ -937,6 +952,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1027,6 +1044,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1044,6 +1062,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1077,6 +1096,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1104,6 +1124,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1139,6 +1160,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1174,6 +1196,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1201,6 +1224,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1218,7 +1242,7 @@ Indices:
           with p, sample_diagnosis_file_filter, COLLECT(DISTINCT std.study_id) as study_list
           optional match (sy:synonym)-->(p)
           where sy.domain_description <> "" and sy.domain_category <> "" and sy.data_location <> "" and sy.repository_of_synonym_id <> "NCCR"
-          optional match (par:participant)-->(st:study)
+          optional match (par:participant)-->(cg:consent_group)-->(st:study)
           where par.participant_id = sy.associated_id and st.study_id = sy.repository_of_synonym_id
           with p, sample_diagnosis_file_filter, CASE COLLECT(sy.synonym_id) WHEN [] THEN [] ELSE collect(apoc.map.merge({associated_id: sy.associated_id,
                 repository_of_synonym_id: sy.repository_of_synonym_id,
@@ -1234,7 +1258,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           OPTIONAL MATCH (d:diagnosis)-[:of_diagnosis]->(p)
@@ -1366,6 +1390,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1442,6 +1468,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1459,6 +1486,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1492,7 +1520,8 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
-                    diagnosis_basis: dg.diagnosis_basis, 
+                    diagnosis_basis: dg.diagnosis_basis,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
                     diagnosis: dg.diagnosis,
@@ -1519,6 +1548,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1554,6 +1584,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1589,6 +1620,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1616,6 +1648,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1633,7 +1666,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH su, p, sy, sample_diagnosis_file_filter,  
@@ -1728,6 +1761,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -1804,6 +1839,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -1821,6 +1857,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1854,6 +1891,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1881,6 +1919,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1916,6 +1955,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1951,6 +1991,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1978,6 +2019,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -1995,7 +2037,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH tm, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -2089,6 +2131,8 @@ Indices:
             type: keyword              
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
           data_category:
             type: keyword
           file_type:
@@ -2165,6 +2209,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis, 
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,          
@@ -2182,6 +2227,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2215,6 +2261,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2242,6 +2289,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2277,6 +2325,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2311,6 +2360,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2338,6 +2388,7 @@ Indices:
                     diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                     disease_phase: dg.disease_phase,
                     diagnosis_classification_system: dg.diagnosis_classification_system,
+                    diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                     diagnosis_basis: dg.diagnosis_basis, 
                     tumor_grade_source: dg.tumor_grade_source,
                     tumor_stage_source: dg.tumor_stage_source,          
@@ -2355,7 +2406,7 @@ Indices:
             OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
             OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
             OPTIONAL MATCH (p)<-[:of_synonym]-(sy:synonym)
-            OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+            OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
             OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
             OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
             WITH tr, p, sy, sample_diagnosis_file_filter,	COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -2400,6 +2451,10 @@ Indices:
       sample_id:
         type: keyword
       diagnosis:
+        type: keyword
+      diagnosis_category:
+        type: keyword
+      diagnosis_category_str:
         type: keyword
       disease_phase:
         type: keyword
@@ -2625,7 +2680,7 @@ Indices:
                     library_source_molecule: null,
                     library_strategy: null
             }) end as participant_file_filters
-          optional match (st:study)<--(p)<-[*..3]-(sm:sample)
+          optional match (st:study)<--(cg:consent_group)<--(p)<-[*..3]-(sm:sample)
           OPTIONAL MATCH (st)<--(file)
           where (file: clinical_measure_file  or file: generic_file)
           with p, opensearch_data, general_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
@@ -2670,7 +2725,7 @@ Indices:
                     }) AS opensearch_data
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           WITH dg, p, opensearch_data , st
           RETURN DISTINCT
             dg.id as id,
@@ -2681,6 +2736,8 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            apoc.text.split(dg.diagnosis_category, ';') as diagnosis_category,
+            dg.diagnosis_category as diagnosis_category_str,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -2703,7 +2760,7 @@ Indices:
             opensearch_data.files as files
         page_size: 100
       - query: |
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg:diagnosis)
+          match (st:study)<--(cg:consent_group)<--(p:participant)<--(sm:sample)<--(dg:diagnosis)
           with distinct dg, {
             id: dg.id,
             pid: p.id,
@@ -2713,6 +2770,8 @@ Indices:
             diagnosis: dg.diagnosis,
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
+            diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
+            diagnosis_category_str: dg.diagnosis_category,
             diagnosis_basis: dg.diagnosis_basis,
             tumor_grade_source: dg.tumor_grade_source,
             tumor_stage_source: dg.tumor_stage_source,
@@ -2823,7 +2882,7 @@ Indices:
                     library_source_molecule: null,
                     library_strategy: null
             }) end as participant_file_filters
-          match (st:study)<--(p:participant)<--(sm:sample)<--(dg)
+          match (st:study)<--(cg:consent_group)<--(p:participant)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (st)<--(file)
           where (file: clinical_measure_file or file: generic_file)
           with dg, opensearch_data, sample_file_filters, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
@@ -2937,7 +2996,7 @@ Indices:
                     library_strategy: null
             }) end as participant_file_filters_2
           with dg, sample_file_filter, apoc.coll.union(participant_file_filters_1, participant_file_filters_2) as participant_file_filters
-          optional match (st:study)<--(p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
+          optional match (st:study)<--(cg:consent_group)<--(p)<-[:of_sample]-(sm1:sample)<--(cl)<--(sm:sample)<--(dg)
           OPTIONAL MATCH (st)<--(file)
           where (file: clinical_measure_file or file: generic_file)
           with dg, sample_file_filter, participant_file_filters, case COLLECT(file) when [] then [] else COLLECT(DISTINCT {
@@ -2976,7 +3035,7 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st:study)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           WITH dg, p, sid, sample_id, sample_file_filters, files, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -2997,6 +3056,8 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            apoc.text.split(dg.diagnosis_category, ';') as diagnosis_category,
+            dg.diagnosis_category as diagnosis_category_str,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -3077,6 +3138,8 @@ Indices:
             dg.diagnosis as diagnosis,
             dg.disease_phase as disease_phase,
             dg.diagnosis_classification_system as diagnosis_classification_system,
+            apoc.text.split(dg.diagnosis_category, ';') as diagnosis_category,
+            dg.diagnosis_category as diagnosis_category_str,
             dg.diagnosis_basis as diagnosis_basis,
             dg.tumor_grade_source as tumor_grade_source,
             dg.tumor_stage_source as tumor_stage_source,
@@ -3166,34 +3229,34 @@ Indices:
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
-          MATCH (st:study)<-[:of_participant]-(p:participant)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
           with st, count(p) as num_p
-          MATCH (st:study)<-[*..5]-(dg:diagnosis)
+          MATCH (st:study)<-[*..6]-(dg:diagnosis)
           with st, num_p, count(dg) as num_diag
-          MATCH (st:study)<-[*..5]-(dg:diagnosis)
+          MATCH (st:study)<-[*..6]-(dg:diagnosis)
           with st, num_p, num_diag, dg.diagnosis as dg_cancers, count(dg.diagnosis) as num_cancers
           ORDER BY num_cancers desc
           with st, num_p, num_diag, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
-          MATCH (st)<-[*..5]-(diag:diagnosis)
+          MATCH (st)<-[*..6]-(diag:diagnosis)
           with st, num_p, num_diag, cancers, apoc.text.split(diag.anatomic_site, ';') as dg_sites
           unwind dg_sites as dg_site
           with st, num_p, num_diag, cancers, dg_site
           with st, num_p, num_diag, cancers, dg_site, count(dg_site) as num_sites
           ORDER BY num_sites desc
           with st, num_p, num_diag, cancers, collect(dg_site + ' (' + toString(num_sites) + ')') as sites
-          MATCH (st)<-[*..5]-(fl)
+          MATCH (st)<-[*..6]-(fl)
           WHERE (fl:clinical_measure_file or fl: generic_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
           with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(fl.file_type) as num_ft
           ORDER BY num_ft desc
           with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
-          OPTIONAL MATCH (st)<-[:of_participant|of_cell_line|of_pdx]-(pcp)<-[:of_sample]-(sm1:sample)
+          OPTIONAL MATCH (st)<-[*..2]-(pcp)<-[:of_sample]-(sm1:sample)
           WHERE (pcp:participant or pcp:cell_line or pcp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, count(distinct sm1.sample_id) as num_samples_1
-          OPTIONAL MATCH (st)<-[:of_participant]-(participant)<-[:of_sample]-(sm1:sample)<--(cp)<--(sm2:sample)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(participant)<-[:of_sample]-(sm1:sample)<--(cp)<--(sm2:sample)
           WHERE (cp:cell_line or cp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples_1, count(distinct sm2.sample_id) as num_samples_2
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples_1 + num_samples_2 as num_samples
-          MATCH (st)<-[*..5]-(file)
+          MATCH (st)<-[*..6]-(file)
           WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
@@ -3299,6 +3362,8 @@ Indices:
             type: keyword    
           diagnosis:
             type: keyword
+          diagnosis_category:
+            type: keyword
       file_filters:
         type: nested
         properties:
@@ -3384,6 +3449,7 @@ Indices:
             diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
             disease_phase: dg.disease_phase,
             diagnosis_classification_system: dg.diagnosis_classification_system,
+            diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
             diagnosis_basis: dg.diagnosis_basis,
             tumor_grade_source: dg.tumor_grade_source,
             tumor_stage_source: dg.tumor_stage_source,
@@ -3396,6 +3462,7 @@ Indices:
               diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
               disease_phase: dg.disease_phase,
               diagnosis_classification_system: dg.diagnosis_classification_system,
+              diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
               diagnosis_basis: dg.diagnosis_basis,
               tumor_grade_source: dg.tumor_grade_source,
               tumor_stage_source: dg.tumor_stage_source,
@@ -3462,7 +3529,7 @@ Indices:
             files: files,
             file_count: SIZE(files)
           }) AS opensearch_data
-          MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(st:study)
+          MATCH (sm)-[*..3]->(:participant)-[:of_participant]->(cg:consent_group)-[:of_consent_group]->(st:study)
           WITH sm, apoc.map.merge(opensearch_data, {
             study_id: st.study_id,
             study_id_gs: st.study_id,
@@ -3549,6 +3616,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
@@ -3702,6 +3770,8 @@ Indices:
                 type: keyword   
               diagnosis:
                 type: keyword
+              diagnosis_category:
+                type: keyword
       participant_filters:
         type: nested
         properties:
@@ -3735,6 +3805,8 @@ Indices:
           tumor_stage_source:
             type: keyword   
           diagnosis:
+            type: keyword
+          diagnosis_category:
             type: keyword
       survival_filters:
         type: nested
@@ -3804,6 +3876,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3821,6 +3894,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3839,6 +3913,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3857,6 +3932,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3870,6 +3946,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -3877,7 +3954,7 @@ Indices:
                                     })) AS sample_diagnosis_filter_6
           with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
           MATCH (p:participant)<--(file)
-          MATCH (st:study)<-[:of_participant]-(p)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -3952,12 +4029,13 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
                                     }) AS sample_diagnosis_filter_1
-          match (st:study)<--(p)
+          match (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           match (st)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
@@ -3970,13 +4048,14 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
                                     }) AS sample_diagnosis_filter_2
           with file, p, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
-          match (st:study)<--(p)
+          match (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           match (st)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm1)<--(dg:diagnosis)
@@ -3992,11 +4071,12 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }) AS sample_diagnosis_filter_4
           with file, p, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
-          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -4014,7 +4094,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4027,7 +4108,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     })) AS sample_diagnosis_filter_6, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
@@ -4063,7 +4145,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }) as sample_diagnosis_filter
           with file, combined_filter_1, collect({
                 participant_id: null,
@@ -4117,7 +4200,7 @@ Indices:
             null AS library_strategy
       - query: |
           MATCH (st:study)<-[:of_generic_file]-(file:generic_file)
-          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           optional MATCH (p)<-[*0..3]-(sm:sample)
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           with file, p, COLLECT(DISTINCT {
@@ -4129,12 +4212,13 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
                                     }) AS sample_diagnosis_filter_1
-          match (st:study)<--(p)
+          match (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           match (st)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
@@ -4147,13 +4231,14 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
                                     }) AS sample_diagnosis_filter_2
           with file, p, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
-          match (st:study)<--(p)
+          match (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           match (st)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm1)<--(dg:diagnosis)
@@ -4166,6 +4251,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4173,7 +4259,7 @@ Indices:
                                     }) AS sample_diagnosis_filter_4
           with file, p, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
           MATCH (st:study)<-[:of_generic_file]-(file)
-          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -4187,11 +4273,12 @@ Indices:
                                         age_at_diagnosis: dg.age_at_diagnosis,
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
-                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,                                        
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4201,6 +4288,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4240,7 +4328,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }) as sample_diagnosis_filter
           with file, combined_filter_1, collect({
                 participant_id: null,
@@ -4308,6 +4397,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4324,6 +4414,7 @@ Indices:
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
                                         diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
@@ -4344,7 +4435,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4353,11 +4445,12 @@ Indices:
                                         age_at_diagnosis: dg.age_at_diagnosis,
                                         diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                         disease_phase: dg.disease_phase,
-                                        diagnosis_classification_system: dg.diagnosis_classification_system,
+                                        diagnosis_classification_system: dg.diagnosis_classification_system,  
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     })) AS sample_diagnosis_filter_4
           with file, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
           optional MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)<--(file)
@@ -4374,7 +4467,8 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     }), COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
@@ -4387,11 +4481,12 @@ Indices:
                                         diagnosis_basis: dg.diagnosis_basis,
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
-                                        diagnosis: dg.diagnosis
+                                        diagnosis: dg.diagnosis,
+                                        diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                                     })) AS sample_diagnosis_filter_6
           with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
           MATCH (p:participant)<-[:of_sample]-(sm1:sample)<-[*0..2]-(sm:sample)<--(file)
-          MATCH (st:study)<-[:of_participant]-(p)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -4518,7 +4613,8 @@ Indices:
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
-                diagnosis: dg.diagnosis
+                diagnosis: dg.diagnosis,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
             }) AS sample_diagnosis_filters, 
             null as survival_filters,
             null as treatment_filters,
@@ -4534,7 +4630,7 @@ Indices:
                       WHEN 'sequencing_file' THEN file.library_strategy
                       ELSE null END AS library_strategy
       - query: |
-         MATCH (st:study)<--(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
+         MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)<--(sm1:sample)<-[*2..2]-(sm:sample)
           where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           with p, sm1, sm, apoc.coll.union(COLLECT(DISTINCT {
@@ -4545,11 +4641,12 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4562,9 +4659,10 @@ Indices:
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             })) as sample_diagnosis_filter_1
-          MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)<--(sm1)<-[*2..2]-(sm)
           where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (sm1)<--(dg:diagnosis)
           with p, sm1, sm, sample_diagnosis_filter_1, apoc.coll.union(COLLECT(DISTINCT {
@@ -4575,11 +4673,12 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4588,14 +4687,15 @@ Indices:
                                 age_at_diagnosis: dg.age_at_diagnosis,
                                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                                 disease_phase: dg.disease_phase,
-                                diagnosis_classification_system: dg.diagnosis_classification_system,
+                                diagnosis_classification_system: dg.diagnosis_classification_system,  
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             })) AS sample_diagnosis_filter_2
           with p, sm1, sm, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
-          MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)<--(sm1)<-[*2..2]-(sm)
           where not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
           with p, sm1, sm, sample_diagnosis_filter_3, apoc.coll.union(COLLECT(DISTINCT {
@@ -4610,7 +4710,8 @@ Indices:
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             }), COLLECT(DISTINCT {
                                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                 participant_age_at_collection: sm.participant_age_at_collection,
@@ -4623,10 +4724,11 @@ Indices:
                                 diagnosis_basis: dg.diagnosis_basis,
                                 tumor_grade_source: dg.tumor_grade_source,
                                 tumor_stage_source: dg.tumor_stage_source,
-                                diagnosis: dg.diagnosis
+                                diagnosis: dg.diagnosis,
+                                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
                             })) AS sample_diagnosis_filter_4
           with p, sm1, sm, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter
-          MATCH (st:study)<--(p)<--(sm1)<-[*2..2]-(sm)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)<--(sm1)<-[*2..2]-(sm)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
@@ -4683,7 +4785,7 @@ Indices:
             null AS library_source_molecule,
             null AS library_strategy
       - query: |
-          MATCH (st:study)<--(p:participant)<--(sm:sample)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)<--(sm:sample)
           where not ((sm)<-[*..3]-(:sequencing_file)) and not ((sm)<-[*..3]-(:generic_file)) and not ((sm)<-[*..3]-(:cytogenomic_file)) and not ((sm)<-[*..3]-(:pathology_file)) and not ((sm)<-[*..3]-(:methylation_array_file)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[*..2]-(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -4745,7 +4847,8 @@ Indices:
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
-                diagnosis: dg.diagnosis
+                diagnosis: dg.diagnosis,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';')
             }) AS sample_diagnosis_filters,
             survival_filters as survival_filters,
             treatment_filters as treatment_filters,
@@ -4803,6 +4906,7 @@ Indices:
                 diagnosis_anatomic_site: null,
                 disease_phase: null,
                 diagnosis_classification_system: null,
+                diagnosis_category: null,
                 diagnosis_basis: null,
                 tumor_grade_source: null,
                 tumor_stage_source: null,
@@ -4813,7 +4917,7 @@ Indices:
             null AS library_source_molecule,
             null AS library_strategy
       - query: |
-          MATCH (st:study)<--(p:participant)
+          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
           where not ((p)<--(:sample)) and not ((p)<--(:radiology_file)) and not ((p)<--(:clinical_measure_file)) and not ((p)<--(:generic_file))
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
@@ -4872,6 +4976,7 @@ Indices:
                 diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
                 disease_phase: dg.disease_phase,
                 diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
                 diagnosis_basis: dg.diagnosis_basis,
                 tumor_grade_source: dg.tumor_grade_source,
                 tumor_stage_source: dg.tumor_stage_source,
