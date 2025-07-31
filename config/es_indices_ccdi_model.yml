@@ -866,6 +866,8 @@ Indices:
         type: keyword
       diagnosis_anatomic_site_str:
         type: keyword
+      diagnosis_category:
+        type: keyword
       age_at_diagnosis_str:
         type: keyword
       treatment_agent_str:
@@ -3202,6 +3204,11 @@ Indices:
           keyword:
             type: keyword
       diagnosis_anatomic_site:
+        type: text
+        fields:
+          keyword:
+            type: keyword
+      diagnosis_category:
         type: text
         fields:
           keyword:
