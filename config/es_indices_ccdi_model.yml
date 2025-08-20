@@ -4032,7 +4032,7 @@ Indices:
             null AS library_strategy
       - query: |
           MATCH (st:study)<-[:of_clinical_measure_file]-(file:clinical_measure_file)
-          OPTIONAL MATCH (st)<-[:of_participant]-(p)
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
           optional MATCH (p)<-[*0..3]-(sm:sample)
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
           with file, p, COLLECT(DISTINCT {
