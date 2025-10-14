@@ -15,3 +15,8 @@ Config:
     - bento-model/model-desc/bento_tailorx_model_properties.yaml
 
   prop_file: config/props-bento-ext.yml
+
+  indices_list:
+  # Optional, the subset of the indices to be loaded
+  - indices_1
+  - indices_2
