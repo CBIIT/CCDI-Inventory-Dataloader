@@ -20,6 +20,7 @@ Properties:
     integer: Int
     boolean: Boolean
     array: Array
+    list: Array
     object: Object
     datetime: DateTime
     date: Date
@@ -35,3 +36,4 @@ Properties:
     file: file_id
     genomic_info: genomic_info_id
     program: program_acronym
+    image: study_link_id

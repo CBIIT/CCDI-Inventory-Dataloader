@@ -31,6 +31,7 @@ class ESLoader:
             self.es_client = Elasticsearch(
                 hosts=[es_host],
                 http_auth=awsauth,
+                port=443,
                 use_ssl=True,
                 verify_certs=True,
                 connection_class=RequestsHttpConnection,
@@ -245,8 +246,26 @@ def main():
         load_model = True
 
     summary = {}
+    indices_list = config.get('indices_list')
+    if isinstance(indices_list, list):
+        if len(indices_list) > 0:
+            lower_indices_list = [item.lower() for item in indices_list]
+            logger.warning(f"An indices list is provided, only the indices in the indices list {indices_list} will be loaded")
+        else:
+            logger.warning("Empty indices_list value is provided, all the indices will be loaded")
+            indices_list = None
+    else:
+        logger.warning(f"Invalid indices_list value {indices_list} is provided, all the indices will be loaded")
+        indices_list = None
+
+    index_name_list = []
     for index in indices:
         index_name = index.get('index_name')
+        index_name_list.append(index_name.lower())
+        if indices_list is not None and index_name is not None:
+            lower_index_name = index_name.lower()
+            if lower_index_name not in lower_indices_list:
+                continue
         summary[index_name] = "ERROR!"
         logger.info(f'Begin loading index: "{index_name}"')
         if 'type' not in index or index['type'] == 'neo4j':
@@ -273,8 +292,16 @@ def main():
             else:
                 logger.warning(
                     f'"model_files" not set in configuration file, {index_name} will not be loaded!')
+        elif index['type'] == 'external':
+            logger.info("External data index created - loading will be done via data retriever service")
+            loader.create_index(index_name, index["mapping"])
+            summary[index_name] = "Index created"
         else:
             logger.error(f'Unknown index type: "{index["type"]}"')
+    if indices_list is not None:
+        for indices_name in indices_list:
+            if indices_name.lower() not in index_name_list:
+                logger.warning(f'The index {indices_name} in the indices list does not exist in the definition file')
     logger.info(f'Index loading summary:')
     for index in summary.keys():
         logger.info(f'{index}: {summary[index]}')
