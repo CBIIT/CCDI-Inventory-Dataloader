@@ -5052,3 +5052,13 @@ Indices:
         type: search_as_you_type
       value_kw:
         type: keyword
+  - index_name: idc_tcia
+    type: external
+    # type mapping for each property of the index
+    mapping:
+      timestamp:
+        type: date
+      source:
+        type: keyword
+      data:
+        type: object
