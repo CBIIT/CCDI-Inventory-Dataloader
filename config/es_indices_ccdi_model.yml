@@ -244,7 +244,7 @@ Indices:
             END) AS samples,
             (CASE
               WHEN COUNT(DISTINCT file) > 0 THEN COLLECT(DISTINCT {
-                id: file.id,
+                id: file.dcf_indexd_guid,
                 file_id: CASE LABELS(file)[0]
                       WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
                       WHEN 'generic_file' THEN file.generic_file_id
@@ -1327,8 +1327,8 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            COUNT(DISTINCT file.id) as file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
         page_size: 1000
           
 
@@ -2727,8 +2727,8 @@ Indices:
           OPTIONAL MATCH (p)<-[*..4]-(file)
           WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
+                      file_count: COUNT(DISTINCT file.dcf_indexd_guid),
+                      files: COLLECT(DISTINCT file.dcf_indexd_guid)
                     }) AS opensearch_data
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
@@ -2934,8 +2934,8 @@ Indices:
           optional match (sm)<--(file)
           WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
+                      file_count: COUNT(DISTINCT file.dcf_indexd_guid),
+                      files: COLLECT(DISTINCT file.dcf_indexd_guid)
                     }) AS opensearch_data         
           RETURN opensearch_data
         page_size: 100
@@ -3037,7 +3037,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, sample_file_filters, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
+          with dg, sample_file_filters, collect(distinct file.dcf_indexd_guid) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
           optional match (p:participant)<-[*..4]-(dg)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -3173,8 +3173,8 @@ Indices:
             COLLECT(DISTINCT{response_category: null,
             age_at_response: null}) as treatment_response_filters, 
             sample_file_filters AS sample_file_filters,
-            COUNT(DISTINCT file.id) as file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
 
   - index_name: studies
     type: neo4j
@@ -3269,7 +3269,7 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           WHERE stp.personnel_type = 'PI'
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, file.id as file_id, stf, stp, pub
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, file.dcf_indexd_guid as file_id, stf, stp, pub
           RETURN DISTINCT
             st.id as id,
             st.study_id as study_id,
@@ -3490,7 +3490,7 @@ Indices:
             library_source_molecule: file.library_source_molecule,
             library_strategy: file.library_strategy
           }) AS file_filter,
-          COLLECT(DISTINCT file.id) AS files
+          COLLECT(DISTINCT file.dcf_indexd_guid) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:generic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3501,7 +3501,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3512,7 +3512,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:cytogenomic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3523,7 +3523,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:methylation_array_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3534,7 +3534,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           WITH sm, apoc.map.merge(opensearch_data, {
             file_filters: file_filter,
             files: files,
@@ -3551,7 +3551,7 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (sm)<--(direct_file)
           WITH sm, apoc.map.merge(opensearch_data, {
-            direct_file_count: COUNT(DISTINCT direct_file.id)
+            direct_file_count: COUNT(DISTINCT direct_file.dcf_indexd_guid)
           }) AS opensearch_data
           OPTIONAL MATCH (sm)-[*..3]->(:participant)<-[:of_survival]-(su:survival)
           WITH sm, opensearch_data, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -3658,9 +3658,9 @@ Indices:
                                         WHEN 'sequencing_file' THEN file.library_strategy
                                         ELSE null END
                       }) END AS file_filters,
-            COUNT(DISTINCT file.id) as file_count,
-            COUNT(DISTINCT file.id) as direct_file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COUNT(DISTINCT file.dcf_indexd_guid) as direct_file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
 
   - index_name: files
     type: neo4j
@@ -3793,6 +3793,8 @@ Indices:
           race:
             type: keyword
           sex_at_birth:
+            type: keyword
+          participant_id:
             type: keyword
       sample_diagnosis_filters:
         type: nested
@@ -3986,7 +3988,7 @@ Indices:
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters
           RETURN DISTINCT
-            file.id as id,
+            file.dcf_indexd_guid as id,
             p.id as pid,
             CASE LABELS(file)[0]
                   WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
@@ -4007,20 +4009,21 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            p.participant_id AS participant_id,
+            COLLECT(DISTINCT p.participant_id) AS participant_id,
             null AS sample_id,
-            p.participant_id as participant_id_gs,
+            COLLECT(DISTINCT p.participant_id) AS participant_id_gs,
             null as sample_id_gs,
             st.study_id as study_id_gs,
             file.file_description as file_description_gs,
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files,
             null as combined_filters,
             COLLECT(DISTINCT {
               race: apoc.text.split(p.race, ';'),
-              sex_at_birth: p.sex_at_birth
+              sex_at_birth: p.sex_at_birth,
+              participant_id: p.participant_id
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
             survival_filters as survival_filters,  
@@ -4176,7 +4179,7 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           With file, st, combined_filter, stf, stp
           RETURN DISTINCT
-            file.id as id,
+            file.dcf_indexd_guid as id,
             null as pid,
             file.clinical_measure_file_id AS file_id,
             file.dcf_indexd_guid AS guid,
@@ -4202,7 +4205,7 @@ Indices:
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files,
             combined_filter as combined_filters,
             null as participant_filters,
             null as sample_diagnosis_filters,
@@ -4359,7 +4362,7 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           With file, st, combined_filter, stf, stp
           RETURN DISTINCT
-            file.id as id,
+            file.dcf_indexd_guid as id,
             null as pid,
             file.generic_file_id AS file_id,
             file.dcf_indexd_guid AS guid,
@@ -4385,7 +4388,7 @@ Indices:
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files,
             combined_filter as combined_filters,
             null as participant_filters,
             null as sample_diagnosis_filters,
@@ -4518,7 +4521,7 @@ Indices:
             COLLECT(DISTINCT{response_category: tr.response_category,
             age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp 
           RETURN DISTINCT
-            file.id as id,
+            file.dcf_indexd_guid as id,
             p.id as pid,
             CASE LABELS(file)[0]
                   WHEN 'sequencing_file' THEN file.sequencing_file_id
@@ -4540,22 +4543,21 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            p.participant_id AS participant_id,
-            CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                      ELSE sm1.sample_id + ',' + sm.sample_id END AS sample_id,
-            p.participant_id as participant_id_gs,
-            CASE sm1.sample_id WHEN sm.sample_id THEN sm.sample_id
-                      ELSE sm1.sample_id + ',' + sm.sample_id END as sample_id_gs,
+            COLLECT(DISTINCT p.participant_id) AS participant_id,
+            apoc.text.join(COLLECT(DISTINCT sm1.sample_id) + COLLECT(DISTINCT sm.sample_id), ',') AS sample_id,
+            COLLECT(DISTINCT p.participant_id) AS participant_id_gs,
+            apoc.text.join(COLLECT(DISTINCT sm1.sample_id) + COLLECT(DISTINCT sm.sample_id), ',') AS sample_id_gs,
             st.study_id as study_id_gs,
             file.file_description as file_description_gs,
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files,
             null as combined_filters,
             COLLECT(DISTINCT {
                 race: apoc.text.split(p.race, ';'),
-                sex_at_birth: p.sex_at_birth
+                sex_at_birth: p.sex_at_birth,
+                participant_id: p.participant_id
             }) AS participant_filters,
             sample_diagnosis_filter AS sample_diagnosis_filters,
             survival_filters as survival_filters,
@@ -4582,7 +4584,7 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
           with file, sm, st, dg, stf, stp
           RETURN DISTINCT
-            file.id as id,
+            file.dcf_indexd_guid as id,
             null as pid,
             CASE LABELS(file)[0]
                   WHEN 'sequencing_file' THEN file.sequencing_file_id
@@ -4605,15 +4607,15 @@ Indices:
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
-            sm.sample_id AS sample_id,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id,
             null as participant_id_gs,
-            sm.sample_id as sample_id_gs,
+            COLLECT(DISTINCT sm.sample_id) as sample_id_gs,
             st.study_id as study_id_gs,
             file.file_description as file_description_gs,
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files,
             null as combined_filters,
             null AS participant_filters,
             COLLECT(DISTINCT {
@@ -4776,10 +4778,10 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            p.participant_id AS participant_id,
-            sm.sample_id AS sample_id,
-            p.participant_id as participant_id_gs,
-            sm.sample_id as sample_id_gs,
+            COLLECT(DISTINCT p.participant_id) AS participant_id,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id,
+            COLLECT(DISTINCT p.participant_id) AS participant_id_gs,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id_gs,
             st.study_id as study_id_gs,
             null as file_description_gs,
             null as file_type_gs,
@@ -4789,7 +4791,8 @@ Indices:
             null as combined_filters,
             COLLECT(DISTINCT {
                 race: apoc.text.split(p.race, ';'),
-                sex_at_birth: p.sex_at_birth
+                sex_at_birth: p.sex_at_birth,
+                participant_id: p.participant_id
             }) AS participant_filters,
             sample_diagnosis_filter as sample_diagnosis_filters,
             survival_filters as survival_filters,
@@ -4835,10 +4838,10 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name, 
-            p.participant_id AS participant_id,
-            sm.sample_id AS sample_id,
-            p.participant_id as participant_id_gs,
-            sm.sample_id as sample_id_gs,
+            COLLECT(DISTINCT p.participant_id) AS participant_id,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id,
+            COLLECT(DISTINCT p.participant_id) AS participant_id_gs,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id_gs,
             st.study_id as study_id_gs,
             null as file_description_gs,
             null as file_type_gs,
@@ -4848,7 +4851,8 @@ Indices:
             null as combined_filters,
             COLLECT(DISTINCT {
                 race: apoc.text.split(p.race, ';'),
-                sex_at_birth: p.sex_at_birth
+                sex_at_birth: p.sex_at_birth,
+                participant_id: p.participant_id
             }) AS participant_filters,
             COLLECT(DISTINCT {
                 sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
@@ -4898,9 +4902,9 @@ Indices:
             st.study_acronym as study_acronym,
             st.study_name as study_name,
             null AS participant_id,
-            sm.sample_id AS sample_id,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id,
             null as participant_id_gs,
-            sm.sample_id as sample_id_gs,
+            COLLECT(DISTINCT sm.sample_id) AS sample_id_gs,
             st.study_id as study_id_gs,
             null as file_description_gs,
             null as file_type_gs,
@@ -4967,9 +4971,9 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            p.participant_id AS participant_id,
+            COLLECT(DISTINCT p.participant_id) AS participant_id,
             null AS sample_id,
-            p.participant_id as participant_id_gs,
+            COLLECT(DISTINCT p.participant_id) AS participant_id_gs,
             null as sample_id_gs,
             st.study_id as study_id_gs,
             null as file_description_gs,
@@ -4980,7 +4984,8 @@ Indices:
             null as combined_filters,
             COLLECT(DISTINCT {
                 race: apoc.text.split(p.race, ';'),
-                sex_at_birth: p.sex_at_birth
+                sex_at_birth: p.sex_at_birth,
+                participant_id: p.participant_id
             }) AS participant_filters,
             COLLECT(DISTINCT {
                 sample_anatomic_site: null,
