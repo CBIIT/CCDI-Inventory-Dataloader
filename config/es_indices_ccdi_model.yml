@@ -3490,7 +3490,7 @@ Indices:
             library_source_molecule: file.library_source_molecule,
             library_strategy: file.library_strategy
           }) AS file_filter,
-          COLLECT(DISTINCT file.id) AS files
+          COLLECT(DISTINCT file.dcf_indexd_guid) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:generic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3501,7 +3501,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:pathology_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3512,7 +3512,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:cytogenomic_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3523,7 +3523,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           OPTIONAL MATCH (sm)<-[*..3]-(file:methylation_array_file)
           WITH sm, opensearch_data, apoc.coll.union(file_filter, COLLECT(DISTINCT {
             data_category: apoc.text.split(file.data_category, ';'),
@@ -3534,7 +3534,7 @@ Indices:
             library_source_molecule: null,
             library_strategy: null
           })) AS file_filter,
-          apoc.coll.union(files, COLLECT(DISTINCT file.id)) AS files
+          apoc.coll.union(files, COLLECT(DISTINCT file.dcf_indexd_guid)) AS files
           WITH sm, apoc.map.merge(opensearch_data, {
             file_filters: file_filter,
             files: files,
@@ -3551,7 +3551,7 @@ Indices:
           }) AS opensearch_data
           OPTIONAL MATCH (sm)<--(direct_file)
           WITH sm, apoc.map.merge(opensearch_data, {
-            direct_file_count: COUNT(DISTINCT direct_file.id)
+            direct_file_count: COUNT(DISTINCT direct_file.dcf_indexd_guid)
           }) AS opensearch_data
           OPTIONAL MATCH (sm)-[*..3]->(:participant)<-[:of_survival]-(su:survival)
           WITH sm, opensearch_data, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
@@ -3658,9 +3658,9 @@ Indices:
                                         WHEN 'sequencing_file' THEN file.library_strategy
                                         ELSE null END
                       }) END AS file_filters,
-            COUNT(DISTINCT file.id) as file_count,
-            COUNT(DISTINCT file.id) as direct_file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COUNT(DISTINCT file.dcf_indexd_guid) as direct_file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
 
   - index_name: files
     type: neo4j
