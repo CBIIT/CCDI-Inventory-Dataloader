@@ -1327,8 +1327,8 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            COUNT(DISTINCT file.id) as file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
         page_size: 1000
           
 
