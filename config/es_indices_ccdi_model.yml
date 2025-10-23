@@ -244,15 +244,15 @@ Indices:
             END) AS samples,
             (CASE
               WHEN COUNT(DISTINCT file) > 0 THEN COLLECT(DISTINCT {
-                id: file.id,
+                id: file.dcf_indexd_guid,
                 file_id: CASE LABELS(file)[0]
-                      WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
-                      WHEN 'generic_file' THEN file.generic_file_id
-                      WHEN 'radiology_file' THEN file.radiology_file_id
-                      WHEN 'sequencing_file' THEN file.sequencing_file_id
-                      WHEN 'methylation_array_file' THEN file.methylation_array_file_id
-                      WHEN 'pathology_file' THEN file.pathology_file_id
-                      WHEN 'cytogenomic_file' THEN file.cytogenomic_file_id
+                      WHEN 'clinical_measure_file' THEN file.dcf_indexd_guid
+                      WHEN 'generic_file' THEN file.dcf_indexd_guid
+                      WHEN 'radiology_file' THEN file.dcf_indexd_guid
+                      WHEN 'sequencing_file' THEN file.dcf_indexd_guid
+                      WHEN 'methylation_array_file' THEN file.dcf_indexd_guid
+                      WHEN 'pathology_file' THEN file.dcf_indexd_guid
+                      WHEN 'cytogenomic_file' THEN file.dcf_indexd_guid
                       ELSE null END,
                 dcf_indexd_guid: file.dcf_indexd_guid,
                 file_name: file.file_name,
