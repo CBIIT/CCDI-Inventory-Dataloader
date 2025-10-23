@@ -2727,8 +2727,8 @@ Indices:
           OPTIONAL MATCH (p)<-[*..4]-(file)
           WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with p, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
+                      file_count: COUNT(DISTINCT file.dcf_indexd_guid),
+                      files: COLLECT(DISTINCT file.dcf_indexd_guid)
                     }) AS opensearch_data
           MATCH (dg:diagnosis)
           MATCH (p)<-[:of_diagnosis]-(dg)
@@ -2934,8 +2934,8 @@ Indices:
           optional match (sm)<--(file)
           WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           with dg, apoc.map.merge(opensearch_data, {
-                      file_count: COUNT(DISTINCT file.id),
-                      files: COLLECT(DISTINCT file.id)
+                      file_count: COUNT(DISTINCT file.dcf_indexd_guid),
+                      files: COLLECT(DISTINCT file.dcf_indexd_guid)
                     }) AS opensearch_data         
           RETURN opensearch_data
         page_size: 100
@@ -3037,7 +3037,7 @@ Indices:
           WHERE (cl: cell_line or cl: pdx)
           optional match (sm)<--(file)
           WHERE (file: sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
-          with dg, sample_file_filters, collect(distinct file.id) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
+          with dg, sample_file_filters, collect(distinct file.dcf_indexd_guid) as files, apoc.coll.union(collect(distinct sm1.id), collect(distinct sm.id)) as sid, apoc.coll.union(collect(distinct sm1.sample_id), collect(distinct sm.sample_id))  as sample_id
           optional match (p:participant)<-[*..4]-(dg)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
@@ -3173,8 +3173,8 @@ Indices:
             COLLECT(DISTINCT{response_category: null,
             age_at_response: null}) as treatment_response_filters, 
             sample_file_filters AS sample_file_filters,
-            COUNT(DISTINCT file.id) as file_count,
-            COLLECT(DISTINCT file.id) as files
+            COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
+            COLLECT(DISTINCT file.dcf_indexd_guid) as files
 
   - index_name: studies
     type: neo4j
