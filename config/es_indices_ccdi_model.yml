@@ -3776,9 +3776,14 @@ Indices:
           MATCH (file)
           where (file:clinical_measure_file or file: generic_file or file:radiology_file)
           MATCH (p:participant)<--(file)
+          with distinct file.dcf_indexd_guid as file_guid
+          SKIP $skip LIMIT $limit
+          MATCH (file)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file) and file.dcf_indexd_guid = file_guid
+          MATCH (p:participant)<--(file)
           optional MATCH (p)<-[*0..3]-(sm:sample)
           OPTIONAL MATCH (p)<-[:of_diagnosis]-(dg:diagnosis)
-          with file, COLLECT(DISTINCT {
+          with file, p, CASE WHEN collect(sm) <> [] AND collect(dg) <> [] THEN COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
                                         sample_tumor_status: sm.sample_tumor_status,
@@ -3792,11 +3797,11 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    }) AS sample_diagnosis_filter_1
-          MATCH (p:participant)<--(file)
+                                    }) ELSE [] END as sample_diagnosis_filter_1
+          MATCH (p)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
-          with file, sample_diagnosis_filter_1, COLLECT(DISTINCT {
+          with file, p, sample_diagnosis_filter_1, CASE WHEN collect(sm) <> [] AND collect(dg) <> [] THEN COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
                                         sample_tumor_status: sm.sample_tumor_status,
@@ -3810,12 +3815,12 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    }) AS sample_diagnosis_filter_2
-          with file, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
-          MATCH (p:participant)<--(file)
+                                    }) ELSE [] END as sample_diagnosis_filter_2
+          with file, p, apoc.coll.union(sample_diagnosis_filter_1, sample_diagnosis_filter_2) as sample_diagnosis_filter_3
+          MATCH (p)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm1)<--(dg:diagnosis)
-          with file, sample_diagnosis_filter_3, COLLECT(DISTINCT {
+          with file, p, sample_diagnosis_filter_3, CASE WHEN collect(sm) <> [] AND collect(dg) <> [] THEN COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
                                         sample_tumor_status: sm.sample_tumor_status,
@@ -3829,12 +3834,12 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    }) AS sample_diagnosis_filter_4
-          with file, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
-          MATCH (p:participant)<--(file)
+                                    }) ELSE [] END as sample_diagnosis_filter_4
+          with file, p, apoc.coll.union(sample_diagnosis_filter_3, sample_diagnosis_filter_4) as sample_diagnosis_filter_5
+          MATCH (p)<--(file)
           optional MATCH (p)<-[:of_sample]-(sm1:sample)<-[*2..2]-(sm:sample)
           OPTIONAL MATCH (sm)<--(dg:diagnosis)
-          with file, sample_diagnosis_filter_5, apoc.coll.union(COLLECT(DISTINCT {
+          with file, p, sample_diagnosis_filter_5, apoc.coll.union(CASE WHEN collect(sm1) <> [] AND collect(dg) <> [] THEN COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm1.anatomic_site, ';'),
                                         participant_age_at_collection: sm1.participant_age_at_collection,
                                         sample_tumor_status: sm1.sample_tumor_status,
@@ -3848,7 +3853,7 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    }), COLLECT(DISTINCT {
+                                    }) ELSE [] END, CASE WHEN collect(sm) <> [] AND collect(dg) <> [] THEN COLLECT(DISTINCT {
                                         sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
                                         participant_age_at_collection: sm.participant_age_at_collection,
                                         sample_tumor_status: sm.sample_tumor_status,
@@ -3862,33 +3867,50 @@ Indices:
                                         tumor_grade_source: dg.tumor_grade_source,
                                         tumor_stage_source: dg.tumor_stage_source,
                                         diagnosis: dg.diagnosis
-                                    })) AS sample_diagnosis_filter_6
-          with file, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
-          MATCH (p:participant)<--(file)
-          MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p)
-          OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+                                    }) ELSE [] END) as sample_diagnosis_filter_6
+          with file, p, apoc.coll.union(sample_diagnosis_filter_5, sample_diagnosis_filter_6) as sample_diagnosis_filter
+          MATCH (p)<--(file)
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with file, p, st, sample_diagnosis_filter,COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+          with file, p, sample_diagnosis_filter,
+            CASE WHEN collect(su) <> [] THEN COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) ELSE [] END as survival_filters,
+            CASE WHEN collect(tm) <> [] THEN COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
             treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
-            COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response}) as treatment_response_filters
+            age_at_treatment_start: tm.age_at_treatment_start}) ELSE [] END as treatment_filters,
+            CASE WHEN collect(tr) <> [] THEN COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters
+          with file.dcf_indexd_guid as file_uid, p, sample_diagnosis_filter, survival_filters, treatment_filters, treatment_response_filters
+          WITH file_uid, p,
+              coalesce(sample_diagnosis_filter, [])    AS sdf,
+              coalesce(survival_filters, [])           AS svf,
+              coalesce(treatment_filters, [])          AS tf,
+              coalesce(treatment_response_filters, []) AS trf
+          WITH file_uid, p,
+              collect(sdf) AS sdf_lists,
+              collect(svf) AS svf_lists,
+              collect(tf)  AS tf_lists,
+              collect(trf) AS trf_lists
+          WITH file_uid, p, {
+            participant_id: p.participant_id,
+            race: apoc.text.split(p.race, ';'),
+            sex_at_birth: p.sex_at_birth,
+            sample_diagnosis_filter:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            survival_filters:           apoc.coll.toSet(apoc.coll.flatten(svf_lists)),
+            treatment_filters:          apoc.coll.toSet(apoc.coll.flatten(tf_lists)),
+            treatment_response_filters: apoc.coll.toSet(apoc.coll.flatten(trf_lists))
+          } AS rowmap
+          WITH file_uid, collect(dinstinct p.id) as pids, collect(distinct p.participant_id) as participant_ids, collect(DISTINCT rowmap) AS combined_filters
+          OPTIONAL MATCH (file)-[*..8]->(st:study)
+          where (file:clinical_measure_file or file: generic_file or file:radiology_file) and file.dcf_indexd_guid = file_uid
+          WITH file_uid, pids, participant_ids, combined_filters, head(collect(file)) AS file, head(collect(st)) AS st
           RETURN DISTINCT
-            file.id as id,
-            p.id as pid,
-            CASE LABELS(file)[0]
-                  WHEN 'clinical_measure_file' THEN file.clinical_measure_file_id
-                  WHEN 'generic_file' THEN file.generic_file_id
-                  WHEN 'radiology_file' THEN file.radiology_file_id
-                  ELSE null END AS file_id,
+            file_uid as id,
+            pids as pid,
+            file_uid AS file_id,
             file.dcf_indexd_guid AS guid,
             file.file_name AS file_name,
             file.file_access AS file_access,
@@ -3903,29 +3925,22 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
-            p.participant_id AS participant_id,
+            participant_ids AS participant_ids,
             null AS sample_id,
-            p.participant_id as participant_id_gs,
+            apoc.text.join(participant_ids, ',') as participant_id_gs,
             null as sample_id_gs,
             st.study_id as study_id_gs,
             file.file_description as file_description_gs,
             file.file_type as file_type_gs,
             file.file_name as file_name_gs,
             file.data_category as data_category_gs,
-            COLLECT(DISTINCT file.id) as files,
-            null as combined_filters,
-            COLLECT(DISTINCT {
-              race: apoc.text.split(p.race, ';'),
-              sex_at_birth: p.sex_at_birth
-            }) AS participant_filters,
-            sample_diagnosis_filter AS sample_diagnosis_filters,
-            survival_filters as survival_filters,  
-            treatment_filters as treatment_filters,
-            treatment_response_filters as treatment_response_filters,
+            [file_uid] as files,
+            combined_filters as combined_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
             null AS library_strategy
+        page_size: 100    
       - query: |
           MATCH (st:study)<-[:of_clinical_measure_file]-(file:clinical_measure_file)
           OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
