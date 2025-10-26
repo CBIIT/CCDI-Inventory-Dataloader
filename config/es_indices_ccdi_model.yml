@@ -3904,7 +3904,7 @@ Indices:
             treatment_response_filters: apoc.coll.toSet(apoc.coll.flatten(trf_lists))
           } AS rowmap
           WITH file_uid, collect(distinct p.id) as pids, collect(distinct p.participant_id) as participant_ids, collect(DISTINCT rowmap) AS combined_filters
-          OPTIONAL MATCH (file)-[*..8]->(st:study)
+          OPTIONAL MATCH (file)-->(:participant)-->(:consent_group)-->(st:study)
           where (file:clinical_measure_file or file: generic_file or file:radiology_file) and file.dcf_indexd_guid = file_uid
           WITH file_uid, pids, participant_ids, combined_filters, head(collect(file)) AS file, head(collect(st)) AS st
           RETURN DISTINCT
