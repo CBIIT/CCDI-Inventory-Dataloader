@@ -4739,19 +4739,32 @@ Indices:
           MATCH (st:study)<--(cl)<--(sm:sample)
           Where (cl: cell_line or cl: pdx) and not ((sm)<--(:sequencing_file)) and not ((sm)<--(:generic_file)) and not ((sm)<--(:cytogenomic_file)) and not ((sm)<--(:pathology_file)) and not ((sm)<--(:methylation_array_file))
           optional match (sm)<--(dg:diagnosis)
-          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with sm, dg, st, stf, stp
+          with sm, dg, st
+          with sm, st, case when collect(sm) <> [] OR collect(dg) <> [] THEN COLLECT(DISTINCT {
+                sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
+                participant_age_at_collection: sm.participant_age_at_collection,
+                sample_tumor_status: sm.sample_tumor_status,
+                tumor_classification: sm.tumor_classification,
+                age_at_diagnosis: null,
+                diagnosis_anatomic_site: null,
+                disease_phase: null,
+                diagnosis_classification_system: null,
+                diagnosis_category: null,
+                diagnosis_basis: null,
+                tumor_grade_source: null,
+                tumor_stage_source: null,
+                diagnosis_classification: null
+            }) ELSE [] END as sample_diagnosis_filter
           RETURN DISTINCT
             null as id,
-            null as pid,
+            [] as pid,
             null AS file_id,
             null AS guid,
             null AS file_name,
             null AS file_access,
             null AS data_category,
             null AS file_type,
-            null as file_mapping_level,
+            null AS file_mapping_level,
             null AS file_description,
             null AS file_size,
             null AS md5sum,
@@ -4770,26 +4783,15 @@ Indices:
             null as file_name_gs,
             null as data_category_gs,
             null as files,
-            null as combined_filters,
-            null AS participant_filters,
-            null as survival_filters,
-            null as treatment_filters,
-            null as treatment_response_filters,
-            COLLECT(DISTINCT {
-                sample_anatomic_site: apoc.text.split(sm.anatomic_site, ';'),
-                participant_age_at_collection: sm.participant_age_at_collection,
-                sample_tumor_status: sm.sample_tumor_status,
-                tumor_classification: sm.tumor_classification,
-                age_at_diagnosis: null,
-                diagnosis_anatomic_site: null,
-                disease_phase: null,
-                diagnosis_classification_system: null,
-                diagnosis_category: null,
-                diagnosis_basis: null,
-                tumor_grade_source: null,
-                tumor_stage_source: null,
-                diagnosis_classification: null
-            }) AS sample_diagnosis_filters,
+            [{
+              participant_id: null,
+              race: null,
+              sex_at_birth: null,
+              sample_diagnosis_filters: sample_diagnosis_filter,
+              survival_filters: [],
+              treatment_filters: [],
+              treatment_response_filters: []
+            }] as combined_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
