@@ -4803,27 +4803,40 @@ Indices:
           OPTIONAL MATCH (p)<-[:of_survival]-(su:survival)
           OPTIONAL MATCH (p)<-[:of_treatment]-(tm:treatment)
           OPTIONAL MATCH (p)<-[:of_treatment_response]-(tr:treatment_response)
-          OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
-          OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          with p, st, dg, COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
+          with distinct p, st, case when collect(dg) <> [] THEN COLLECT(DISTINCT {
+                sample_anatomic_site: null,
+                participant_age_at_collection: null,
+                sample_tumor_status: null,
+                tumor_classification: null,
+                age_at_diagnosis: dg.age_at_diagnosis,
+                diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
+                disease_phase: dg.disease_phase,
+                diagnosis_classification_system: dg.diagnosis_classification_system,
+                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
+                diagnosis_basis: dg.diagnosis_basis,
+                tumor_grade_source: dg.tumor_grade_source,
+                tumor_stage_source: dg.tumor_stage_source,
+                diagnosis_classification: dg.diagnosis_classification
+            }) ELSE [] END as sample_diagnosis_filter, 
+            case when collect(su) <> [] THEN COLLECT(DISTINCT {last_known_survival_status: su.last_known_survival_status, 
               event_free_survival_status: su.event_free_survival_status, 
               first_event: su.first_event,
-              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) AS survival_filters,
-            COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
+              age_at_last_known_survival_status: su.age_at_last_known_survival_status} ) ELSE [] END as survival_filters,
+            case when collect(tm) <> [] THEN COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
             treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
-            age_at_treatment_start: tm.age_at_treatment_start}) as treatment_filters,
-            COLLECT(DISTINCT{response_category: tr.response_category,
-            age_at_response: tr.age_at_response}) as treatment_response_filters, stf, stp          
+            age_at_treatment_start: tm.age_at_treatment_start}) ELSE [] END as treatment_filters,
+            case when collect(tr) <> [] THEN COLLECT(DISTINCT{response_category: tr.response_category,
+            age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters          
           RETURN DISTINCT
             null as id,
-            p.id as pid,
+            [] as pid,
             null AS file_id,
             null AS guid,
             null AS file_name,
             null AS file_access,
             null AS data_category,
             null AS file_type,
-            null as file_mapping_level,
+            null AS file_mapping_level,
             null AS file_description,
             null AS file_size,
             null AS md5sum,
@@ -4842,29 +4855,15 @@ Indices:
             null as file_name_gs,
             null as data_category_gs,
             null as files,
-            null as combined_filters,
-            COLLECT(DISTINCT {
-                race: apoc.text.split(p.race, ';'),
-                sex_at_birth: p.sex_at_birth
-            }) AS participant_filters,
-            COLLECT(DISTINCT {
-                sample_anatomic_site: null,
-                participant_age_at_collection: null,
-                sample_tumor_status: null,
-                tumor_classification: null,
-                age_at_diagnosis: dg.age_at_diagnosis,
-                diagnosis_anatomic_site: apoc.text.split(dg.anatomic_site, ';'),
-                disease_phase: dg.disease_phase,
-                diagnosis_classification_system: dg.diagnosis_classification_system,
-                diagnosis_category: apoc.text.split(dg.diagnosis_category, ';'),
-                diagnosis_basis: dg.diagnosis_basis,
-                tumor_grade_source: dg.tumor_grade_source,
-                tumor_stage_source: dg.tumor_stage_source,
-                diagnosis_classification: dg.diagnosis_classification
-            }) AS sample_diagnosis_filters, 
-            survival_filters as survival_filters,
-            treatment_filters as treatment_filters,
-            treatment_response_filters as treatment_response_filters,
+            [{
+              participant_id: p.participant_id,
+              race: apoc.text.split(p.race, ';'),
+              sex_at_birth: p.sex_at_birth,
+              sample_diagnosis_filters: sample_diagnosis_filter,
+              survival_filters: survival_filters,
+              treatment_filters: treatment_filters,
+              treatment_response_filters: treatment_response_filters
+            }] as combined_filters,
             null AS library_selection,
             null AS library_source_material,
             null AS library_source_molecule,
