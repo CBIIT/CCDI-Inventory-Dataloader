@@ -3898,7 +3898,7 @@ Indices:
             participant_id: p.participant_id,
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth,
-            sample_diagnosis_filter:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            sample_diagnosis_filters:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
             survival_filters:           apoc.coll.toSet(apoc.coll.flatten(svf_lists)),
             treatment_filters:          apoc.coll.toSet(apoc.coll.flatten(tf_lists)),
             treatment_response_filters: apoc.coll.toSet(apoc.coll.flatten(trf_lists))
@@ -4079,7 +4079,10 @@ Indices:
                 participant_id: null,
                 race: null,
                 sex_at_birth: null,
-                sample_diagnosis_filters: sample_diagnosis_filter 
+                sample_diagnosis_filters: sample_diagnosis_filter,
+                survival_filters: [],
+                treatment_filters: [],
+                treatment_response_filters: []
           }) ELSE [] END as combined_filter_2
           with file, apoc.coll.union(combined_filter_1, combined_filter_2) as combined_filter
           MATCH (st:study)<-[:of_clinical_measure_file]-(file)
@@ -4258,7 +4261,10 @@ Indices:
                 participant_id: null,
                 race: null,
                 sex_at_birth: null,
-                sample_diagnosis_filters: sample_diagnosis_filter 
+                sample_diagnosis_filters: sample_diagnosis_filter,
+                survival_filters: [],
+                treatment_filters: [],
+                treatment_response_filters: []
           }) ELSE [] END as combined_filter_2
           with file, apoc.coll.union(combined_filter_1, combined_filter_2) as combined_filter
           MATCH (st:study)<-[:of_generic_file]-(file)
@@ -4452,7 +4458,7 @@ Indices:
             participant_id: p.participant_id,
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth,
-            sample_diagnosis_filter:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            sample_diagnosis_filters:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
             survival_filters:           apoc.coll.toSet(apoc.coll.flatten(svf_lists)),
             treatment_filters:          apoc.coll.toSet(apoc.coll.flatten(tf_lists)),
             treatment_response_filters: apoc.coll.toSet(apoc.coll.flatten(trf_lists))
@@ -4460,7 +4466,7 @@ Indices:
             participant_id: null,
             race: null,
             sex_at_birth: null,
-            sample_diagnosis_filter: apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            sample_diagnosis_filters: apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
             survival_filters: [],
             treatment_filters: [],
             treatment_response_filters: []
@@ -4661,7 +4667,7 @@ Indices:
             participant_id: p.participant_id,
             race: apoc.text.split(p.race, ';'),
             sex_at_birth: p.sex_at_birth,
-            sample_diagnosis_filter:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            sample_diagnosis_filters:    apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
             survival_filters:           apoc.coll.toSet(apoc.coll.flatten(svf_lists)),
             treatment_filters:          apoc.coll.toSet(apoc.coll.flatten(tf_lists)),
             treatment_response_filters: apoc.coll.toSet(apoc.coll.flatten(trf_lists))
@@ -4669,7 +4675,7 @@ Indices:
             participant_id: null,
             race: null,
             sex_at_birth: null,
-            sample_diagnosis_filter: apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
+            sample_diagnosis_filters: apoc.coll.toSet(apoc.coll.flatten(sdf_lists)),
             survival_filters: [],
             treatment_filters: [],
             treatment_response_filters: []
