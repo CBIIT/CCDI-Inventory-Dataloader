@@ -5133,7 +5133,7 @@ Indices:
     mapping:
       timestamp:
         type: date
-      source:
+      repository:
         type: keyword
       data:
         type: object
