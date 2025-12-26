@@ -15,3 +15,13 @@ config/es_loader_*
 config/config.yml
 config/es_loader.yml
 backup/
+
+**/*/__pycache__/*
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+coverage.xml
+*.cover
