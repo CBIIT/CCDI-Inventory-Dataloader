@@ -42,19 +42,7 @@ Config:
   s3_bucket: {{data_bucket}}
   # S3 folder for dataset
   s3_folder: {{s3_folder}}
-  
-  s3_bucket_logs: ccdi-nonprod-inventory-etl-error-messages
-  # S3 folder for depositing log files
-  s3_folder_logs: test
-  # S3 bucket name for failed data files
-  s3_bucket_fail: ccdi-nonprod-inventory-etl-outcome-failure
-  # S3 folder name for failed data files
-  s3_folder_fail: test
-  # S3 bucket name for successful data files
-  s3_bucket_success: ccdi-nonprod-inventory-etl-outcome-success
-  # S3 folder name for successful data files
-  s3_folder_success: test
   # Loading mode, can be "upsert", "new" or "delete", default is "upsert"
-  loading_mode: {{load_mode}}
+  loading_mode: {{loading_mode}}
   # Location of dataset
-  dataset: data
+  dataset: "{{s3_folder}}"
