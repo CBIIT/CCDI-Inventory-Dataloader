@@ -3221,9 +3221,10 @@ Indices:
           with st, num_p, num_diag, cancers, collect(dg_site + ' (' + toString(num_sites) + ')') as sites
           MATCH (st)<-[*..6]-(fl)
           WHERE (fl:clinical_measure_file or fl: generic_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
-          with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(distinct fl.dcf_indexd_guid) as num_ft
+          with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(distinct fl.dcf_indexd_guid) as num_ft, collect(distinct fl.dcf_indexd_guid) as ft_guids
           ORDER BY num_ft desc
-          with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
+          with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, apoc.coll.toSet(apoc.coll.flatten(collect(ft_guids))) as all_guids
+          with st, num_p, num_diag, cancers, sites, file_types, size(all_guids) as num_files
           OPTIONAL MATCH (st)<-[*..2]-(pcp)<-[:of_sample]-(sm1:sample)
           WHERE (pcp:participant or pcp:cell_line or pcp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, count(distinct sm1.sample_id) as num_samples_1
