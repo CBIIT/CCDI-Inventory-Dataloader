@@ -3192,6 +3192,15 @@ Indices:
         fields:
           keyword:
             type: keyword
+      # Data availability fields for Hub Studies table
+      num_of_study_files:
+        type: integer
+      num_of_participant_files:
+        type: integer
+      num_of_sample_files:
+        type: integer
+      num_of_publications:
+        type: integer
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -3212,9 +3221,10 @@ Indices:
           with st, num_p, num_diag, cancers, collect(dg_site + ' (' + toString(num_sites) + ')') as sites
           MATCH (st)<-[*..6]-(fl)
           WHERE (fl:clinical_measure_file or fl: generic_file OR fl: sequencing_file OR fl:pathology_file OR fl:radiology_file OR fl:methylation_array_file OR fl:cytogenomic_file)
-          with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(distinct fl.dcf_indexd_guid) as num_ft
+          with st, num_p, num_diag, cancers, sites, fl.file_type as ft, count(distinct fl.dcf_indexd_guid) as num_ft, collect(distinct fl.dcf_indexd_guid) as ft_guids
           ORDER BY num_ft desc
-          with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, sum(num_ft) as num_files
+          with st, num_p, num_diag, cancers, sites, collect(ft + ' (' + toString(num_ft) + ')') as file_types, apoc.coll.toSet(apoc.coll.flatten(collect(ft_guids))) as all_guids
+          with st, num_p, num_diag, cancers, sites, file_types, size(all_guids) as num_files
           OPTIONAL MATCH (st)<-[*..2]-(pcp)<-[:of_sample]-(sm1:sample)
           WHERE (pcp:participant or pcp:cell_line or pcp:pdx)
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, count(distinct sm1.sample_id) as num_samples_1
@@ -3224,16 +3234,26 @@ Indices:
           WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples_1 + num_samples_2 as num_samples
           MATCH (st)<-[*..6]-(file)
           WHERE (file:clinical_measure_file or file: generic_file OR file: sequencing_file OR file:pathology_file OR file:radiology_file OR file:methylation_array_file OR file:cytogenomic_file)
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples,
+               file.dcf_indexd_guid as file_id,
+               file.file_mapping_level as file_level
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples,
+               COLLECT(DISTINCT file_id) as all_file_ids,
+               COUNT(DISTINCT CASE WHEN file_level = 'Study' THEN file_id END) as num_study_files,
+               COUNT(DISTINCT CASE WHEN file_level = 'Participant' THEN file_id END) as num_participant_files,
+               COUNT(DISTINCT CASE WHEN file_level = 'Sample' THEN file_id END) as num_sample_files
           OPTIONAL MATCH (st)<-[:of_publication]-(pub:publication)
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, all_file_ids, num_study_files, num_participant_files, num_sample_files, COLLECT(DISTINCT pub.pubmed_id) as pub_ids
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, all_file_ids, num_study_files, num_participant_files, num_sample_files, pub_ids, SIZE([p IN pub_ids WHERE p IS NOT NULL]) as num_publications
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           WHERE stp.personnel_type = 'PI'
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, file.dcf_indexd_guid as file_id, stf, stp, pub
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, all_file_ids, num_study_files, num_participant_files, num_sample_files, pub_ids, num_publications, stf, stp
           RETURN DISTINCT
             st.id as id,
             st.study_id as study_id,
             apoc.text.join(COLLECT(DISTINCT stf.grant_id), ';') as grant_id,
-            apoc.text.join(COLLECT(DISTINCT pub.pubmed_id), ';') as pubmed_ids,
+            apoc.text.join([p IN pub_ids WHERE p IS NOT NULL], ';') as pubmed_ids,
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_name as study_name,
@@ -3250,7 +3270,11 @@ Indices:
             file_types as file_types,
             num_samples as num_of_samples,
             num_files as num_of_files,
-            COLLECT(DISTINCT file_id) as files
+            all_file_ids as files,
+            num_study_files as num_of_study_files,
+            num_participant_files as num_of_participant_files,
+            num_sample_files as num_of_sample_files,
+            num_publications as num_of_publications
   
   - index_name: samples
     type: neo4j
