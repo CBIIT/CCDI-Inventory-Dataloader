@@ -372,6 +372,8 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      consent_codes:
+        type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -708,7 +710,8 @@ Indices:
           MATCH (st)<-[:of_generic_file]-(file:generic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH file, st, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)
+          WITH file, st, stf, stp, CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_suffix) ELSE [] END as consent_codes
           RETURN DISTINCT
             null as id,
             null as pid,
@@ -744,7 +747,8 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
-            st.study_name as study_name
+            st.study_name as study_name,
+            consent_codes as consent_codes
       - query: |
           MATCH (st:study)
           MATCH (st)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
@@ -754,7 +758,8 @@ Indices:
           WHERE (file:sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH file, dg, sm, st, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)
+          WITH file, dg, sm, st, stf, stp, CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_suffix) ELSE [] END as consent_codes
           RETURN DISTINCT
           null AS id,
           null AS pid,
@@ -800,7 +805,8 @@ Indices:
           st.dbgap_accession AS dbgap_accession,
           st.study_status AS study_status,
           st.study_acronym AS study_acronym,
-          st.study_name AS study_name
+          st.study_name AS study_name,
+          consent_codes as consent_codes
 
   - index_name: participants
     type: neo4j
@@ -1240,6 +1246,7 @@ Indices:
           treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
           age_at_treatment_start: tm.age_at_treatment_start}) ELSE [] END as treatment_filters,
           CASE WHEN tr IS NOT NULL THEN COLLECT(DISTINCT{response_category: tr.response_category, age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters,
+          CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_suffix) ELSE [] END as consent_codes,
           file, st, stf, stp,
           '' as alternate_participant_id,
           [] as cpi_data,
@@ -1292,6 +1299,7 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
+            consent_codes as consent_codes,
             COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
             COLLECT(DISTINCT file.dcf_indexd_guid) as files
         page_size: 1000
