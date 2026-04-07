@@ -372,6 +372,8 @@ Indices:
         type: keyword
       study_name:
         type: keyword
+      consent_codes:
+        type: keyword
     # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
     cypher_queries:
       - query: |
@@ -640,7 +642,8 @@ Indices:
           CASE WHEN tm IS NOT NULL THEN COLLECT(DISTINCT{treatment_type: apoc.text.split(tm.treatment_type, ';'),
           treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
           age_at_treatment_start: tm.age_at_treatment_start}) ELSE [] END as treatment_filters,
-          CASE WHEN tr IS NOT NULL THEN COLLECT(DISTINCT{response_category: tr.response_category, age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters
+          CASE WHEN tr IS NOT NULL THEN COLLECT(DISTINCT{response_category: tr.response_category, age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters,
+          CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_name) ELSE [] END as consent_codes
           RETURN DISTINCT
             p.id as id,
             p.id as pid,
@@ -655,14 +658,16 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
-            st.study_name as study_name
+            st.study_name as study_name,
+            consent_codes as consent_codes
         page_size: 1000
       - query: |
           MATCH (st:study)
           MATCH (st)<-[:of_clinical_measure_file]-(file:clinical_measure_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH file, st, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)
+          WITH file, st, stf, stp, CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_name) ELSE [] END as consent_codes
           RETURN DISTINCT
             null as id,
             null as pid,
@@ -698,13 +703,15 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
-            st.study_name as study_name
+            st.study_name as study_name,
+            consent_codes as consent_codes
       - query: |
           MATCH (st:study)
           MATCH (st)<-[:of_generic_file]-(file:generic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH file, st, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)
+          WITH file, st, stf, stp, CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_name) ELSE [] END as consent_codes
           RETURN DISTINCT
             null as id,
             null as pid,
@@ -740,7 +747,8 @@ Indices:
             st.dbgap_accession as dbgap_accession,
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
-            st.study_name as study_name
+            st.study_name as study_name,
+            consent_codes as consent_codes
       - query: |
           MATCH (st:study)
           MATCH (st)<-[:of_cell_line|of_pdx]-(cl)<--(sm:sample)
@@ -750,7 +758,8 @@ Indices:
           WHERE (file:sequencing_file or file: generic_file OR file:pathology_file OR file:methylation_array_file OR file:cytogenomic_file)
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH file, dg, sm, st, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg:consent_group)
+          WITH file, dg, sm, st, stf, stp, CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_name) ELSE [] END as consent_codes
           RETURN DISTINCT
           null AS id,
           null AS pid,
@@ -796,7 +805,8 @@ Indices:
           st.dbgap_accession AS dbgap_accession,
           st.study_status AS study_status,
           st.study_acronym AS study_acronym,
-          st.study_name AS study_name
+          st.study_name AS study_name,
+          consent_codes as consent_codes
 
   - index_name: participants
     type: neo4j
@@ -952,6 +962,8 @@ Indices:
       study_acronym:
         type: keyword
       study_name:
+        type: keyword
+      consent_codes:
         type: keyword
       file_count:
         type: integer
@@ -1234,6 +1246,7 @@ Indices:
           treatment_agent: apoc.text.split(tm.treatment_agent, ';'),
           age_at_treatment_start: tm.age_at_treatment_start}) ELSE [] END as treatment_filters,
           CASE WHEN tr IS NOT NULL THEN COLLECT(DISTINCT{response_category: tr.response_category, age_at_response: tr.age_at_response}) ELSE [] END as treatment_response_filters,
+          CASE WHEN cg IS NOT NULL THEN COLLECT(DISTINCT cg.consent_group_name) ELSE [] END as consent_codes,
           file, st, stf, stp,
           '' as alternate_participant_id,
           [] as cpi_data,
@@ -1286,6 +1299,7 @@ Indices:
             st.study_status AS study_status,
             st.study_acronym as study_acronym,
             st.study_name as study_name,
+            consent_codes as consent_codes,
             COUNT(DISTINCT file.dcf_indexd_guid) as file_count,
             COLLECT(DISTINCT file.dcf_indexd_guid) as files
         page_size: 1000
@@ -3158,6 +3172,8 @@ Indices:
         type: keyword
       PIs:
         type: keyword
+      consent_codes:
+        type: keyword
       study_id_gs:
         type: search_as_you_type
       study_name_gs:
@@ -3248,7 +3264,8 @@ Indices:
           OPTIONAL MATCH (st)<-[:of_study_personnel]-(stp:study_personnel)
           WHERE stp.personnel_type = 'PI'
           OPTIONAL MATCH (st)<-[:of_study_funding]-(stf:study_funding)
-          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, all_file_ids, num_study_files, num_participant_files, num_sample_files, pub_ids, num_publications, stf, stp
+          OPTIONAL MATCH (st)<-[:of_consent_group]-(cg_study:consent_group)
+          WITH st, num_p, num_diag, cancers, sites, file_types, num_files, num_samples, all_file_ids, num_study_files, num_participant_files, num_sample_files, pub_ids, num_publications, stf, stp, COLLECT(DISTINCT cg_study.consent_group_name) as consent_codes
           RETURN DISTINCT
             st.id as id,
             st.study_id as study_id,
@@ -3260,6 +3277,7 @@ Indices:
             st.study_description as study_description,
             st.study_acronym as study_acronym,
             apoc.text.join(COLLECT(DISTINCT stp.personnel_name), ';') as PIs,
+            consent_codes as consent_codes,
             st.study_id as study_id_gs,
             st.study_name as study_name_gs,
             st.study_status as study_status_gs,
