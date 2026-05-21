@@ -3223,9 +3223,9 @@ Indices:
           MATCH (st:study)<-[:of_consent_group]-(cg:consent_group)<-[:of_participant]-(p:participant)
           with st, count(p) as num_p
           MATCH (st:study)<-[*..6]-(dg:diagnosis)
-          with st, num_p, count(dg) as num_diag
+          with st, num_p, count(distinct dg.diagnosis) as num_diag
           MATCH (st:study)<-[*..6]-(dg:diagnosis)
-          with st, num_p, num_diag, dg.diagnosis as dg_cancers, count(dg.diagnosis) as num_cancers
+          with st, num_p, num_diag, dg.diagnosis as dg_cancers, count(distinct dg.diagnosis) as num_cancers
           ORDER BY num_cancers desc
           with st, num_p, num_diag, collect(dg_cancers + ' (' + toString(num_cancers) + ')') as cancers
           MATCH (st)<-[*..6]-(diag:diagnosis)
